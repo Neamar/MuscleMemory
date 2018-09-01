@@ -1,5 +1,7 @@
 package fr.neamar.musclememory;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -13,7 +15,7 @@ import android.view.animation.LinearInterpolator;
 import java.util.ArrayList;
 
 public class GamePath extends Path {
-    private float progress = 0;
+    public float progress = 0;
 
     private LevelView parent;
     private Paint linePaint;
@@ -22,7 +24,9 @@ public class GamePath extends Path {
 
     public PointF circlePosition;
     public int CIRCLE_RADIUS = 90;
+
     public boolean currentlyCovered = false;
+    public boolean animationFinished = false;
 
     private ValueAnimator progressAnimator;
 
@@ -77,8 +81,16 @@ public class GamePath extends Path {
                 parent.invalidate();
             }
         });
+        progressAnimator.addListener(new AnimatorListenerAdapter()
+        {
+            @Override
+            public void onAnimationEnd(Animator animation)
+            {
+                animationFinished = true;
+                parent.onPathCompleted();
+            }
+        });
         progressAnimator.setDuration(5000);
-        progressAnimator.setRepeatCount(15);
         progressAnimator.setInterpolator(new LinearInterpolator());
 
     }
@@ -108,11 +120,13 @@ public class GamePath extends Path {
     }
 
     public void start() {
+        animationFinished = false;
         progressAnimator.start();
     }
 
 
     public void reset() {
+        animationFinished = false;
         progressAnimator.cancel();
         progress = 0;
         parent.invalidate();

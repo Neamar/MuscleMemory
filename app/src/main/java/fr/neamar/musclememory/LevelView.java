@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public class LevelView extends TouchEventView {
     private final int WAITING_FOR_ALL_CIRCLES = 0;
     private final int RUNNING = 2;
+    private final int WON = 3;
 
     private int state = WAITING_FOR_ALL_CIRCLES;
 
@@ -100,6 +101,21 @@ public class LevelView extends TouchEventView {
         state = WAITING_FOR_ALL_CIRCLES;
         for (GamePath path : paths) {
             path.reset();
+        }
+    }
+
+    public void onPathCompleted() {
+        boolean allPathCompleted = true;
+        for (GamePath path : paths) {
+            if(!path.animationFinished) {
+                allPathCompleted = false;
+                break;
+            }
+        }
+
+        if(allPathCompleted) {
+            currentText = "GG WP";
+            state = WON;
         }
     }
 }
