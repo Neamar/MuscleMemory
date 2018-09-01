@@ -1,42 +1,35 @@
 package fr.neamar.musclememory;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.PointF;
 import android.util.AttributeSet;
-import android.view.animation.LinearInterpolator;
+import android.util.Log;
+import android.view.MotionEvent;
 
 import java.util.ArrayList;
 
 public class LevelView extends TouchEventView {
-    public float progress = 0;
+    private final int WAITING_FOR_ALL_CIRCLES = 0;
+    private final int RUNNING = 2;
+
+    private int state = WAITING_FOR_ALL_CIRCLES;
 
     private ArrayList<GamePath> paths = new ArrayList<>();
 
     public LevelView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initLevel();
-
-        ValueAnimator progressAnimator = ValueAnimator.ofFloat(0, 1);
-        progressAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                progress = (float) animation.getAnimatedValue();
-                invalidate();
-            }
-        });
-        progressAnimator.setDuration(5000);
-        progressAnimator.setRepeatCount(15);
-        progressAnimator.setInterpolator(new LinearInterpolator());
-        progressAnimator.start();
+        currentText = "Touch all circles to start.";
     }
 
     private void initLevel() {
         post(new Runnable() {
             @Override
             public void run() {
-                GamePath newPath = new GamePath(getWidth(), getHeight());
-                paths.add(newPath);    }
+                GamePath newPath = new GamePath(LevelView.this, getWidth(), getHeight());
+                paths.add(newPath);
+            }
         });
 
     }
@@ -46,8 +39,67 @@ public class LevelView extends TouchEventView {
         super.onDraw(canvas);
 
         // draw all paths
+        for (GamePath path : paths) {
+            path.onDraw(canvas);
+        }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        super.onTouchEvent(event);
+
+        // Do we have all circles covered?
+        boolean allCirclesCovered = true;
         for(GamePath path: paths) {
-            path.onDraw(canvas, progress);
+            PointF circle = path.circlePosition;
+            boolean covered = false;
+            for(int i = 0; i < activePointers.size(); i++) {
+                PointF pointer = activePointers.valueAt(i);
+                double squaredDistance = Math.pow(circle.x - pointer.x, 2) + Math.pow(circle.y - pointer.y, 2);
+                if(squaredDistance < path.CIRCLE_RADIUS * path.CIRCLE_RADIUS) {
+                    covered = true;
+                    path.currentlyCovered = true;
+                    break;
+                }
+            }
+
+            if(!covered) {
+                allCirclesCovered = false;
+                path.currentlyCovered = false;
+            }
+        }
+
+        if(allCirclesCovered) {
+            if(state == WAITING_FOR_ALL_CIRCLES) {
+                Log.e("WTF","Starting");
+                start();
+            }
+        }
+
+        if(!allCirclesCovered) {
+            if(state == RUNNING) {
+                Log.e("WTF","Stopping");
+                reset();
+            }
+        }
+
+        return true;
+    }
+
+    public void start() {
+        currentText = "Stay in the circle!";
+        state = RUNNING;
+        for (GamePath path : paths) {
+            path.start();
+        }
+    }
+
+
+    public void reset() {
+        currentText = "You've lost! Retry.";
+        state = WAITING_FOR_ALL_CIRCLES;
+        for (GamePath path : paths) {
+            path.reset();
         }
     }
 }
