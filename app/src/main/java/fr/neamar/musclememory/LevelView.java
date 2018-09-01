@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
@@ -60,14 +59,12 @@ public class LevelView extends TouchEventView {
 
         if(allCirclesCovered) {
             if(state == WAITING_FOR_ALL_CIRCLES) {
-                Log.e("WTF","Starting");
                 start();
             }
         }
 
         if(!allCirclesCovered) {
             if(state == RUNNING) {
-                Log.e("WTF","Stopping");
                 reset();
             }
         }
