@@ -11,17 +11,24 @@ import android.util.Pair;
 import java.util.ArrayList;
 
 public class GamePath extends Path {
-    private Paint mPaint;
-    private PointF circlePosition = new PointF();
+    private Paint mLinePaint;
+    private Paint mCirclePaint;
+
+    private PointF circlePosition;
     private ArrayList<Pair<Float, PointF>> mPoints;
     private float progress = 0;
 
     GamePath(int width, int height) {
-        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        mPaint.setColor(Color.RED);
-        mPaint.setStrokeWidth(5);
-        mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        mLinePaint.setColor(Color.RED);
+        mLinePaint.setStrokeWidth(5);
+        mLinePaint.setStyle(Paint.Style.STROKE);
+
+        mCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+        mCirclePaint.setColor(Color.GREEN);
+        mCirclePaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
         drawPath(width, height);
 
@@ -37,7 +44,7 @@ public class GamePath extends Path {
 
     private void drawPath(int width, int height) {
         moveTo(150, height / 2);
-        lineTo(width - 150, height / 2);
+        cubicTo(150, 0, width - 150, height, width - 150, height / 2);
     }
 
     private PointF getPointOnPath(float progress) {
@@ -56,6 +63,7 @@ public class GamePath extends Path {
             pointAfter = mPoints.get(mPoints.size() - 1);
             pointBefore = mPoints.get(mPoints.size() - 2);
         }
+        assert pointBefore != null;
 
         // Find the "intermediate" progress value (where are we between those two points, as a value between 0 and 1)
         float intermediateProgress = (progress - pointBefore.first) / (pointAfter.first - pointBefore.first);
@@ -65,13 +73,13 @@ public class GamePath extends Path {
 
 
     public void onDraw(Canvas canvas) {
-        canvas.drawPath(this, mPaint);
+        canvas.drawPath(this, mLinePaint);
 
-        progress = Math.min(1, progress + 0.01f);
+        progress = Math.min(1, progress + 0.006f);
         if(progress == 1) {
             progress = 0;
         }
         circlePosition = getPointOnPath(progress);
-        canvas.drawCircle(circlePosition.x, circlePosition.y, 90, mPaint);
+        canvas.drawCircle(circlePosition.x, circlePosition.y, 90, mCirclePaint);
     }
 }
