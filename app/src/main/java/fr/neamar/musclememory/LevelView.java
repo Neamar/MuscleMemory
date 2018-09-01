@@ -1,18 +1,34 @@
 package fr.neamar.musclememory;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.util.Log;
+import android.view.animation.LinearInterpolator;
 
 import java.util.ArrayList;
 
 public class LevelView extends TouchEventView {
-    private ArrayList<GamePath> mPaths = new ArrayList<>();
+    public float progress = 0;
+
+    private ArrayList<GamePath> paths = new ArrayList<>();
 
     public LevelView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initLevel();
+
+        ValueAnimator progressAnimator = ValueAnimator.ofFloat(0, 1);
+        progressAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                progress = (float) animation.getAnimatedValue();
+                invalidate();
+            }
+        });
+        progressAnimator.setDuration(5000);
+        progressAnimator.setRepeatCount(15);
+        progressAnimator.setInterpolator(new LinearInterpolator());
+        progressAnimator.start();
     }
 
     private void initLevel() {
@@ -20,7 +36,7 @@ public class LevelView extends TouchEventView {
             @Override
             public void run() {
                 GamePath newPath = new GamePath(getWidth(), getHeight());
-                mPaths.add(newPath);    }
+                paths.add(newPath);    }
         });
 
     }
@@ -30,8 +46,8 @@ public class LevelView extends TouchEventView {
         super.onDraw(canvas);
 
         // draw all paths
-        for(GamePath path: mPaths) {
-            path.onDraw(canvas);
+        for(GamePath path: paths) {
+            path.onDraw(canvas, progress);
         }
     }
 }

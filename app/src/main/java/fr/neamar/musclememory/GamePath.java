@@ -11,35 +11,34 @@ import android.util.Pair;
 import java.util.ArrayList;
 
 public class GamePath extends Path {
-    private Paint mLinePaint;
-    private Paint mCirclePaint;
+    private Paint linePaint;
+    private Paint circlePaint;
 
     private PointF circlePosition;
-    private ArrayList<Pair<Float, PointF>> mPoints;
-    private float progress = 0;
+    private ArrayList<Pair<Float, PointF>> progressPoints;
 
     GamePath(int width, int height) {
-        mLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        linePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        mLinePaint.setColor(Color.RED);
-        mLinePaint.setStrokeWidth(5);
-        mLinePaint.setStyle(Paint.Style.STROKE);
+        linePaint.setColor(Color.RED);
+        linePaint.setStrokeWidth(5);
+        linePaint.setStyle(Paint.Style.STROKE);
 
-        mCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        mCirclePaint.setColor(Color.GREEN);
-        mCirclePaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        circlePaint.setColor(Color.GREEN);
+        circlePaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
         drawPath(width, height);
 
-        float[] approximated = approximate(0.5f);
+        float[] approximated = PathCompat.approximate(this, 0.5f);
 
-        mPoints = new ArrayList<>(approximated.length / 3);
+        progressPoints = new ArrayList<>(approximated.length / 3);
         for(int i = 0; i < approximated.length; i += 3) {
-            mPoints.add(new Pair<>(approximated[i], new PointF(approximated[i + 1], approximated[i + 2])));
+            progressPoints.add(new Pair<>(approximated[i], new PointF(approximated[i + 1], approximated[i + 2])));
             Log.e("WTF", "at " + approximated[i] + " is " + new PointF(approximated[i + 1], approximated[i + 2]));
         }
-        circlePosition = mPoints.get(0).second;
+        circlePosition = progressPoints.get(0).second;
     }
 
     private void drawPath(int width, int height) {
@@ -52,7 +51,7 @@ public class GamePath extends Path {
         Pair<Float, PointF> pointBefore = null;
         Pair<Float, PointF> pointAfter = null;
 
-        for(Pair<Float, PointF> pair : mPoints) {
+        for(Pair<Float, PointF> pair : progressPoints) {
             if(pair.first > progress) {
                 pointAfter = pair;
                 break;
@@ -60,8 +59,8 @@ public class GamePath extends Path {
             pointBefore = pair;
         }
         if(pointAfter == null) {
-            pointAfter = mPoints.get(mPoints.size() - 1);
-            pointBefore = mPoints.get(mPoints.size() - 2);
+            pointAfter = progressPoints.get(progressPoints.size() - 1);
+            pointBefore = progressPoints.get(progressPoints.size() - 2);
         }
         assert pointBefore != null;
 
@@ -72,14 +71,10 @@ public class GamePath extends Path {
     }
 
 
-    public void onDraw(Canvas canvas) {
-        canvas.drawPath(this, mLinePaint);
+    public void onDraw(Canvas canvas, float progress) {
+        canvas.drawPath(this, linePaint);
 
-        progress = Math.min(1, progress + 0.006f);
-        if(progress == 1) {
-            progress = 0;
-        }
         circlePosition = getPointOnPath(progress);
-        canvas.drawCircle(circlePosition.x, circlePosition.y, 90, mCirclePaint);
+        canvas.drawCircle(circlePosition.x, circlePosition.y, 90, circlePaint);
     }
 }
