@@ -15,6 +15,8 @@ public class LevelView extends TouchEventView {
 
     private int state = WAITING_FOR_ALL_CIRCLES;
 
+    private OnLevelFinished onLevelFinished = null;
+
     private ArrayList<GamePath> paths = new ArrayList<>();
 
     public LevelView(Context context, AttributeSet attrs) {
@@ -44,7 +46,7 @@ public class LevelView extends TouchEventView {
             for(int i = 0; i < activePointers.size(); i++) {
                 PointF pointer = activePointers.valueAt(i);
                 double squaredDistance = Math.pow(circle.x - pointer.x, 2) + Math.pow(circle.y - pointer.y, 2);
-                if(squaredDistance < path.CIRCLE_RADIUS * path.CIRCLE_RADIUS) {
+                if(squaredDistance < path.circleRadius * path.circleRadius) {
                     covered = true;
                     path.currentlyCovered = true;
                     break;
@@ -87,6 +89,10 @@ public class LevelView extends TouchEventView {
         for (GamePath path : paths) {
             path.reset();
         }
+
+        if(onLevelFinished != null) {
+            onLevelFinished.levelFinished(false);
+        }
     }
 
     public void onPathCompleted() {
@@ -101,11 +107,18 @@ public class LevelView extends TouchEventView {
         if(allPathCompleted) {
             currentText = "GG WP";
             state = WON;
+            if(onLevelFinished != null) {
+                onLevelFinished.levelFinished(true);
+            }
         }
     }
 
     public void setCurrentLevel(int i) {
         paths = LevelStore.getPathsForLevel(this, i);
         invalidate();
+    }
+
+    public void setOnLevelFinished(OnLevelFinished onLevelFinished) {
+        this.onLevelFinished = onLevelFinished;
     }
 }

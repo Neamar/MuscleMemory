@@ -21,7 +21,7 @@ public class GamePath extends Path {
     private Paint coveredCirclePaint;
 
     public PointF circlePosition;
-    public int CIRCLE_RADIUS = 90;
+    public int circleRadius;
 
     public boolean currentlyCovered = false;
     public boolean pathCompleted = false;
@@ -32,8 +32,13 @@ public class GamePath extends Path {
     private ArrayList<Pair<Float, PointF>> progressPoints;
 
     GamePath(LevelView parent, ValueAnimator progressAnimator) {
+        this(parent, progressAnimator, 90);
+    }
+
+    GamePath(LevelView parent, ValueAnimator progressAnimator, int circleRadius) {
         this.parent = parent;
         this.progressAnimator = progressAnimator;
+        this.circleRadius = circleRadius;
 
         // Initialize Paints
         linePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -65,7 +70,7 @@ public class GamePath extends Path {
         progressAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                if(progress == 1) {
+                if (progress == 1) {
                     pathCompleted = true;
                     parent.onPathCompleted();
                 }
@@ -126,6 +131,6 @@ public class GamePath extends Path {
         canvas.drawPath(this, linePaint);
 
         circlePosition = getPointOnPath(progress);
-        canvas.drawCircle(circlePosition.x, circlePosition.y, CIRCLE_RADIUS, currentlyCovered ? coveredCirclePaint : circlePaint);
+        canvas.drawCircle(circlePosition.x, circlePosition.y, circleRadius, currentlyCovered ? coveredCirclePaint : circlePaint);
     }
 }
