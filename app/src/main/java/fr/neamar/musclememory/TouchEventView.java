@@ -18,7 +18,7 @@ public class TouchEventView extends View {
             Color.BLACK, Color.CYAN, Color.GRAY, Color.RED, Color.DKGRAY,
             Color.LTGRAY, Color.YELLOW };
 
-    private SparseArray<PointF> mActivePointers;
+    protected SparseArray<PointF> mActivePointers;
     private Paint mPaint;
 
     private Paint textPaint;
@@ -36,7 +36,7 @@ public class TouchEventView extends View {
         mPaint.setColor(Color.BLUE);
         mPaint.setStrokeWidth(2);
         mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-        
+
         textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         textPaint.setTextSize(20);
         textPaint.setColor(Color.WHITE);
