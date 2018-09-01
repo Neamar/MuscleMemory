@@ -14,7 +14,9 @@ import android.view.View;
 
 public class TouchEventView extends View {
 
-    private static final int SIZE = 90;
+    private int[] colors = { Color.BLUE, Color.GREEN, Color.MAGENTA,
+            Color.BLACK, Color.CYAN, Color.GRAY, Color.RED, Color.DKGRAY,
+            Color.LTGRAY, Color.YELLOW };
 
     private SparseArray<PointF> mActivePointers;
     private Paint mPaint;
@@ -32,9 +34,12 @@ public class TouchEventView extends View {
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
         mPaint.setColor(Color.BLUE);
+        mPaint.setStrokeWidth(2);
         mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        
         textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         textPaint.setTextSize(20);
+        textPaint.setColor(Color.WHITE);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -88,8 +93,9 @@ public class TouchEventView extends View {
         for (int size = mActivePointers.size(), i = 0; i < size; i++) {
             PointF point = mActivePointers.valueAt(i);
             if (point != null) {
-                mPaint.setColor(Color.BLUE);
-                canvas.drawCircle(point.x, point.y, SIZE, mPaint);
+                mPaint.setColor(colors[i]);
+                canvas.drawLine(0, point.y, canvas.getWidth(), point.y, mPaint);
+                canvas.drawLine(point.x, 0, point.x, canvas.getHeight(), mPaint);
             }
         }
         canvas.drawText("Total pointers: " + mActivePointers.size(), 10, 40, textPaint);
