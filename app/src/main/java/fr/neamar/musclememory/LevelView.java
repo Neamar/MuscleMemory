@@ -21,6 +21,7 @@ public class LevelView extends TouchEventView {
     private ArrayList<GamePath> paths = new ArrayList<>();
 
     public String title = "";
+    private long startDate;
 
     public LevelView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -83,6 +84,7 @@ public class LevelView extends TouchEventView {
         for (GamePath path : paths) {
             path.start();
         }
+        startDate = System.currentTimeMillis();
     }
 
 
@@ -94,7 +96,7 @@ public class LevelView extends TouchEventView {
         }
 
         if(onLevelFinished != null) {
-            onLevelFinished.levelFinished(false);
+            onLevelFinished.levelFinished(false, System.currentTimeMillis() - startDate);
         }
     }
 
@@ -111,7 +113,7 @@ public class LevelView extends TouchEventView {
             currentText = "GG WP";
             state = WON;
             if(onLevelFinished != null) {
-                onLevelFinished.levelFinished(true);
+                onLevelFinished.levelFinished(true, System.currentTimeMillis() - startDate);
             }
         }
     }
@@ -125,5 +127,9 @@ public class LevelView extends TouchEventView {
 
     public void setOnLevelFinished(OnLevelFinished onLevelFinished) {
         this.onLevelFinished = onLevelFinished;
+    }
+
+    public int getPathsCount() {
+        return paths.size();
     }
 }
