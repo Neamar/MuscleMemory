@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
@@ -18,6 +19,8 @@ public class LevelView extends TouchEventView {
     private OnLevelFinished onLevelFinished = null;
 
     private ArrayList<GamePath> paths = new ArrayList<>();
+
+    public String title = "";
 
     public LevelView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -114,7 +117,9 @@ public class LevelView extends TouchEventView {
     }
 
     public void setCurrentLevel(int i) {
-        paths = LevelStore.getPathsForLevel(this, i);
+        Pair<String, ArrayList<GamePath>> data = LevelStore.getPathsForLevel(this, i);
+        title = data.first;
+        paths = data.second;
         invalidate();
     }
 
