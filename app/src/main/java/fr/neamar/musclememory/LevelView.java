@@ -20,7 +20,6 @@ public class LevelView extends TouchEventView {
             @Override
             public void run() {
                 GamePath newPath = new GamePath(getWidth(), getHeight());
-                Log.e("WTF", "W:" + getWidth() + " H:" + getHeight());
                 mPaths.add(newPath);    }
         });
 
@@ -28,8 +27,6 @@ public class LevelView extends TouchEventView {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Log.e("WTF", "af W:" + getWidth() + " H:" + getHeight());
-
         super.onDraw(canvas);
 
         // draw all paths
