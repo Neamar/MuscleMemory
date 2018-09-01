@@ -20,19 +20,7 @@ public class LevelView extends TouchEventView {
 
     public LevelView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initLevel();
         currentText = "Touch all circles to start.";
-    }
-
-    private void initLevel() {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                GamePath newPath = new GamePath(LevelView.this, getWidth(), getHeight());
-                paths.add(newPath);
-            }
-        });
-
     }
 
     @Override
@@ -107,7 +95,7 @@ public class LevelView extends TouchEventView {
     public void onPathCompleted() {
         boolean allPathCompleted = true;
         for (GamePath path : paths) {
-            if(!path.animationFinished) {
+            if(!path.pathCompleted) {
                 allPathCompleted = false;
                 break;
             }
@@ -117,5 +105,10 @@ public class LevelView extends TouchEventView {
             currentText = "GG WP";
             state = WON;
         }
+    }
+
+    public void setCurrentLevel(int i) {
+        paths = LevelStore.getPathsForLevel(this, i);
+        invalidate();
     }
 }

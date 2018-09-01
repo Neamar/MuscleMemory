@@ -9,6 +9,7 @@
          is needed to present your content, e.g. VideoView, SurfaceView,
          TextureView, etc. -->
     <fr.neamar.musclememory.LevelView
+        android:id="@+id/levelView"
         android:layout_width="match_parent"
         android:background="@android:color/black"
         android:layout_height="match_parent" />
