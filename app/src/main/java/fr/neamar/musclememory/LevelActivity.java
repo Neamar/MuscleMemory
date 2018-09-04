@@ -17,7 +17,7 @@ public class LevelActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        level = getIntent().getIntExtra("level", 8);
+        level = getIntent().getIntExtra("level", 0);
 
         setContentView(R.layout.activity_level);
 

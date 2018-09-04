@@ -90,6 +90,14 @@ public class LevelStore {
             path.cubicTo(0, height - 70, 0, 70, width / 2, 70);
             paths.add(path);
         } else if (level == 8) {
+            title = "a_circle_fast";
+            GamePath path = new GamePath(parent, initializeDefaultAnimator(3000));
+            path.moveTo(width / 2, 70);
+            path.cubicTo(width, 70, width, height - 70, width / 2, height - 70);
+            path.cubicTo(0, height - 70, 0, 70, width / 2, 70);
+            paths.add(path);
+            paths.add(path);
+        } else if (level == 9) {
             title = "butterfly";
             GamePath path = new GamePath(parent, initializeDefaultAnimator(6000));
             path.moveTo(width / 2, height / 2);
@@ -97,9 +105,8 @@ public class LevelStore {
             path.cubicTo(width / 2, height + 100,width + 100, height / 2, width / 2, height / 2);
             path.cubicTo(-100, height / 2, width / 2, height + 100, width / 2, height / 2);
             path.cubicTo(width / 2, -100,width + 100, height / 2, width / 2, height / 2);
-
             paths.add(path);
-        } else if (level == 9) {
+        } else if (level == 10) {
             title = "2_half_rectangles_and_a_point";
             GamePath path = new GamePath(parent, initializeDefaultAnimator(6000), 120);
             path.moveTo(350, height / 4);
@@ -117,7 +124,7 @@ public class LevelStore {
             thirdPath.moveTo(width / 2 - 1, height / 2);
             thirdPath.lineTo(width / 2 + 1, height / 2);
             paths.add(thirdPath);
-        } else if (level == 10) {
+        } else if (level == 11) {
             title = "3_lines_1_reversed";
             GamePath path = new GamePath(parent, initializeDefaultAnimator(4500), 120);
             path.moveTo(150, height / 4);
