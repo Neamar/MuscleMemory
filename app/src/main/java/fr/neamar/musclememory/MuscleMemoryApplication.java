@@ -8,6 +8,6 @@ public class MuscleMemoryApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Amplitude.getInstance().initialize(this, "341b2bf343fde05ddffbb561b700c412").enableForegroundTracking(this);
+        Amplitude.getInstance().initialize(this, "407e3d1d0d116eaf181242cb5e2a7e3a").enableForegroundTracking(this);
     }
 }

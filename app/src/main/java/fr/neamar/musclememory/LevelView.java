@@ -91,12 +91,13 @@ public class LevelView extends TouchEventView {
     public void reset() {
         currentText = "You've lost! Retry.";
         state = WAITING_FOR_ALL_CIRCLES;
-        for (GamePath path : paths) {
-            path.reset();
-        }
 
         if(onLevelFinished != null) {
             onLevelFinished.levelFinished(false, System.currentTimeMillis() - startDate);
+        }
+
+        for (GamePath path : paths) {
+            path.reset();
         }
     }
 
@@ -131,5 +132,23 @@ public class LevelView extends TouchEventView {
 
     public int getPathsCount() {
         return paths.size();
+    }
+
+    public long getLevelDuration() {
+        long duration = 0;
+        for(GamePath path:paths) {
+            duration = Math.max(path.getDuration(), duration);
+        }
+
+        return duration;
+    }
+
+    public float getProgress() {
+        float progress = 1;
+        for(GamePath path:paths) {
+            progress = Math.min(path.progress, progress);
+        }
+
+        return progress;
     }
 }

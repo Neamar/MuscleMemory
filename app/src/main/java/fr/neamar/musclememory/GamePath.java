@@ -133,4 +133,8 @@ public class GamePath extends Path {
         circlePosition = getPointOnPath(progress);
         canvas.drawCircle(circlePosition.x, circlePosition.y, circleRadius, currentlyCovered ? coveredCirclePaint : circlePaint);
     }
+
+    public long getDuration() {
+        return progressAnimator.getDuration();
+    }
 }
