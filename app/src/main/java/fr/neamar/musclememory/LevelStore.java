@@ -107,24 +107,50 @@ public class LevelStore {
             path.cubicTo(width / 2, -100,width + 100, height / 2, width / 2, height / 2);
             paths.add(path);
         } else if (level == 10) {
+            title = "2_circles";
+            GamePath path = new GamePath(parent, initializeDefaultAnimator(6000), 100);
+            path.moveTo(width / 4, 100);
+            path.cubicTo(width / 2, 100, width / 2, height - 100, width / 4, height - 100);
+            path.cubicTo(0, height - 100, 0, 100, width / 4, 100);
+            paths.add(path);
+
+            GamePath secondPath = new GamePath(parent, initializeDefaultAnimator(6000), 100);
+            secondPath.moveTo(3 * width / 4, 100);
+            secondPath.cubicTo(width, 100, width, height - 100, 3 * width / 4, height - 100);
+            secondPath.cubicTo(width / 2, height - 100, width / 2, 100, 3  * width / 4, 100);
+            paths.add(secondPath);
+        } else if (level == 11) {
+            title = "2_circles_reversed";
+            GamePath path = new GamePath(parent, initializeDefaultAnimator(6000), 100);
+            path.moveTo(width / 4, 100);
+            path.cubicTo(width / 2, 100, width / 2, height - 100, width / 4, height - 100);
+            path.cubicTo(0, height - 100, 0, 100, width / 4, 100);
+            paths.add(path);
+
+            GamePath secondPath = new GamePath(parent, initializeDefaultAnimator(6000), 100);
+            secondPath.moveTo(3 * width / 4, 100);
+            secondPath.cubicTo(width / 2, 100, width / 2, height - 100, 3 * width / 4, height - 100);
+            secondPath.cubicTo(width, height - 100, width, 100, 3  * width / 4, 100);
+            paths.add(secondPath);
+        } else if (level == 12) {
             title = "2_half_rectangles_and_a_point";
             GamePath path = new GamePath(parent, initializeDefaultAnimator(6000), 120);
-            path.moveTo(350, height / 4);
-            path.lineTo(width - 150, height / 4);
-            path.lineTo(width - 150, 3 * height / 4);
+            path.moveTo(350, 120);
+            path.lineTo(width - 150, 120);
+            path.lineTo(width - 150, height / 2);
             paths.add(path);
 
             GamePath secondPath = new GamePath(parent, initializeDefaultAnimator(6000), 120);
-            secondPath.moveTo(width - 350, 3 * height / 4);
-            secondPath.lineTo(150, 3 * height / 4);
-            secondPath.lineTo(150, height / 4);
+            secondPath.moveTo(width - 350, height - 120);
+            secondPath.lineTo(150, height - 120);
+            secondPath.lineTo(150, height / 2);
             paths.add(secondPath);
 
             GamePath thirdPath = new GamePath(parent, initializeDefaultAnimator(4500), 120);
             thirdPath.moveTo(width / 2 - 1, height / 2);
             thirdPath.lineTo(width / 2 + 1, height / 2);
             paths.add(thirdPath);
-        } else if (level == 11) {
+        } else if (level == 13) {
             title = "3_lines_1_reversed";
             GamePath path = new GamePath(parent, initializeDefaultAnimator(4500), 120);
             path.moveTo(150, height / 4);
