@@ -23,7 +23,7 @@ public class LevelActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         prefs = getPreferences(MODE_PRIVATE);
-        level = getIntent().getIntExtra("level", 0);
+        level = getIntent().getIntExtra("level", 1);
 
         setContentView(R.layout.activity_level);
 

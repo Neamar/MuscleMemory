@@ -3,6 +3,7 @@ package fr.neamar.musclememory;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -17,7 +18,7 @@ public class GamePath extends Path {
 
     private LevelView parent;
     private Paint linePaint;
-    private Paint circlePaint;
+    private Paint blurredLinePaint;
     private Paint coveredCirclePaint;
 
     public PointF circlePosition;
@@ -42,17 +43,24 @@ public class GamePath extends Path {
 
         // Initialize Paints
         linePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        linePaint.setColor(Color.RED);
-        linePaint.setStrokeWidth(5);
+        linePaint.setColor(Color.argb(248, 255, 255, 255));
+        linePaint.setDither(true);
+        linePaint.setStrokeWidth(10f);
         linePaint.setStyle(Paint.Style.STROKE);
+        linePaint.setStyle(Paint.Style.STROKE);
+        linePaint.setStrokeJoin(Paint.Join.ROUND);
+        linePaint.setStrokeCap(Paint.Cap.ROUND);
 
-        circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        circlePaint.setColor(Color.RED);
-        circlePaint.setStrokeWidth(5);
-        circlePaint.setStyle(Paint.Style.STROKE);
+        BlurMaskFilter blurMaskFilter = new BlurMaskFilter(15, BlurMaskFilter.Blur.NORMAL);
+        blurredLinePaint = new Paint();
+        blurredLinePaint.set(linePaint);
+        blurredLinePaint.setColor(Color.argb(235, 74, 138, 255));
+        blurredLinePaint.setStrokeWidth(30f);
+        blurredLinePaint.setMaskFilter(blurMaskFilter);
 
-        coveredCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        coveredCirclePaint.setColor(Color.GREEN);
+        coveredCirclePaint = new Paint();
+        coveredCirclePaint.set(linePaint);
+        coveredCirclePaint.setColor(Color.argb(255, 74, 138, 255));
         coveredCirclePaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
         // Add listeners on the animation
@@ -129,9 +137,14 @@ public class GamePath extends Path {
 
     public void onDraw(Canvas canvas) {
         canvas.drawPath(this, linePaint);
+        canvas.drawPath(this, blurredLinePaint);
 
         circlePosition = getPointOnPath(progress);
-        canvas.drawCircle(circlePosition.x, circlePosition.y, circleRadius, currentlyCovered ? coveredCirclePaint : circlePaint);
+
+        canvas.drawCircle(circlePosition.x, circlePosition.y, circleRadius, linePaint);
+        if(currentlyCovered) {
+            canvas.drawCircle(circlePosition.x, circlePosition.y, circleRadius, coveredCirclePaint);
+        }
     }
 
     public long getDuration() {
