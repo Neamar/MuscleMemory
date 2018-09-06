@@ -24,7 +24,7 @@ public class LevelActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         prefs = getPreferences(MODE_PRIVATE);
-        level = getIntent().getIntExtra("level", 1);
+        level = getIntent().getIntExtra("level", 0);
 
         setContentView(R.layout.activity_level);
 
@@ -59,8 +59,8 @@ public class LevelActivity extends AppCompatActivity {
                     props.put("progress_percent", Math.min(100, Math.round(100 * levelView.getProgress())));
                     props.put("number_of_attempts_session", attemptsCountDuringSession);
                     props.put("number_of_attempts_ever", attemptsCountGlobal);
-                    props.put("number_of_attempts_all_levels", attemptsCountAllLevel);
-
+                    props.put("alltime_number_of_games_played", attemptsCountAllLevel);
+                    props.put("alltime_number_of_levels_finished", finishedLevels.size());
                     props.put("finished_before", finishedLevels.contains(levelView.title));
                     props.put("screen_width", levelView.getWidth());
                     props.put("screen_height", levelView.getHeight());
@@ -88,7 +88,8 @@ public class LevelActivity extends AppCompatActivity {
                     try {
                         userProperties.put("screen_width", levelView.getWidth());
                         userProperties.put("screen_height", levelView.getHeight());
-                        userProperties.put("number_of_attempts_all_levels", attemptsCountAllLevel);
+                        userProperties.put("number_of_games_played", attemptsCountAllLevel);
+                        userProperties.put("number_of_levels_finished", finishedLevels.size());
                         PackageManager pm = getPackageManager();
                         userProperties.put("multitouch_jazzhand", pm.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH_JAZZHAND));
                     } catch (JSONException e) {
