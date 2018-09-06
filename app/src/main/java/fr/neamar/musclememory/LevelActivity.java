@@ -2,6 +2,7 @@ package fr.neamar.musclememory;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -15,7 +16,7 @@ import java.util.Set;
 
 public class LevelActivity extends AppCompatActivity {
     protected int level;
-    protected int attempts = 0;
+    protected int attemptsCountDuringSession = 0;
     protected SharedPreferences prefs;
 
     @Override
@@ -39,11 +40,14 @@ public class LevelActivity extends AppCompatActivity {
         levelView.setOnLevelFinished(new OnLevelFinished() {
             @Override
             public void levelFinished(boolean levelWon, long time) {
-                attempts += 1;
+                attemptsCountDuringSession += 1;
 
                 Set<String> finishedLevels = prefs.getStringSet("finished_levels", new HashSet<String>());
-                int globalAttemptsCount = prefs.getInt("attempts_" + levelView.title, 0);
-                globalAttemptsCount += 1;
+                int attemptsCountGlobal = prefs.getInt("attempts_" + levelView.title, 0);
+                attemptsCountGlobal += 1;
+
+                int attemptsCountAllLevel = prefs.getInt("attempts", 0);
+                attemptsCountAllLevel += 1;
 
                 JSONObject props = new JSONObject();
                 try {
@@ -53,8 +57,10 @@ public class LevelActivity extends AppCompatActivity {
                     props.put("level_paths_count", levelView.getPathsCount());
                     props.put("time_played_ms", time);
                     props.put("progress_percent", Math.min(100, Math.round(100 * levelView.getProgress())));
-                    props.put("number_of_attempts_session", attempts);
-                    props.put("number_of_attempts_ever", globalAttemptsCount);
+                    props.put("number_of_attempts_session", attemptsCountDuringSession);
+                    props.put("number_of_attempts_ever", attemptsCountGlobal);
+                    props.put("number_of_attempts_all_levels", attemptsCountAllLevel);
+
                     props.put("finished_before", finishedLevels.contains(levelView.title));
                     props.put("screen_width", levelView.getWidth());
                     props.put("screen_height", levelView.getHeight());
@@ -62,7 +68,11 @@ public class LevelActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                prefs.edit().putInt("attempts_" + levelView.title, globalAttemptsCount).apply();
+                prefs
+                        .edit()
+                        .putInt("attempts_" + levelView.title, attemptsCountGlobal)
+                        .putInt("attempts", attemptsCountAllLevel)
+                        .apply();
 
                 if (!levelWon) {
                     Amplitude.getInstance().logEvent("Level lost", props);
@@ -73,6 +83,20 @@ public class LevelActivity extends AppCompatActivity {
                         prefs.edit().putStringSet("finished_levels", finishedLevels).apply();
                     }
                     Amplitude.getInstance().logEvent("Level won", props);
+
+                    JSONObject userProperties = new JSONObject();
+                    try {
+                        userProperties.put("screen_width", levelView.getWidth());
+                        userProperties.put("screen_height", levelView.getHeight());
+                        userProperties.put("number_of_attempts_all_levels", attemptsCountAllLevel);
+                        PackageManager pm = getPackageManager();
+                        userProperties.put("multitouch_jazzhand", pm.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH_JAZZHAND));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    Amplitude.getInstance().setUserProperties(userProperties);
+
+                    // And move on to next level
                     Intent i = new Intent(LevelActivity.this, LevelActivity.class);
                     i.putExtra("level", level + 1);
                     startActivity(i);
