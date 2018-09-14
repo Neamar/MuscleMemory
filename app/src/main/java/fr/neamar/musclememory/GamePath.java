@@ -9,12 +9,15 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
-import android.util.Log;
 import android.util.Pair;
 
 import java.util.ArrayList;
 
 public class GamePath extends Path {
+    private final int START_COLOR = Color.argb(235, 74, 138, 255);
+    private final int END_COLOR = Color.argb(235, 30, 200, 30);
+    private final int CIRCLE_ORIGINAL_COLOR = Color.argb(248, 255, 255, 255);
+
     public float progress = 0;
 
     private LevelView parent;
@@ -26,6 +29,9 @@ public class GamePath extends Path {
     private Paint pulsatingCirclePaint;
     public PointF circlePosition;
     public int circleRadius;
+    private ValueAnimator pulseAnimator;
+    private ValueAnimator colorAnimator;
+
 
     public boolean currentlyCovered = false;
     public boolean pathCompleted = false;
@@ -56,37 +62,44 @@ public class GamePath extends Path {
         BlurMaskFilter blurMaskFilter = new BlurMaskFilter(15, BlurMaskFilter.Blur.NORMAL);
         blurredLinePaint = new Paint();
         blurredLinePaint.set(linePaint);
-        blurredLinePaint.setColor(Color.argb(235, 74, 138, 255));
+        blurredLinePaint.setColor(START_COLOR);
         blurredLinePaint.setStrokeWidth(30f);
         blurredLinePaint.setMaskFilter(blurMaskFilter);
 
         circlePaint = new Paint();
         circlePaint.set(linePaint);
+        circlePaint.setColor(CIRCLE_ORIGINAL_COLOR);
 
         fillCirclePaint = new Paint();
         fillCirclePaint.setColor(Color.BLACK);
         fillCirclePaint.setStyle(Paint.Style.FILL);
 
-        final BlurMaskFilter pulsatingBlurMaskFilter = new BlurMaskFilter(1, BlurMaskFilter.Blur.OUTER);
         pulsatingCirclePaint = new Paint();
         pulsatingCirclePaint.set(blurredLinePaint);
-        pulsatingCirclePaint.setMaskFilter(pulsatingBlurMaskFilter);
 
-        ValueAnimator pulseAnimator = ValueAnimator.ofFloat(10, 60);
+        pulseAnimator = ValueAnimator.ofFloat(10, 90);
         pulseAnimator.setDuration(3000);
         pulseAnimator.setRepeatMode(ValueAnimator.REVERSE);
-        pulseAnimator.setRepeatCount(10);
+        pulseAnimator.setRepeatCount(ValueAnimator.INFINITE);
         pulseAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                Log.e("WTF", "V" + animation.getAnimatedValue());
-                final BlurMaskFilter pulsatingBlurMaskFilter = new BlurMaskFilter((float) animation.getAnimatedValue(), BlurMaskFilter.Blur.OUTER);
-                pulsatingCirclePaint.setMaskFilter(pulsatingBlurMaskFilter);
+                pulsatingCirclePaint.setStrokeWidth((float) animation.getAnimatedValue());
                 parent.invalidate();
             }
         });
         pulseAnimator.start();
 
+        colorAnimator = ValueAnimator.ofArgb(START_COLOR, END_COLOR);
+        colorAnimator.setDuration(progressAnimator.getDuration());
+        colorAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                blurredLinePaint.setColor((int) animation.getAnimatedValue());
+                circlePaint.setColor((int) animation.getAnimatedValue());
+                parent.invalidate();
+            }
+        });
 
         // Add listeners on the animation
         initializeAnimator();
@@ -150,13 +163,19 @@ public class GamePath extends Path {
     public void start() {
         pathCompleted = false;
         progressAnimator.start();
+        colorAnimator.start();
     }
 
 
     public void reset() {
         pathCompleted = false;
         progressAnimator.cancel();
+        colorAnimator.cancel();
         progress = 0;
+        blurredLinePaint.setColor(START_COLOR);
+        circlePaint.setColor(CIRCLE_ORIGINAL_COLOR);
+        pulseAnimator.cancel();
+        pulseAnimator.start();
         parent.invalidate();
     }
 
@@ -166,13 +185,12 @@ public class GamePath extends Path {
 
         circlePosition = getPointOnPath(progress);
 
-        canvas.drawCircle(circlePosition.x, circlePosition.y, circleRadius, pulsatingCirclePaint);
-        canvas.drawCircle(circlePosition.x, circlePosition.y, circleRadius, fillCirclePaint);
-        // canvas.drawCircle(circlePosition.x, circlePosition.y, circleRadius, circlePaint);
-
-        if(currentlyCovered) {
-            canvas.drawCircle(circlePosition.x, circlePosition.y, circleRadius, blurredLinePaint);
+        if(!currentlyCovered) {
+            canvas.drawCircle(circlePosition.x, circlePosition.y, circleRadius, pulsatingCirclePaint);
         }
+
+        canvas.drawCircle(circlePosition.x, circlePosition.y, circleRadius, fillCirclePaint);
+        canvas.drawCircle(circlePosition.x, circlePosition.y, circleRadius, circlePaint);
     }
 
     public long getDuration() {
