@@ -14,7 +14,7 @@ public class LevelView extends TouchEventView {
     private final int RUNNING = 2;
     private final int WON = 3;
 
-    private int state = WAITING_FOR_ALL_CIRCLES;
+    public int state = WAITING_FOR_ALL_CIRCLES;
 
     private OnLevelFinished onLevelFinished = null;
 
