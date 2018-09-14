@@ -19,6 +19,9 @@ public class GamePath extends Path {
     private LevelView parent;
     private Paint linePaint;
     private Paint blurredLinePaint;
+    private Paint fillCirclePaint;
+    private Paint circlePaint;
+
     private Paint coveredCirclePaint;
 
     public PointF circlePosition;
@@ -47,7 +50,6 @@ public class GamePath extends Path {
         linePaint.setDither(true);
         linePaint.setStrokeWidth(10f);
         linePaint.setStyle(Paint.Style.STROKE);
-        linePaint.setStyle(Paint.Style.STROKE);
         linePaint.setStrokeJoin(Paint.Join.ROUND);
         linePaint.setStrokeCap(Paint.Cap.ROUND);
 
@@ -57,6 +59,13 @@ public class GamePath extends Path {
         blurredLinePaint.setColor(Color.argb(235, 74, 138, 255));
         blurredLinePaint.setStrokeWidth(30f);
         blurredLinePaint.setMaskFilter(blurMaskFilter);
+
+        circlePaint = new Paint();
+        circlePaint.set(linePaint);
+
+        fillCirclePaint = new Paint();
+        fillCirclePaint.setColor(Color.BLACK);
+        fillCirclePaint.setStyle(Paint.Style.FILL);
 
         coveredCirclePaint = new Paint();
         coveredCirclePaint.set(linePaint);
@@ -141,9 +150,11 @@ public class GamePath extends Path {
 
         circlePosition = getPointOnPath(progress);
 
-        canvas.drawCircle(circlePosition.x, circlePosition.y, circleRadius, linePaint);
+        canvas.drawCircle(circlePosition.x, circlePosition.y, circleRadius, fillCirclePaint);
+        canvas.drawCircle(circlePosition.x, circlePosition.y, circleRadius, circlePaint);
+
         if(currentlyCovered) {
-            canvas.drawCircle(circlePosition.x, circlePosition.y, circleRadius, coveredCirclePaint);
+            canvas.drawCircle(circlePosition.x, circlePosition.y, circleRadius, blurredLinePaint);
         }
     }
 
