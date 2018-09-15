@@ -16,6 +16,8 @@ import java.util.Set;
 
 public class LevelActivity extends AppCompatActivity {
     protected int level;
+    protected int subLevel;
+
     protected int attemptsCountDuringSession = 0;
     protected SharedPreferences prefs;
 
@@ -25,6 +27,7 @@ public class LevelActivity extends AppCompatActivity {
 
         prefs = getPreferences(MODE_PRIVATE);
         level = getIntent().getIntExtra("level", 0);
+        subLevel = getIntent().getIntExtra("subLevel", 0);
 
         setContentView(R.layout.activity_level);
 
@@ -33,7 +36,7 @@ public class LevelActivity extends AppCompatActivity {
         levelView.post(new Runnable() {
             @Override
             public void run() {
-                levelView.setCurrentLevel(level, 0);
+                levelView.setCurrentLevel(level, subLevel);
             }
         });
 
@@ -51,10 +54,11 @@ public class LevelActivity extends AppCompatActivity {
 
                 JSONObject props = new JSONObject();
                 try {
-                    props.put("level_title", levelView.title);
                     props.put("level_number", level);
-                    props.put("level_duration", levelView.getLevelDuration());
-                    props.put("level_paths_count", levelView.getPathsCount());
+                    props.put("subLevel_title", levelView.title);
+                    props.put("subLevel_duration", levelView.getLevelDuration());
+                    props.put("subLevel_paths_count", levelView.getPathsCount());
+                    props.put("subLevel_number", subLevel);
                     props.put("time_played_ms", time);
                     props.put("progress_percent", Math.min(100, Math.round(100 * levelView.getProgress())));
                     props.put("number_of_attempts_session", attemptsCountDuringSession);
@@ -97,11 +101,21 @@ public class LevelActivity extends AppCompatActivity {
                     }
                     Amplitude.getInstance().setUserProperties(userProperties);
 
-                    // And move on to next level
-                    Intent i = new Intent(LevelActivity.this, LevelActivity.class);
-                    i.putExtra("level", level + 1);
-                    startActivity(i);
-                    finish();
+                    if(subLevel == 0 ) {
+                        // Move on to next sublevel
+                        Intent i = new Intent(LevelActivity.this, LevelActivity.class);
+                        i.putExtra("level", level);
+                        i.putExtra("subLevel", subLevel+ 1);
+
+                        startActivity(i);
+                        finish();
+                    }
+                    else {
+                        // Move back to level picker
+                        Intent i = new Intent(LevelActivity.this, LevelPickerActivity.class);
+                        startActivity(i);
+                        finish();
+                    }
                 }
             }
         });

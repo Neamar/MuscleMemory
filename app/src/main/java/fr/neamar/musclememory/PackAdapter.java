@@ -1,12 +1,12 @@
 package fr.neamar.musclememory;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,7 +55,10 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
 
         @Override
         public void onClick(View v) {
-            Log.e("WTF", "Clicjked on " + position);
+            Intent i = new Intent(v.getContext(), LevelActivity.class);
+            i.putExtra("level", position);
+            i.putExtra("subLevel", 0);
+            v.getContext().startActivity(i);
         }
     }
 
