@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.amplitude.api.Amplitude;
@@ -25,7 +26,7 @@ public class LevelActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        prefs = getPreferences(MODE_PRIVATE);
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
         level = getIntent().getIntExtra("level", 0);
         subLevel = getIntent().getIntExtra("subLevel", 0);
 
@@ -55,10 +56,10 @@ public class LevelActivity extends AppCompatActivity {
                 JSONObject props = new JSONObject();
                 try {
                     props.put("level_number", level);
+                    props.put("subLevel_number", subLevel);
                     props.put("subLevel_title", levelView.title);
                     props.put("subLevel_duration", levelView.getLevelDuration());
                     props.put("subLevel_paths_count", levelView.getPathsCount());
-                    props.put("subLevel_number", subLevel);
                     props.put("time_played_ms", time);
                     props.put("progress_percent", Math.min(100, Math.round(100 * levelView.getProgress())));
                     props.put("number_of_attempts_session", attemptsCountDuringSession);
@@ -79,14 +80,9 @@ public class LevelActivity extends AppCompatActivity {
                         .apply();
 
                 if (!levelWon) {
-                    Amplitude.getInstance().logEvent("Level lost", props);
+                    Amplitude.getInstance().logEvent("subLevel lost", props);
                 } else {
-                    // Remember that we did the level!
-                    if(!finishedLevels.contains(levelView.title)) {
-                        finishedLevels.add(levelView.title);
-                        prefs.edit().putStringSet("finished_levels", finishedLevels).apply();
-                    }
-                    Amplitude.getInstance().logEvent("Level won", props);
+                    Amplitude.getInstance().logEvent("subLevel won", props);
 
                     JSONObject userProperties = new JSONObject();
                     try {
@@ -101,16 +97,20 @@ public class LevelActivity extends AppCompatActivity {
                     }
                     Amplitude.getInstance().setUserProperties(userProperties);
 
-                    if(subLevel == 0 ) {
+                    if (subLevel == 0) {
                         // Move on to next sublevel
                         Intent i = new Intent(LevelActivity.this, LevelActivity.class);
                         i.putExtra("level", level);
-                        i.putExtra("subLevel", subLevel+ 1);
+                        i.putExtra("subLevel", subLevel + 1);
 
                         startActivity(i);
                         finish();
-                    }
-                    else {
+                    } else {
+                        // Remember that we did the level!
+                        if (!finishedLevels.contains(Integer.toString(level))) {
+                            finishedLevels.add(Integer.toString(level));
+                            prefs.edit().putStringSet("finished_levels", finishedLevels).apply();
+                        }
                         // Move back to level picker
                         Intent i = new Intent(LevelActivity.this, LevelPickerActivity.class);
                         startActivity(i);
@@ -119,14 +119,5 @@ public class LevelActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    @Override
-    public void onBackPressed() {
-        // Cheat!
-        Intent i = new Intent(LevelActivity.this, LevelActivity.class);
-        i.putExtra("level", level + 1);
-        startActivity(i);
-        finish();
     }
 }
