@@ -54,14 +54,14 @@ public class LevelView extends TouchEventView {
                 double squaredDistance = Math.pow(circle.x - pointer.x, 2) + Math.pow(circle.y - pointer.y, 2);
                 if(squaredDistance < path.circleRadius * path.circleRadius) {
                     covered = true;
-                    path.currentlyCovered = true;
+                    path.setCurrentlyCovered(true);
                     break;
                 }
             }
 
             if(!covered) {
                 allCirclesCovered = false;
-                path.currentlyCovered = false;
+                path.setCurrentlyCovered(false);
             }
         }
 
@@ -83,9 +83,6 @@ public class LevelView extends TouchEventView {
     public void start() {
         currentText = "Stay in the circle!";
         setState(RUNNING);
-        for (GamePath path : paths) {
-            path.start();
-        }
         startDate = System.currentTimeMillis();
     }
 
@@ -96,10 +93,6 @@ public class LevelView extends TouchEventView {
 
         if(onLevelFinished != null) {
             onLevelFinished.levelFinished(false, System.currentTimeMillis() - startDate);
-        }
-
-        for (GamePath path : paths) {
-            path.reset();
         }
     }
 

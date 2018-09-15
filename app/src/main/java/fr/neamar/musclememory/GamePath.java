@@ -34,7 +34,7 @@ public class GamePath extends Path {
     private ValueAnimator colorAnimator;
 
 
-    public boolean currentlyCovered = false;
+    private boolean currentlyCovered = false;
     public boolean pathCompleted = false;
 
     private ValueAnimator progressAnimator;
@@ -89,6 +89,7 @@ public class GamePath extends Path {
                 parent.invalidate();
             }
         });
+        pulseAnimator.start();
 
         colorAnimator = ValueAnimator.ofArgb(START_COLOR, END_COLOR);
         colorAnimator.setDuration(progressAnimator.getDuration());
@@ -109,7 +110,7 @@ public class GamePath extends Path {
         progressAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                // progress = (float) animation.getAnimatedValue();
+                progress = (float) animation.getAnimatedValue();
                 parent.invalidate();
             }
         });
@@ -138,7 +139,33 @@ public class GamePath extends Path {
 
     public void onStateChange(int state) {
         if(state == LevelView.RUNNING) {
+            pathCompleted = false;
+
+            progressAnimator.start();
+            colorAnimator.start();
+        }
+        if(state == LevelView.WAITING_FOR_ALL_CIRCLES) {
+            pathCompleted = false;
+            progressAnimator.cancel();
+            colorAnimator.cancel();
+            progress = 0;
+            blurredLinePaint.setColor(START_COLOR);
+        }
+
+        parent.invalidate();
+    }
+
+    public void setCurrentlyCovered(boolean covered) {
+        if(covered == this.currentlyCovered) {
+            return;
+        }
+
+        this.currentlyCovered = covered;
+        if(covered) {
+            circlePaint.setColor(START_COLOR);
+
             pulseAnimator.cancel();
+
             dyingPulseAnimator = ValueAnimator.ofFloat((float) pulseAnimator.getAnimatedValue(), 0);
             dyingPulseAnimator.setDuration(500);
             dyingPulseAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -150,7 +177,10 @@ public class GamePath extends Path {
             });
             dyingPulseAnimator.start();
         }
-        if(state == LevelView.WAITING_FOR_ALL_CIRCLES) {
+        else {
+            circlePaint.setColor(CIRCLE_ORIGINAL_COLOR);
+
+            dyingPulseAnimator.cancel();
             pulseAnimator.start();
         }
     }
@@ -177,23 +207,6 @@ public class GamePath extends Path {
         float intermediateProgress = (progress - pointBefore.first) / (pointAfter.first - pointBefore.first);
         return new PointF(pointBefore.second.x + intermediateProgress * (pointAfter.second.x - pointBefore.second.x),
                 pointBefore.second.y + intermediateProgress * (pointAfter.second.y - pointBefore.second.y));
-    }
-
-    public void start() {
-        pathCompleted = false;
-        progressAnimator.start();
-        colorAnimator.start();
-    }
-
-
-    public void reset() {
-        pathCompleted = false;
-        progressAnimator.cancel();
-        colorAnimator.cancel();
-        progress = 0;
-        blurredLinePaint.setColor(START_COLOR);
-        circlePaint.setColor(CIRCLE_ORIGINAL_COLOR);
-        parent.invalidate();
     }
 
     public void onDraw(Canvas canvas) {
