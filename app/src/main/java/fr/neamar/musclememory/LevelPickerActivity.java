@@ -22,7 +22,13 @@ public class LevelPickerActivity extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new PackAdapter();
-        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter = new PackAdapter(mRecyclerView.getWidth(), mRecyclerView.getHeight());
+                mRecyclerView.setAdapter(mAdapter);
+            }
+        });
+
     }
 }

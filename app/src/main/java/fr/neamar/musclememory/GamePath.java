@@ -14,14 +14,14 @@ import android.util.Pair;
 import java.util.ArrayList;
 
 public class GamePath extends Path {
-    private final int START_COLOR = Color.argb(235, 74, 138, 255);
-    private final int END_COLOR = Color.argb(235, 30, 200, 30);
-    private final int LOST_COLOR = Color.argb(235, 200, 30, 30);
-    private final int CIRCLE_ORIGINAL_COLOR = Color.argb(248, 255, 255, 255);
+    private final static int START_COLOR = Color.argb(235, 74, 138, 255);
+    private final static int END_COLOR = Color.argb(235, 30, 200, 30);
+    private final static int LOST_COLOR = Color.argb(235, 200, 30, 30);
+    public final static int CIRCLE_ORIGINAL_COLOR = Color.argb(248, 255, 255, 255);
 
     public float progress = 0;
 
-    private LevelView parent;
+    private Invalidatable parent;
     private Paint linePaint;
     private Paint blurredLinePaint;
 
@@ -44,18 +44,18 @@ public class GamePath extends Path {
 
     private ArrayList<Pair<Float, PointF>> progressPoints;
 
-    GamePath(LevelView parent, ValueAnimator progressAnimator) {
+    GamePath(Invalidatable parent, ValueAnimator progressAnimator) {
         this(parent, progressAnimator, 90);
     }
 
-    GamePath(final LevelView parent, ValueAnimator progressAnimator, int circleRadius) {
+    GamePath(final Invalidatable parent, ValueAnimator progressAnimator, int circleRadius) {
         this.parent = parent;
         this.progressAnimator = progressAnimator;
         this.circleRadius = circleRadius;
 
         // Initialize Paints
         linePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        linePaint.setColor(Color.argb(248, 255, 255, 255));
+        linePaint.setColor(CIRCLE_ORIGINAL_COLOR);
         linePaint.setDither(true);
         linePaint.setStrokeWidth(10f);
         linePaint.setStyle(Paint.Style.STROKE);

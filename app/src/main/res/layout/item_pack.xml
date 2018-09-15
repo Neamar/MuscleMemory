@@ -8,7 +8,7 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/lockImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -19,7 +19,7 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/imageView"
+        android:layout_below="@+id/lockImageView"
         android:layout_centerHorizontal="true"
         android:text="TextView" />
 
@@ -31,7 +31,7 @@
         android:weightSum="2">
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/firstSubLevel"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_marginTop="20dp"
@@ -39,12 +39,12 @@
             app:srcCompat="@android:color/black" />
 
         <ImageView
-            android:id="@+id/imageView3"
+            android:id="@+id/secondSubLevel"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_marginTop="20dp"
             android:layout_weight="1"
-            app:srcCompat="@android:color/darker_gray" />
+            app:srcCompat="@android:color/black" />
     </LinearLayout>
 
 </RelativeLayout>

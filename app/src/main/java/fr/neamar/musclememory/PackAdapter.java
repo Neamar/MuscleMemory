@@ -1,23 +1,66 @@
 package fr.neamar.musclememory;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder> {
+    private final int screenWidth;
+    private final int screenHeight;
+    private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+    static class DummyInvalidatable implements Invalidatable {
+        @Override
+        public void invalidate() {
+
+        }
+
+        @Override
+        public void onPathCompleted() {
+
+        }
+    }
+
+    private final DummyInvalidatable dummyInvalidatable = new DummyInvalidatable();
+
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     static class PackViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        TextView textView;
+        TextView levelName;
+        ImageView firstSubLevel;
+        ImageView secondSubLevel;
+
         PackViewHolder(View v) {
             super(v);
-            this.textView = v.findViewById(R.id.textView);
+            this.levelName = v.findViewById(R.id.textView);
+            this.firstSubLevel = v.findViewById(R.id.firstSubLevel);
+            this.secondSubLevel = v.findViewById(R.id.secondSubLevel);
         }
+    }
+
+    PackAdapter(int screenWidth, int screenHeight) {
+        this.screenWidth = screenWidth;
+        this.screenHeight = screenHeight;
+
+        paint.setColor(GamePath.CIRCLE_ORIGINAL_COLOR);
+        paint.setDither(true);
+        paint.setStrokeWidth(10f);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeJoin(Paint.Join.ROUND);
+        paint.setStrokeCap(Paint.Cap.ROUND);
     }
 
     // Create new views (invoked by the layout manager)
@@ -33,16 +76,46 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(@NonNull PackViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final PackViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.textView.setText("P" + position);
+        holder.levelName.setText(String.format("#%s", position + 1));
+        final int positionToDraw = position;
 
+        holder.firstSubLevel.post(new Runnable() {
+            @Override
+            public void run() {
+                Bitmap bitmap = drawLevel(positionToDraw, 0);
+                Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, holder.firstSubLevel.getWidth(), holder.firstSubLevel.getHeight(), false);
+                holder.firstSubLevel.setImageBitmap(scaledBitmap);
+            }
+        });
+
+        holder.secondSubLevel.post(new Runnable() {
+            @Override
+            public void run() {
+                Bitmap bitmap = drawLevel(positionToDraw, 1);
+                Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, holder.secondSubLevel.getWidth(), holder.secondSubLevel.getHeight(), false);
+                holder.secondSubLevel.setImageBitmap(scaledBitmap);
+            }
+        });
+    }
+
+    public Bitmap drawLevel(int level, int subLevel) {
+        Bitmap bitmap = Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        canvas.drawColor(Color.BLACK);
+        Pair<String, ArrayList<GamePath>> levelData = LevelStore.getPathsForLevel(dummyInvalidatable, screenWidth, screenHeight, level, subLevel);
+        for (GamePath p : levelData.second) {
+            canvas.drawPath(p, paint);
+        }
+
+        return bitmap;
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return 30;
+        return LevelStore.getLevelCount();
     }
 }

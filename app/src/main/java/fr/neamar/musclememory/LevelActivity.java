@@ -33,7 +33,7 @@ public class LevelActivity extends AppCompatActivity {
         levelView.post(new Runnable() {
             @Override
             public void run() {
-                levelView.setCurrentLevel(level);
+                levelView.setCurrentLevel(level, 0);
             }
         });
 

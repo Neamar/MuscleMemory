@@ -10,7 +10,7 @@ import android.view.MotionEvent;
 
 import java.util.ArrayList;
 
-public class LevelView extends TouchEventView {
+public class LevelView extends TouchEventView implements Invalidatable {
     public final static int WAITING_FOR_ALL_CIRCLES = 0;
     public final static int RUNNING = 2;
     public final static int WON = 3;
@@ -116,8 +116,8 @@ public class LevelView extends TouchEventView {
         }
     }
 
-    public void setCurrentLevel(int i) {
-        Pair<String, ArrayList<GamePath>> data = LevelStore.getPathsForLevel(this, i);
+    public void setCurrentLevel(int level, int subLevel) {
+        Pair<String, ArrayList<GamePath>> data = LevelStore.getPathsForLevel(this, getWidth(), getHeight(), level, subLevel);
         title = data.first;
         paths = data.second;
         setState(WAITING_FOR_ALL_CIRCLES);
