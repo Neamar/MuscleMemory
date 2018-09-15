@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,17 +38,24 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
-    static class PackViewHolder extends RecyclerView.ViewHolder {
+    static class PackViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         // each data item is just a string in this case
         TextView levelName;
         ImageView firstSubLevel;
         ImageView secondSubLevel;
+        int position;
 
         PackViewHolder(View v) {
             super(v);
             this.levelName = v.findViewById(R.id.textView);
             this.firstSubLevel = v.findViewById(R.id.firstSubLevel);
             this.secondSubLevel = v.findViewById(R.id.secondSubLevel);
+            v.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            Log.e("WTF", "Clicjked on " + position);
         }
     }
 
@@ -99,6 +107,7 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
                 holder.secondSubLevel.setImageBitmap(scaledBitmap);
             }
         });
+        holder.position = position;
     }
 
     public Bitmap drawLevel(int level, int subLevel) {
