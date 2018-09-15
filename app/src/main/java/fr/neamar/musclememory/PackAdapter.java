@@ -22,6 +22,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder> {
+    private final static int LEVEL_LOCKED = 0;
+    private final static int LEVEL_UNLOCKED = 1;
+    private final static int LEVEL_FINISHED = 2;
+
     private final int screenWidth;
     private final int screenHeight;
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -65,7 +69,7 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
-            if(!isLevelLocked(prefs, position)) {
+            if(getLevelStatus(prefs, position) != LEVEL_LOCKED) {
                 Intent i = new Intent(v.getContext(), LevelActivity.class);
                 i.putExtra("level", position);
                 i.putExtra("subLevel", 0);
@@ -101,14 +105,18 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(@NonNull final PackViewHolder holder, int position) {
-        boolean isLocked = isLevelLocked(prefs, position);
-        if(isLocked) {
+        int status = getLevelStatus(prefs, position);
+        if(status == LEVEL_LOCKED) {
             holder.lockImageView.setImageResource(R.drawable.outline_lock_black_36);
             holder.lockImageView.setColorFilter(Color.RED);
         }
-        else {
+        else if(status == LEVEL_UNLOCKED){
             holder.lockImageView.setImageResource(R.drawable.outline_lock_open_black_36);
             holder.lockImageView.setColorFilter(null);
+        }
+        else {
+            holder.lockImageView.setImageResource(R.drawable.outline_check_circle_black_36);
+            holder.lockImageView.setColorFilter(Color.GREEN);
         }
 
         holder.levelName.setText(String.format("#%s", position + 1));
@@ -150,15 +158,17 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
         return LevelStore.getLevelCount();
     }
 
-    private static boolean isLevelLocked(SharedPreferences prefs, int level) {
+    private static int getLevelStatus(SharedPreferences prefs, int level) {
         boolean isLocked = true;
         Set<String> finishedLevels = prefs.getStringSet("finished_levels", new HashSet<String>());
+
         // Finished levels are unlocked
         if(finishedLevels.contains(Integer.toString(level))) {
-            isLocked = false;
+            return LEVEL_FINISHED;
         }
         // Up to two unfinished levels can be played
-        else if(finishedLevels.size() < level + 2) {
+        // (+1 because level is zero-based)
+        else if(finishedLevels.size() + 1 >= level) {
             isLocked = false;
         }
         // First time, you HAVE to play level 0
@@ -166,6 +176,6 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
             isLocked = true;
         }
 
-        return isLocked;
+        return isLocked ? LEVEL_LOCKED : LEVEL_UNLOCKED;
     }
 }
