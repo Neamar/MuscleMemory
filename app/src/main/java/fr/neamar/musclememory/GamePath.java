@@ -16,6 +16,7 @@ import java.util.ArrayList;
 public class GamePath extends Path {
     private final int START_COLOR = Color.argb(235, 74, 138, 255);
     private final int END_COLOR = Color.argb(235, 30, 200, 30);
+    private final int LOST_COLOR = Color.argb(235, 200, 30, 30);
     private final int CIRCLE_ORIGINAL_COLOR = Color.argb(248, 255, 255, 255);
 
     public float progress = 0;
@@ -31,7 +32,8 @@ public class GamePath extends Path {
     public int circleRadius;
     private ValueAnimator pulseAnimator;
     private ValueAnimator dyingPulseAnimator;
-    private ValueAnimator colorAnimator;
+    private ValueAnimator progressColorAnimator;
+    private ValueAnimator lostColorAnimator;
 
 
     private boolean currentlyCovered = false;
@@ -91,9 +93,9 @@ public class GamePath extends Path {
         });
         pulseAnimator.start();
 
-        colorAnimator = ValueAnimator.ofArgb(START_COLOR, END_COLOR);
-        colorAnimator.setDuration(progressAnimator.getDuration());
-        colorAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        progressColorAnimator = ValueAnimator.ofArgb(START_COLOR, END_COLOR);
+        progressColorAnimator.setDuration(progressAnimator.getDuration());
+        progressColorAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 blurredLinePaint.setColor((int) animation.getAnimatedValue());
@@ -142,14 +144,29 @@ public class GamePath extends Path {
             pathCompleted = false;
 
             progressAnimator.start();
-            colorAnimator.start();
+            progressColorAnimator.start();
+            if(lostColorAnimator != null) {
+                lostColorAnimator.end();
+            }
         }
-        if(state == LevelView.WAITING_FOR_ALL_CIRCLES) {
+        if(state == LevelView.LOST) {
+            lostColorAnimator = ValueAnimator.ofArgb((int) progressColorAnimator.getAnimatedValue(), LOST_COLOR, START_COLOR);
+            lostColorAnimator.setDuration(500);
+            lostColorAnimator.start();
+            lostColorAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    circlePaint.setColor((int) animation.getAnimatedValue());
+                    blurredLinePaint.setColor((int) animation.getAnimatedValue());
+                    parent.invalidate();
+                }
+            });
+
             pathCompleted = false;
             progressAnimator.cancel();
-            colorAnimator.cancel();
             progress = 0;
-            blurredLinePaint.setColor(START_COLOR);
+            progressColorAnimator.cancel();
+
         }
 
         parent.invalidate();
@@ -167,7 +184,7 @@ public class GamePath extends Path {
             pulseAnimator.cancel();
 
             dyingPulseAnimator = ValueAnimator.ofFloat((float) pulseAnimator.getAnimatedValue(), 0);
-            dyingPulseAnimator.setDuration(500);
+            dyingPulseAnimator.setDuration(600);
             dyingPulseAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
@@ -178,8 +195,6 @@ public class GamePath extends Path {
             dyingPulseAnimator.start();
         }
         else {
-            circlePaint.setColor(CIRCLE_ORIGINAL_COLOR);
-
             dyingPulseAnimator.cancel();
             pulseAnimator.start();
         }

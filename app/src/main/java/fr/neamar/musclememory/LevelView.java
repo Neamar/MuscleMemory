@@ -14,6 +14,7 @@ public class LevelView extends TouchEventView {
     public final static int WAITING_FOR_ALL_CIRCLES = 0;
     public final static int RUNNING = 2;
     public final static int WON = 3;
+    public final static int LOST = 4;
 
     public int state = WAITING_FOR_ALL_CIRCLES;
 
@@ -89,6 +90,7 @@ public class LevelView extends TouchEventView {
 
     public void reset() {
         currentText = "You've lost! Retry.";
+        setState(LOST);
         setState(WAITING_FOR_ALL_CIRCLES);
 
         if(onLevelFinished != null) {
