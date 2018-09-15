@@ -30,6 +30,7 @@ public class GamePath extends Path {
     public PointF circlePosition;
     public int circleRadius;
     private ValueAnimator pulseAnimator;
+    private ValueAnimator dyingPulseAnimator;
     private ValueAnimator colorAnimator;
 
 
@@ -88,7 +89,6 @@ public class GamePath extends Path {
                 parent.invalidate();
             }
         });
-        pulseAnimator.start();
 
         colorAnimator = ValueAnimator.ofArgb(START_COLOR, END_COLOR);
         colorAnimator.setDuration(progressAnimator.getDuration());
@@ -109,7 +109,7 @@ public class GamePath extends Path {
         progressAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                progress = (float) animation.getAnimatedValue();
+                // progress = (float) animation.getAnimatedValue();
                 parent.invalidate();
             }
         });
@@ -134,6 +134,25 @@ public class GamePath extends Path {
 
         // Initialize path position
         circlePosition = progressPoints.get(0).second;
+    }
+
+    public void onStateChange(int state) {
+        if(state == LevelView.RUNNING) {
+            pulseAnimator.cancel();
+            dyingPulseAnimator = ValueAnimator.ofFloat((float) pulseAnimator.getAnimatedValue(), 0);
+            dyingPulseAnimator.setDuration(500);
+            dyingPulseAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    pulsatingCirclePaint.setStrokeWidth((float) animation.getAnimatedValue());
+                    parent.invalidate();
+                }
+            });
+            dyingPulseAnimator.start();
+        }
+        if(state == LevelView.WAITING_FOR_ALL_CIRCLES) {
+            pulseAnimator.start();
+        }
     }
 
     private PointF getPointOnPath(float progress) {
@@ -174,8 +193,6 @@ public class GamePath extends Path {
         progress = 0;
         blurredLinePaint.setColor(START_COLOR);
         circlePaint.setColor(CIRCLE_ORIGINAL_COLOR);
-        pulseAnimator.cancel();
-        pulseAnimator.start();
         parent.invalidate();
     }
 
@@ -185,10 +202,7 @@ public class GamePath extends Path {
 
         circlePosition = getPointOnPath(progress);
 
-        if(!currentlyCovered) {
-            canvas.drawCircle(circlePosition.x, circlePosition.y, circleRadius, pulsatingCirclePaint);
-        }
-
+        canvas.drawCircle(circlePosition.x, circlePosition.y, circleRadius, pulsatingCirclePaint);
         canvas.drawCircle(circlePosition.x, circlePosition.y, circleRadius, fillCirclePaint);
         canvas.drawCircle(circlePosition.x, circlePosition.y, circleRadius, circlePaint);
     }

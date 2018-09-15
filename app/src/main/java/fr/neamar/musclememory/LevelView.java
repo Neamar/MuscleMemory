@@ -1,5 +1,6 @@
 package fr.neamar.musclememory;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.PointF;
@@ -10,9 +11,9 @@ import android.view.MotionEvent;
 import java.util.ArrayList;
 
 public class LevelView extends TouchEventView {
-    private final int WAITING_FOR_ALL_CIRCLES = 0;
-    private final int RUNNING = 2;
-    private final int WON = 3;
+    public final static int WAITING_FOR_ALL_CIRCLES = 0;
+    public final static int RUNNING = 2;
+    public final static int WON = 3;
 
     public int state = WAITING_FOR_ALL_CIRCLES;
 
@@ -38,6 +39,7 @@ public class LevelView extends TouchEventView {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         super.onTouchEvent(event);
@@ -80,7 +82,7 @@ public class LevelView extends TouchEventView {
 
     public void start() {
         currentText = "Stay in the circle!";
-        state = RUNNING;
+        setState(RUNNING);
         for (GamePath path : paths) {
             path.start();
         }
@@ -90,7 +92,7 @@ public class LevelView extends TouchEventView {
 
     public void reset() {
         currentText = "You've lost! Retry.";
-        state = WAITING_FOR_ALL_CIRCLES;
+        setState(WAITING_FOR_ALL_CIRCLES);
 
         if(onLevelFinished != null) {
             onLevelFinished.levelFinished(false, System.currentTimeMillis() - startDate);
@@ -112,7 +114,7 @@ public class LevelView extends TouchEventView {
 
         if(allPathCompleted) {
             currentText = "GG WP";
-            state = WON;
+            setState(WON);
             if(onLevelFinished != null) {
                 onLevelFinished.levelFinished(true, System.currentTimeMillis() - startDate);
             }
@@ -123,11 +125,19 @@ public class LevelView extends TouchEventView {
         Pair<String, ArrayList<GamePath>> data = LevelStore.getPathsForLevel(this, i);
         title = data.first;
         paths = data.second;
+        setState(WAITING_FOR_ALL_CIRCLES);
         invalidate();
     }
 
     public void setOnLevelFinished(OnLevelFinished onLevelFinished) {
         this.onLevelFinished = onLevelFinished;
+    }
+
+    public void setState(int newState) {
+        this.state = newState;
+        for (GamePath path : paths) {
+            path.onStateChange(newState);
+        }
     }
 
     public int getPathsCount() {
