@@ -140,17 +140,23 @@ public class GamePath extends Path {
     }
 
     public void onStateChange(int state) {
-        if(state == LevelView.RUNNING) {
+        if (state == LevelView.RUNNING) {
             pathCompleted = false;
 
             progressAnimator.start();
             progressColorAnimator.start();
-            if(lostColorAnimator != null) {
+            if (lostColorAnimator != null) {
                 lostColorAnimator.end();
             }
         }
-        if(state == LevelView.LOST) {
-            lostColorAnimator = ValueAnimator.ofArgb((int) progressColorAnimator.getAnimatedValue(), LOST_COLOR, START_COLOR);
+        if (state == LevelView.LOST) {
+
+            if (!currentlyCovered) {
+                lostColorAnimator = ValueAnimator.ofArgb((int) progressColorAnimator.getAnimatedValue(), LOST_COLOR, START_COLOR);
+            }
+            else {
+                lostColorAnimator = ValueAnimator.ofArgb((int) progressColorAnimator.getAnimatedValue(), START_COLOR);
+            }
             lostColorAnimator.setDuration(500);
             lostColorAnimator.start();
             lostColorAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -173,12 +179,12 @@ public class GamePath extends Path {
     }
 
     public void setCurrentlyCovered(boolean covered) {
-        if(covered == this.currentlyCovered) {
+        if (covered == this.currentlyCovered) {
             return;
         }
 
         this.currentlyCovered = covered;
-        if(covered) {
+        if (covered) {
             circlePaint.setColor(START_COLOR);
 
             pulseAnimator.cancel();
@@ -193,8 +199,7 @@ public class GamePath extends Path {
                 }
             });
             dyingPulseAnimator.start();
-        }
-        else {
+        } else {
             dyingPulseAnimator.cancel();
             pulseAnimator.start();
         }
