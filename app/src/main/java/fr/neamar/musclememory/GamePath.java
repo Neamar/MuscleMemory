@@ -80,7 +80,7 @@ public class GamePath extends Path {
         pulsatingCirclePaint = new Paint();
         pulsatingCirclePaint.set(blurredLinePaint);
 
-        pulseAnimator = ValueAnimator.ofFloat(10, 90);
+        pulseAnimator = ValueAnimator.ofFloat(20, 90);
         pulseAnimator.setDuration(3000);
         pulseAnimator.setRepeatMode(ValueAnimator.REVERSE);
         pulseAnimator.setRepeatCount(ValueAnimator.INFINITE);
@@ -162,7 +162,6 @@ public class GamePath extends Path {
             lostColorAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    circlePaint.setColor((int) animation.getAnimatedValue());
                     blurredLinePaint.setColor((int) animation.getAnimatedValue());
                     parent.invalidate();
                 }
@@ -202,6 +201,7 @@ public class GamePath extends Path {
         } else {
             dyingPulseAnimator.cancel();
             pulseAnimator.start();
+            circlePaint.setColor(CIRCLE_ORIGINAL_COLOR);
         }
     }
 

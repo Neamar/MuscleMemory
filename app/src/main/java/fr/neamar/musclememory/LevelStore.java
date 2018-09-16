@@ -193,7 +193,7 @@ public class LevelStore {
     }
 
     public static int getLevelCount() {
-        return 7;
+        return 8;
     }
 
     private static ValueAnimator initializeDefaultAnimator() {
