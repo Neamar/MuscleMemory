@@ -29,7 +29,7 @@ public class GamePath extends Path {
     private Paint fillCirclePaint;
     private Paint circlePaint;
     private Paint pulsatingCirclePaint;
-    public PointF circlePosition;
+    public PointF circlePosition = new PointF();
     public int circleRadius;
     private ValueAnimator pulseAnimator;
     private ValueAnimator dyingPulseAnimator;
@@ -39,7 +39,7 @@ public class GamePath extends Path {
     private PathMeasure pathMeasure;
     private float pathLength;
     private Path partialPath = new Path();
-
+    private final float[] position = new float[2];
 
     private boolean currentlyCovered = false;
     public boolean pathCompleted = false;
@@ -133,18 +133,11 @@ public class GamePath extends Path {
     }
 
     public void build() {
-        // Approximate the path via line segments (we'll use them to move the circle along the path)
-        float[] approximated = PathCompat.approximate(this, 0.5f);
-        progressPoints = new ArrayList<>(approximated.length / 3);
-        for (int i = 0; i < approximated.length; i += 3) {
-            progressPoints.add(new Pair<>(approximated[i], new PointF(approximated[i + 1], approximated[i + 2])));
-        }
-
-        // Initialize path position
-        circlePosition = progressPoints.get(0).second;
-
         pathMeasure = new PathMeasure(this, false);
         pathLength = pathMeasure.getLength();
+
+        // Initialize path position
+        getPointOnPath(0, circlePosition);
     }
 
     public void onStateChange(int state) {
@@ -213,28 +206,10 @@ public class GamePath extends Path {
         }
     }
 
-    private PointF getPointOnPath(float progress) {
-        // Find point before
-        Pair<Float, PointF> pointBefore = null;
-        Pair<Float, PointF> pointAfter = null;
-
-        for (Pair<Float, PointF> pair : progressPoints) {
-            if (pair.first > progress) {
-                pointAfter = pair;
-                break;
-            }
-            pointBefore = pair;
-        }
-        if (pointAfter == null) {
-            pointAfter = progressPoints.get(progressPoints.size() - 1);
-            pointBefore = progressPoints.get(progressPoints.size() - 2);
-        }
-        assert pointBefore != null;
-
-        // Find the "intermediate" progress value (where are we between those two points, as a value between 0 and 1)
-        float intermediateProgress = (progress - pointBefore.first) / (pointAfter.first - pointBefore.first);
-        return new PointF(pointBefore.second.x + intermediateProgress * (pointAfter.second.x - pointBefore.second.x),
-                pointBefore.second.y + intermediateProgress * (pointAfter.second.y - pointBefore.second.y));
+    private void getPointOnPath(float progress, PointF point) {
+        pathMeasure.getPosTan(progress * pathLength, position, null);
+        point.x = position[0];
+        point.y = position[1];
     }
 
     public void onDraw(Canvas canvas) {
@@ -244,7 +219,7 @@ public class GamePath extends Path {
         canvas.drawPath(this, linePaint);
         canvas.drawPath(partialPath, blurredLinePaint);
 
-        circlePosition = getPointOnPath(progress);
+        getPointOnPath(progress, circlePosition);
 
         canvas.drawCircle(circlePosition.x, circlePosition.y, circleRadius, pulsatingCirclePaint);
         canvas.drawCircle(circlePosition.x, circlePosition.y, circleRadius, fillCirclePaint);
