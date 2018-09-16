@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PathMeasure;
 import android.graphics.PointF;
 import android.util.Pair;
 
@@ -34,6 +35,10 @@ public class GamePath extends Path {
     private ValueAnimator dyingPulseAnimator;
     private ValueAnimator progressColorAnimator;
     private ValueAnimator lostColorAnimator;
+
+    private PathMeasure pathMeasure;
+    private float pathLength;
+    private Path partialPath = new Path();
 
 
     private boolean currentlyCovered = false;
@@ -137,6 +142,9 @@ public class GamePath extends Path {
 
         // Initialize path position
         circlePosition = progressPoints.get(0).second;
+
+        pathMeasure = new PathMeasure(this, false);
+        pathLength = pathMeasure.getLength();
     }
 
     public void onStateChange(int state) {
@@ -230,8 +238,11 @@ public class GamePath extends Path {
     }
 
     public void onDraw(Canvas canvas) {
+        partialPath.reset();
+        pathMeasure.getSegment(progress * pathLength, pathLength, partialPath, true);
+        partialPath.rLineTo(0.0f, 0.0f); // workaround to display on hardware accelerated canvas as described in docs
         canvas.drawPath(this, linePaint);
-        canvas.drawPath(this, blurredLinePaint);
+        canvas.drawPath(partialPath, blurredLinePaint);
 
         circlePosition = getPointOnPath(progress);
 
