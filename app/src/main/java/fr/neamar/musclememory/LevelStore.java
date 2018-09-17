@@ -11,6 +11,7 @@ public class LevelStore {
         String title;
         int cX = width / 2;
         int cY = height / 2;
+        int D = Math.min(cX, cY);
 
         ArrayList<GamePath> paths = new ArrayList<>();
         if (level == 0 && subLevel == 0) {
@@ -151,21 +152,18 @@ public class LevelStore {
             paths.add(secondPath);
         } else if (level == 7 && subLevel == 0) {
             title = "solid_spiral";
-            GamePath path = new GamePath(parent, initializeAnimator(6000), 90);
-
-            int p = 90;
-            int D = Math.min(cX, cY);
-            path.moveTo(cX, height - p); // 1
-            path.lineTo(cX - D, D); // 2
-            path.lineTo(cX, p); // 3
-            path.lineTo(cX + D, D); // 4
-            path.lineTo(cX + p, height - 2 * p); // 5
-            path.lineTo(cX - D + 2 * p, D); // 6
-            path.lineTo(cX, 3 * p); // 7
-            path.lineTo(cX + D - 2 * p, D); // 8
-            path.lineTo(cX + p, height - 4 * p); // 9
-            path.lineTo(cX - D + 4 * p, D); // 10
-
+            GamePath path = new GamePath(parent, initializeAnimator(6000));
+            int radius;
+            for (int i = 0; i < 10; i++) {
+                radius = D * (10 - i) / 10;
+                int x = (int) (cX + radius * Math.cos(i * Math.PI / 2));
+                int y = (int) (cY + radius * Math.sin(i * Math.PI / 2));
+                if (i == 0) {
+                    path.moveTo(x, y);
+                } else {
+                    path.lineTo(x, y);
+                }
+            }
             paths.add(path);
         } else if (level == 7 && subLevel == 1) {
             title = "intro_1_curve";
