@@ -148,6 +148,30 @@ public class LevelStore {
             secondPath.cubicTo(width, height - 100, width, 100, 3 * width / 4, 100);
             paths.add(secondPath);
         } else if (level == 7 && subLevel == 0) {
+            title = "solid_spiral";
+            GamePath path = new GamePath(parent, initializeAnimator(6000), 90);
+            int p = 90;
+            int D = Math.min(width / 2, height / 2);
+            path.moveTo(width / 2, height - p); // 1
+            path.lineTo(width / 2 - D, D); // 2
+            path.lineTo(width / 2, p); // 3
+            path.lineTo(width / 2 + D, D); // 4
+            path.lineTo(width / 2 + p, height - 2 * p); // 5
+            path.lineTo(width / 2 - D + 2 * p, D); // 6
+            path.lineTo(width / 2, 3 * p); // 7
+            path.lineTo(width / 2 + D - 2 * p, D); // 8
+            path.lineTo(width / 2 + p, height - 4 * p); // 9
+            path.lineTo(width / 2 - D + 4 * p, D); // 10
+
+            paths.add(path);
+        } else if (level == 7 && subLevel == 1) {
+            title = "intro_1_curve";
+            GamePath path = new GamePath(parent, initializeAnimator(3000));
+            path.moveTo(150, height / 2);
+            path.cubicTo(150, 0, width - 150, height, width - 150, height / 2);
+
+            paths.add(path);
+        } else if (level == 8 && subLevel == 0) {
             title = "2_half_rectangles_and_a_point";
             GamePath path = new GamePath(parent, initializeAnimator(6000), 120);
             path.moveTo(350, 120);
@@ -165,7 +189,7 @@ public class LevelStore {
             thirdPath.moveTo(width / 2 - 1, height / 2);
             thirdPath.lineTo(width / 2 + 1, height / 2);
             paths.add(thirdPath);
-        } else if (level == 7 && subLevel == 1) {
+        } else if (level == 8 && subLevel == 1) {
             title = "3_lines_1_reversed";
             GamePath path = new GamePath(parent, initializeAnimator(4500), 120);
             path.moveTo(150, height / 4);
@@ -193,7 +217,7 @@ public class LevelStore {
     }
 
     public static int getLevelCount() {
-        return 8;
+        return 9;
     }
 
     private static ValueAnimator initializeAnimator(int duration) {
