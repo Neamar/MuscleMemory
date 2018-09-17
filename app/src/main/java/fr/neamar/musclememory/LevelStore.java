@@ -151,7 +151,24 @@ public class LevelStore {
             secondPath.cubicTo(width, height - 100, width, 100, 3 * width / 4, 100);
             paths.add(secondPath);
         } else if (level == 7 && subLevel == 0) {
-            title = "solid_spiral";
+            title = "solid_spiral_triangle";
+            GamePath path = new GamePath(parent, initializeAnimator(6000));
+            int p = D / 4;
+            float H = (float) (Math.sqrt(7) * p);
+            path.moveTo(cX, cY + 3 * p); // 1
+            path.rLineTo(-3 * p, -H); // 2
+            path.rLineTo(H, -3 * p); // 3
+            path.rLineTo(3 * p, H); // 4
+            path.rLineTo(-3 * H / 4, 9 * p / 4); // 5
+            path.rLineTo(-9 * p / 4, -3 * H / 4); // 6
+            path.rLineTo(H / 2, -3 * p / 2); // 7
+            path.rLineTo(3 * p / 2, H / 2); // 8
+            path.rLineTo(-H / 4, 3 * p / 4); // 9
+            path.rLineTo(-3 * p / 4, - H / 4); // 9
+
+            paths.add(path);
+        } else if (level == 7 && subLevel == 1) {
+            title = "solid_spiral_trigo";
             GamePath path = new GamePath(parent, initializeAnimator(6000));
             int radius;
             for (int i = 0; i < 10; i++) {
@@ -164,13 +181,6 @@ public class LevelStore {
                     path.lineTo(x, y);
                 }
             }
-            paths.add(path);
-        } else if (level == 7 && subLevel == 1) {
-            title = "intro_1_curve";
-            GamePath path = new GamePath(parent, initializeAnimator(3000));
-            path.moveTo(150, cY);
-            path.cubicTo(150, 0, width - 150, height, width - 150, cY);
-
             paths.add(path);
         } else if (level == 8 && subLevel == 0) {
             title = "2_half_rectangles_and_a_point";
