@@ -158,6 +158,17 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
         return LevelStore.getLevelCount();
     }
 
+    public int getFirstUnlocked() {
+        int count = getItemCount();
+        for(int i = 0; i < count; i++) {
+            if(getLevelStatus(prefs, i) == LEVEL_UNLOCKED) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
     private static int getLevelStatus(SharedPreferences prefs, int level) {
         boolean isLocked = true;
         Set<String> finishedLevels = prefs.getStringSet("finished_levels", new HashSet<String>());

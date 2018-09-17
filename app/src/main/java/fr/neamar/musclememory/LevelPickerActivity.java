@@ -7,7 +7,7 @@ import android.support.v7.widget.RecyclerView;
 
 public class LevelPickerActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private PackAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     @Override
@@ -27,6 +27,11 @@ public class LevelPickerActivity extends AppCompatActivity {
             public void run() {
                 mAdapter = new PackAdapter(LevelPickerActivity.this, mRecyclerView.getWidth(), mRecyclerView.getHeight());
                 mRecyclerView.setAdapter(mAdapter);
+
+                int nextUnlocked = mAdapter.getFirstUnlocked();
+                if (nextUnlocked != -1) {
+                    mLayoutManager.scrollToPosition(nextUnlocked);
+                }
             }
         });
 
