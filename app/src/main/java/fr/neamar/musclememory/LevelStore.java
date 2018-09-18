@@ -171,11 +171,11 @@ public class LevelStore {
             title = "solid_spiral_trigo";
             GamePath path = new GamePath(parent, initializeAnimator(6000));
             int radius;
-            for (int i = 0; i < 10; i++) {
+            for (int i = 9; i >= 0; i--) {
                 radius = D * (10 - i) / 10;
                 int x = (int) (cX + radius * Math.cos(i * Math.PI / 2));
                 int y = (int) (cY + radius * Math.sin(i * Math.PI / 2));
-                if (i == 0) {
+                if (i == 9) {
                     path.moveTo(x, y);
                 } else {
                     path.lineTo(x, y);

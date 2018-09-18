@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -48,7 +49,9 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
-    static class PackViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class PackViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener
+
+    {
         // each data item is just a string in this case
         ImageView lockImageView;
         TextView levelName;
@@ -64,6 +67,7 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
             this.secondSubLevel = v.findViewById(R.id.secondSubLevel);
             this.prefs = prefs;
             v.setOnClickListener(this);
+            v.setOnLongClickListener(this);
         }
 
         @Override
@@ -75,6 +79,16 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
                 i.putExtra("subLevel", 0);
                 v.getContext().startActivity(i);
             }
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            Set<String> finishedLevels = prefs.getStringSet("finished_levels", new HashSet<String>());
+            finishedLevels.add(Integer.toString(getAdapterPosition()));
+            prefs.edit().putStringSet("finished_levels", finishedLevels).apply();
+            PackAdapter.this.notifyItemChanged(getAdapterPosition());
+            Toast.makeText(v.getContext(), "You little cheater ;) Here you go, it's unlocked.", Toast.LENGTH_SHORT).show();
+            return true;
         }
     }
 
