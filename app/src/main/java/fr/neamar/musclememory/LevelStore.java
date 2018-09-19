@@ -164,7 +164,7 @@ public class LevelStore {
             path.rLineTo(H / 2, -3 * p / 2); // 7
             path.rLineTo(3 * p / 2, H / 2); // 8
             path.rLineTo(-H / 4, 3 * p / 4); // 9
-            path.rLineTo(-3 * p / 4, - H / 4); // 9
+            path.rLineTo(-3 * p / 4, -H / 4); // 9
 
             paths.add(path);
         } else if (level == 7 && subLevel == 1) {
@@ -183,6 +183,92 @@ public class LevelStore {
             }
             paths.add(path);
         } else if (level == 8 && subLevel == 0) {
+            title = "spiral_circle";
+            GamePath path = new GamePath(parent, initializeAnimator(8000));
+            int radius = D - 50;
+            int radiusDecay = radius / 8;
+            path.moveTo(cX + radius, cY);
+            drawCircleQuadrant(path, 0, cX, cY, radius);
+            drawCircleQuadrant(path, 1, cX, cY, radius);
+            radius -= radiusDecay;
+            int newcX = cX - radiusDecay;
+            drawCircleQuadrant(path, 2, newcX, cY, radius);
+            drawCircleQuadrant(path, 3, newcX, cY, radius);
+            radius -= radiusDecay;
+            newcX = newcX + radiusDecay;
+            drawCircleQuadrant(path, 0, newcX, cY, radius);
+            drawCircleQuadrant(path, 1, newcX, cY, radius);
+            radius -= radiusDecay;
+            newcX = newcX - radiusDecay;
+            drawCircleQuadrant(path, 2, newcX, cY, radius);
+            drawCircleQuadrant(path, 3, newcX, cY, radius);
+            radius -= radiusDecay;
+            newcX = newcX + radiusDecay;
+            drawCircleQuadrant(path, 0, newcX, cY, radius);
+            drawCircleQuadrant(path, 1, newcX, cY, radius);
+            radius -= radiusDecay;
+            newcX = newcX - radiusDecay;
+            drawCircleQuadrant(path, 2, newcX, cY, radius);
+            drawCircleQuadrant(path, 3, newcX, cY, radius);
+
+            paths.add(path);
+        } else if (level == 8 && subLevel == 1) {
+            title = "tear";
+            GamePath path = new GamePath(parent, initializeAnimator(6000));
+            float c = (float) 0.5519;
+            int radius = D - 90;
+            float cRadius = c * radius;
+            path.moveTo(cX + radius, cY);
+            path.cubicTo(cX + radius, cY - cRadius, cX + cRadius, cY - radius, cX, cY - radius);
+            path.cubicTo(cX - cRadius, cY - radius, cX - radius, cY - cRadius, cX - radius, cY - radius);
+            path.cubicTo(cX - radius, cY + cRadius, cX - cRadius, cY + radius, cX, cY + radius);
+            path.cubicTo(cX + cRadius, cY + radius, cX + radius, cY + cRadius, cX + radius, cY);
+            paths.add(path);
+        } else if (level == 9 && subLevel == 0) {
+            title = "candy_same_side";
+            int w = width / 10;
+            int h = height / 6;
+            GamePath path = new GamePath(parent, initializeAnimator(8000));
+            path.moveTo(w, 5 * h);
+            path.lineTo(w, h);
+            path.lineTo(3 * w, h);
+            path.lineTo(4 * w, 3 * h);
+            path.lineTo(6 * w, 3 * h);
+            path.lineTo(7 * w, 5 * h);
+            paths.add(path);
+
+            GamePath secondPath = new GamePath(parent, initializeAnimator(8000));
+            secondPath.moveTo(3 * w, 5 * h);
+            secondPath.lineTo(4 * w, 3 * h);
+            secondPath.lineTo(6 * w, 3 * h);
+            secondPath.lineTo(7 * w, h);
+            secondPath.lineTo(9 * w, h);
+            secondPath.lineTo(9 * w, 5 * h);
+
+
+            paths.add(secondPath);
+        } else if (level == 9 && subLevel == 1) {
+            title = "candy_cross";
+            int w = width / 13;
+            int h = height / 6;
+            GamePath path = new GamePath(parent, initializeAnimator(6000));
+            path.moveTo(2 * w, 2 * h);
+            path.lineTo(3 * w, 3 * h);
+            path.lineTo(7 * w, 3 * h);
+            path.lineTo(9 * w, 5 * h);
+            path.lineTo(12 * w, 5 * h);
+            paths.add(path);
+
+            GamePath secondPath = new GamePath(parent, initializeAnimator(6000));
+            secondPath.moveTo(12 * w, 5 * h);
+            secondPath.lineTo(12 * w, h);
+            secondPath.lineTo(9 * w, h);
+            secondPath.lineTo(7 * w, 3 * h);
+            secondPath.lineTo(3 * w, 3 * h);
+            secondPath.lineTo(2 * w, 4 * h);
+
+            paths.add(secondPath);
+        } else if (level == 10 && subLevel == 0) {
             title = "2_half_rectangles_and_a_point";
             GamePath path = new GamePath(parent, initializeAnimator(6000), 120);
             path.moveTo(350, 120);
@@ -200,7 +286,7 @@ public class LevelStore {
             thirdPath.moveTo(cX - 1, cY);
             thirdPath.lineTo(cX + 1, cY);
             paths.add(thirdPath);
-        } else if (level == 8 && subLevel == 1) {
+        } else if (level == 10 && subLevel == 1) {
             title = "3_lines_1_reversed";
             GamePath path = new GamePath(parent, initializeAnimator(4500), 120);
             path.moveTo(150, height / 4);
@@ -228,7 +314,7 @@ public class LevelStore {
     }
 
     public static int getLevelCount() {
-        return 9;
+        return 10;
     }
 
     private static ValueAnimator initializeAnimator(int duration) {
@@ -238,5 +324,22 @@ public class LevelStore {
         progressAnimator.setInterpolator(new LinearInterpolator());
 
         return progressAnimator;
+    }
+
+    private static void drawCircleQuadrant(GamePath path, int quadrant, int cX, int cY, float radius) {
+        // see http://spencermortensen.com/articles/bezier-circle/
+        float c = (float) 0.5519;
+        float cRadius = c * radius;
+        if (quadrant == 0) {
+            path.cubicTo(cX + radius, cY - cRadius, cX + cRadius, cY - radius, cX, cY - radius);
+        } else if (quadrant == 1) {
+            path.cubicTo(cX - cRadius, cY - radius, cX - radius, cY - cRadius, cX - radius, cY);
+        } else if (quadrant == 2) {
+            path.cubicTo(cX - radius, cY + cRadius, cX - cRadius, cY + radius, cX, cY + radius);
+        } else if (quadrant == 3) {
+            path.cubicTo(cX + cRadius, cY + radius, cX + radius, cY + cRadius, cX + radius, cY);
+        } else {
+            throw new RuntimeException("Invalid quadrant");
+        }
     }
 }
