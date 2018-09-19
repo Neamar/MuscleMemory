@@ -180,6 +180,7 @@ public class LevelStore {
                 path.cubicTo(cX, -100, width + 100, cY, cX, cY);
                 paths.add(path);
             }
+
         } else if (level-- == 0) {
             if (subLevel == 0) {
                 title = "2_circles";
@@ -207,6 +208,56 @@ public class LevelStore {
                 secondPath.cubicTo(cX, 100, cX, height - 100, 3 * width / 4, height - 100);
                 secondPath.cubicTo(width, height - 100, width, 100, 3 * width / 4, 100);
                 paths.add(secondPath);
+            }
+        } else if (level-- == 0) {
+            if (subLevel == 0) {
+                title = "ricochet";
+                GamePath path = new GamePath(parent, initializeAnimator(6000));
+                int baseRadius = width / 10;
+                path.moveTo(baseRadius, cY);
+                drawCircleQuadrant(path, 2, 2 * baseRadius, cY, baseRadius);
+                drawCircleQuadrant(path, 3, 2 * baseRadius, cY, baseRadius);
+                drawCircleQuadrant(path, 2, 4 * baseRadius, cY, baseRadius);
+                drawCircleQuadrant(path, 3, 4 * baseRadius, cY, baseRadius);
+                drawCircleQuadrant(path, 2, 6 * baseRadius, cY, baseRadius);
+                drawCircleQuadrant(path, 3, 6 * baseRadius, cY, baseRadius);
+                drawCircleQuadrant(path, 2, 8 * baseRadius, cY, baseRadius);
+                drawCircleQuadrant(path, 3, 8 * baseRadius, cY, baseRadius);
+                drawCircleQuadrant(path, 0, (int) (8.5 * baseRadius), cY, baseRadius / 2);
+                drawCircleQuadrant(path, 1, (int) (8.5 * baseRadius), cY, baseRadius / 2);
+                drawCircleQuadrant(path, 0, (int) (7.5 * baseRadius), cY, baseRadius / 2);
+                drawCircleQuadrant(path, 1, (int) (7.5 * baseRadius), cY, baseRadius / 2);
+                drawCircleQuadrant(path, 0, (int) (6.5 * baseRadius), cY, baseRadius / 2);
+                drawCircleQuadrant(path, 1, (int) (6.5 * baseRadius), cY, baseRadius / 2);
+                drawCircleQuadrant(path, 0, (int) (5.5 * baseRadius), cY, baseRadius / 2);
+                drawCircleQuadrant(path, 1, (int) (5.5 * baseRadius), cY, baseRadius / 2);
+                drawCircleQuadrant(path, 0, (int) (4.5 * baseRadius), cY, baseRadius / 2);
+                drawCircleQuadrant(path, 1, (int) (4.5 * baseRadius), cY, baseRadius / 2);
+                drawCircleQuadrant(path, 0, (int) (3.5 * baseRadius), cY, baseRadius / 2);
+                drawCircleQuadrant(path, 1, (int) (3.5 * baseRadius), cY, baseRadius / 2);
+                drawCircleQuadrant(path, 0, (int) (2.5 * baseRadius), cY, baseRadius / 2);
+                drawCircleQuadrant(path, 1, (int) (2.5 * baseRadius), cY, baseRadius / 2);
+                drawCircleQuadrant(path, 0, (int) (1.5 * baseRadius), cY, baseRadius / 2);
+                drawCircleQuadrant(path, 1, (int) (1.5 * baseRadius), cY, baseRadius / 2);
+                paths.add(path);
+            } else if (subLevel == 1) {
+                title = "handwriting";
+                GamePath path = new GamePath(parent, initializeAnimator(7000));
+                int baseRadius = width / 11;
+                int baseY = cY - baseRadius / 4;
+                path.moveTo(baseRadius, cY);
+                drawCircleQuadrant(path, 2, 2 * baseRadius, baseY, 2 * baseRadius);
+                drawCircleQuadrant(path, 3, 2 * baseRadius, baseY, 2 * baseRadius);
+                drawCircleQuadrant(path, 2, 4 * baseRadius, baseY, 2 * baseRadius);
+                drawCircleQuadrant(path, 3, 4 * baseRadius, baseY, 2 * baseRadius);
+                drawCircleQuadrant(path, 2, 6 * baseRadius, baseY, 2 * baseRadius);
+                drawCircleQuadrant(path, 3, 6 * baseRadius, baseY, 2 * baseRadius);
+                drawCircleQuadrant(path, 2, 8 * baseRadius, baseY, 2 * baseRadius);
+                drawCircleQuadrant(path, 3, 8 * baseRadius, baseY, 2 * baseRadius);
+                path.lineTo(10 * baseRadius, 90);
+                path.lineTo(baseRadius, 90);
+
+                paths.add(path);
             }
         } else if (level-- == 0) {
             if (subLevel == 0) {
