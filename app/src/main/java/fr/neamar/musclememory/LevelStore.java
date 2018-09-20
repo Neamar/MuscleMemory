@@ -180,7 +180,52 @@ public class LevelStore {
                 path.cubicTo(cX, -100, width + 100, cY, cX, cY);
                 paths.add(path);
             }
+        } else if (level-- == 0) {
+            if (subLevel == 0) {
+                title = "circle_made_of_squares";
+                int s = D / 3;
+                GamePath path = new GamePath(parent, initializeAnimator(6000));
+                path.moveTo(cX + 2.5f * s, cY - 1.5f * s);
+                path.rLineTo(0, s); // 1
+                path.rLineTo(-s, 0); // 2
+                path.rLineTo(0, -s); // 3
+                path.rLineTo(-s, 0); // 4
+                path.rLineTo(0, -s); // 5
+                path.rLineTo(-s, 0); // 6
+                path.rLineTo(0, s); // 7
+                path.rLineTo(-s, 0); // 8
+                path.rLineTo(0, s); // 9
+                path.rLineTo(-s, 0); // 10
+                path.rLineTo(0, s); // 11
+                path.rLineTo(s, 0); // 12
+                path.rLineTo(0, s); // 13
+                path.rLineTo(s, 0); // 14
+                path.rLineTo(0, s); // 15
+                path.rLineTo(s, 0); // 16
+                path.rLineTo(0, -s); // 17
+                path.rLineTo(s, 0); // 18
+                path.rLineTo(0, -s); // 19
+                path.rLineTo(s, 0); // 20
+                path.rLineTo(0, s); // 20
 
+                paths.add(path);
+            } else if (subLevel == 1) {
+                title = "euler_house";
+                GamePath path = new GamePath(parent, initializeAnimator(7000));
+                int x = width / 5;
+                int y = height / 4;
+                path.moveTo(x, y);
+                path.lineTo(x, 3 * y);
+                path.lineTo(3 * x, y);
+                path.lineTo(3 * x, 3 * y);
+                path.lineTo(4 * x, 2 * y);
+                path.lineTo(3 * x, y);
+                path.lineTo(x, y);
+                path.lineTo(3 * x, 3 * y);
+                path.lineTo(x, 3 * y);
+
+                paths.add(path);
+            }
         } else if (level-- == 0) {
             if (subLevel == 0) {
                 title = "2_circles";
@@ -208,6 +253,40 @@ public class LevelStore {
                 secondPath.cubicTo(cX, 100, cX, height - 100, 3 * width / 4, height - 100);
                 secondPath.cubicTo(width, height - 100, width, 100, 3 * width / 4, 100);
                 paths.add(secondPath);
+            }
+        } else if (level-- == 0) {
+            if (subLevel == 0) {
+                title = "solid_spiral_triangle";
+                GamePath path = new GamePath(parent, initializeAnimator(6000));
+                int p = D / 4;
+                float H = (float) (Math.sqrt(7) * p);
+                path.moveTo(cX, cY + 3 * p); // 1
+                path.rLineTo(-3 * p, -H); // 2
+                path.rLineTo(H, -3 * p); // 3
+                path.rLineTo(3 * p, H); // 4
+                path.rLineTo(-3 * H / 4, 9 * p / 4); // 5
+                path.rLineTo(-9 * p / 4, -3 * H / 4); // 6
+                path.rLineTo(H / 2, -3 * p / 2); // 7
+                path.rLineTo(3 * p / 2, H / 2); // 8
+                path.rLineTo(-H / 4, 3 * p / 4); // 9
+                path.rLineTo(-3 * p / 4, -H / 4); // 9
+
+                paths.add(path);
+            } else if (subLevel == 1) {
+                title = "solid_spiral_trigo";
+                GamePath path = new GamePath(parent, initializeAnimator(6000));
+                int radius;
+                for (int i = 9; i >= 0; i--) {
+                    radius = D * (10 - i) / 10;
+                    int x = (int) (cX + radius * Math.cos(i * Math.PI / 2));
+                    int y = (int) (cY + radius * Math.sin(i * Math.PI / 2));
+                    if (i == 9) {
+                        path.moveTo(x, y);
+                    } else {
+                        path.lineTo(x, y);
+                    }
+                }
+                paths.add(path);
             }
         } else if (level-- == 0) {
             if (subLevel == 0) {
@@ -257,40 +336,6 @@ public class LevelStore {
                 path.lineTo(10 * baseRadius, 90);
                 path.lineTo(baseRadius, 90);
 
-                paths.add(path);
-            }
-        } else if (level-- == 0) {
-            if (subLevel == 0) {
-                title = "solid_spiral_triangle";
-                GamePath path = new GamePath(parent, initializeAnimator(6000));
-                int p = D / 4;
-                float H = (float) (Math.sqrt(7) * p);
-                path.moveTo(cX, cY + 3 * p); // 1
-                path.rLineTo(-3 * p, -H); // 2
-                path.rLineTo(H, -3 * p); // 3
-                path.rLineTo(3 * p, H); // 4
-                path.rLineTo(-3 * H / 4, 9 * p / 4); // 5
-                path.rLineTo(-9 * p / 4, -3 * H / 4); // 6
-                path.rLineTo(H / 2, -3 * p / 2); // 7
-                path.rLineTo(3 * p / 2, H / 2); // 8
-                path.rLineTo(-H / 4, 3 * p / 4); // 9
-                path.rLineTo(-3 * p / 4, -H / 4); // 9
-
-                paths.add(path);
-            } else if (subLevel == 1) {
-                title = "solid_spiral_trigo";
-                GamePath path = new GamePath(parent, initializeAnimator(6000));
-                int radius;
-                for (int i = 9; i >= 0; i--) {
-                    radius = D * (10 - i) / 10;
-                    int x = (int) (cX + radius * Math.cos(i * Math.PI / 2));
-                    int y = (int) (cY + radius * Math.sin(i * Math.PI / 2));
-                    if (i == 9) {
-                        path.moveTo(x, y);
-                    } else {
-                        path.lineTo(x, y);
-                    }
-                }
                 paths.add(path);
             }
         } else if (level-- == 0) {
@@ -387,7 +432,7 @@ public class LevelStore {
     }
 
     public static int getLevelCount() {
-        return 11;
+        return 12;
     }
 
     private static ValueAnimator initializeAnimator(int duration) {
