@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.amplitude.api.Amplitude;
+import com.amplitude.api.Identify;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,6 +48,8 @@ public class LevelActivity extends AppCompatActivity {
                 attemptsCountDuringSession += 1;
 
                 Set<String> finishedLevels = prefs.getStringSet("finished_levels", new HashSet<String>());
+                Set<String> finishedSubLevels = prefs.getStringSet("finished_sublevels", new HashSet<String>());
+
                 int attemptsCountGlobal = prefs.getInt("attempts_" + levelView.title, 0);
                 attemptsCountGlobal += 1;
 
@@ -66,7 +69,8 @@ public class LevelActivity extends AppCompatActivity {
                     props.put("number_of_attempts_ever", attemptsCountGlobal);
                     props.put("alltime_number_of_games_played", attemptsCountAllLevel);
                     props.put("alltime_number_of_levels_finished", finishedLevels.size());
-                    props.put("finished_before", finishedLevels.contains(levelView.title));
+                    props.put("alltime_number_of_sublevels_finished", finishedSubLevels.size());
+                    props.put("finished_before", finishedSubLevels.contains(levelView.title));
                     props.put("screen_width", levelView.getWidth());
                     props.put("screen_height", levelView.getHeight());
                 } catch (JSONException e) {
@@ -84,18 +88,18 @@ public class LevelActivity extends AppCompatActivity {
                 } else {
                     Amplitude.getInstance().logEvent("subLevel won", props);
 
-                    JSONObject userProperties = new JSONObject();
-                    try {
-                        userProperties.put("screen_width", levelView.getWidth());
-                        userProperties.put("screen_height", levelView.getHeight());
-                        userProperties.put("number_of_games_played", attemptsCountAllLevel);
-                        userProperties.put("number_of_levels_finished", finishedLevels.size());
-                        PackageManager pm = getPackageManager();
-                        userProperties.put("multitouch_jazzhand", pm.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH_JAZZHAND));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    Amplitude.getInstance().setUserProperties(userProperties);
+                    PackageManager pm = getPackageManager();
+
+                    Identify identify = new Identify()
+                            .append("finished_sublevels", levelView.title)
+                            .set("screen_width", levelView.getWidth())
+                            .set("screen_height", levelView.getHeight())
+                            .set("multitouch_jazzhand", pm.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH_JAZZHAND))
+                            .set("number_of_levels_finished", finishedLevels.size());
+                    Amplitude.getInstance().identify(identify);
+
+                    finishedSubLevels.add(levelView.title);
+                    prefs.edit().putStringSet("finished_sublevels", finishedSubLevels).apply();
 
                     if (subLevel == 0) {
                         // Move on to next sublevel
@@ -111,6 +115,7 @@ public class LevelActivity extends AppCompatActivity {
                             finishedLevels.add(Integer.toString(level));
                             prefs.edit().putStringSet("finished_levels", finishedLevels).apply();
                         }
+
                         // Move back to level picker
                         Intent i = new Intent(LevelActivity.this, LevelPickerActivity.class);
                         startActivity(i);
@@ -119,5 +124,12 @@ public class LevelActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onStop() {
+        Identify identify = new Identify().set("attempts", prefs.getInt("attempts", 0));
+        Amplitude.getInstance().identify(identify);
+        super.onStop();
     }
 }
