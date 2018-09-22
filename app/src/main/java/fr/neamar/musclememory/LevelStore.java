@@ -343,6 +343,56 @@ public class LevelStore {
             }
         } else if (level-- == 0) {
             if (subLevel == 0) {
+                title = "sawtooth_square_wave_one_finger";
+                int repetitions = 6;
+                float amplitude = 1.5f * cY / 4;
+                int usableWidth = repetitions * width / (repetitions + 2);
+                GamePath path = new GamePath(parent, initializeAnimator(6000));
+                // Sawtooth wave
+                float margin = width / repetitions;
+                path.moveTo(margin, cY / 2 - 50 + amplitude / 2);
+                for (int i = 0; i < repetitions; i++) {
+                    path.lineTo(margin + usableWidth * (i + 1) / repetitions, cY / 2 - 50 - amplitude / 2);
+                    path.lineTo(margin + usableWidth * (i + 1) / repetitions, cY / 2 - 50 + amplitude / 2);
+                }
+
+                // Square wave
+                for (int i = repetitions; i > 0; i -= 2) {
+                    path.lineTo(margin + usableWidth * i / repetitions, 3 * cY / 2 - 50 + amplitude / 2);
+                    path.lineTo(margin + usableWidth * (i - 1) / repetitions, 3 * cY / 2 - 50 + amplitude / 2);
+                    path.lineTo(margin + usableWidth * (i - 1) / repetitions, 3 * cY / 2 - 50 - amplitude / 2);
+                    path.lineTo(margin + usableWidth * (i - 2) / repetitions, 3 * cY / 2 - 50 - amplitude / 2);
+                }
+                paths.add(path);
+            } else if (subLevel == 1) {
+                int s = D / 6;
+                title = "sawtooth_square_wave_two_fingers";
+                int repetitions = 6;
+                float amplitude = 1.5f * cY / 4;
+                int usableWidth = repetitions * width / (repetitions + 2);
+                GamePath path = new GamePath(parent, initializeAnimator(6000));
+                // Sawtooth wave
+                float margin = width / repetitions;
+                path.moveTo(margin, cY / 2 - 50 + amplitude / 2);
+                for (int i = 0; i < repetitions; i++) {
+                    path.lineTo(margin + usableWidth * (i + 1) / repetitions, cY / 2 - 50 - amplitude / 2);
+                    path.lineTo(margin + usableWidth * (i + 1) / repetitions, cY / 2 - 50 + amplitude / 2);
+                }
+                paths.add(path);
+
+                GamePath secondPath = new GamePath(parent, initializeAnimator(6000));
+                secondPath.moveTo(margin + usableWidth, 3 * cY / 2 - 50 + amplitude / 2);
+                // Square wave
+                for (int i = repetitions; i > 0; i -= 2) {
+                    secondPath.lineTo(margin + usableWidth * i / repetitions, 3 * cY / 2 - 50 + amplitude / 2);
+                    secondPath.lineTo(margin + usableWidth * (i - 1) / repetitions, 3 * cY / 2 - 50 + amplitude / 2);
+                    secondPath.lineTo(margin + usableWidth * (i - 1) / repetitions, 3 * cY / 2 - 50 - amplitude / 2);
+                    secondPath.lineTo(margin + usableWidth * (i - 2) / repetitions, 3 * cY / 2 - 50 - amplitude / 2);
+                }
+                paths.add(secondPath);
+            }
+        } else if (level-- == 0) {
+            if (subLevel == 0) {
                 title = "two_fingers_rectangle";
                 GamePath path = new GamePath(parent, initializeAnimator(6000));
                 path.moveTo(100, height - 100);
@@ -473,7 +523,7 @@ public class LevelStore {
     }
 
     public static int getLevelCount() {
-        return 12;
+        return 14;
     }
 
     private static ValueAnimator initializeAnimator(int duration) {
