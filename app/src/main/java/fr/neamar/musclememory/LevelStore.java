@@ -7,6 +7,9 @@ import android.view.animation.LinearInterpolator;
 import java.util.ArrayList;
 
 public class LevelStore {
+    // see http://spencermortensen.com/articles/bezier-circle/
+    private final static float BEZIER_CIRCLE_CONSTANT = (float) 0.5519;
+
     public static Pair<String, ArrayList<GamePath>> getPathsForLevel(Invalidatable parent, int width, int height, int level, int subLevel) {
         String title = "TBD";
         int cX = width / 2;
@@ -290,7 +293,7 @@ public class LevelStore {
             }
         } else if (level-- == 0) {
             if (subLevel == 0) {
-                title = "ricochet";
+                title = "little_hearts";
                 GamePath path = new GamePath(parent, initializeAnimator(6000));
                 int baseRadius = width / 10;
                 path.moveTo(baseRadius, cY);
@@ -340,6 +343,43 @@ public class LevelStore {
             }
         } else if (level-- == 0) {
             if (subLevel == 0) {
+                title = "two_fingers_rectangle";
+                GamePath path = new GamePath(parent, initializeAnimator(6000));
+                path.moveTo(100, height - 100);
+                path.lineTo(100, 100);
+                path.lineTo(width - 200, 100);
+                path.lineTo(width - 200, height - 150);
+                paths.add(path);
+
+                GamePath secondPath = new GamePath(parent, initializeAnimator(6000));
+                secondPath.moveTo(width - 100, 100);
+                secondPath.lineTo(width - 100, height - 100);
+                secondPath.lineTo(200, height - 100);
+                secondPath.lineTo(200, 150);
+                paths.add(secondPath);
+            } else if (subLevel == 1) {
+                int s = D / 6;
+                title = "double_spiral";
+                GamePath path = new GamePath(parent, initializeAnimator(7000));
+                path.moveTo(2 * s + cX, cY);
+                drawCircleQuadrant(path, 0, cX, cY, 2 * s);
+                path.cubicTo(cX - 4 * s * BEZIER_CIRCLE_CONSTANT, cY - 2 * s, cX - 4 * s, cY - 2 * s * BEZIER_CIRCLE_CONSTANT, cX - 4 * s, cY);
+                drawCircleQuadrant(path, 2, cX, cY, 4 * s);
+                path.cubicTo(cX + 5 * s * BEZIER_CIRCLE_CONSTANT, cY + 4 * s, cX + 5 * s, cY + 4 * s * BEZIER_CIRCLE_CONSTANT, cX + 5 * s, cY);
+                drawCircleQuadrant(path, 0, cX, cY, 5 * s);
+                paths.add(path);
+
+                GamePath secondPath = new GamePath(parent, initializeAnimator(6000));
+                secondPath.moveTo(-2 * s + cX, cY);
+                drawCircleQuadrant(secondPath, 2, cX, cY, 2 * s);
+                secondPath.cubicTo(cX + 4 * s * BEZIER_CIRCLE_CONSTANT, cY + 2 * s, cX + 4 * s, cY + 2 * s * BEZIER_CIRCLE_CONSTANT, cX + 4 * s, cY);
+                drawCircleQuadrant(secondPath, 0, cX, cY, 4 * s);
+                secondPath.cubicTo(cX - 5 * s * BEZIER_CIRCLE_CONSTANT, cY - 4 * s, cX - 5 * s, cY - 4 * s * BEZIER_CIRCLE_CONSTANT, cX - 5 * s, cY);
+                drawCircleQuadrant(secondPath, 2, cX, cY, 5 * s);
+                paths.add(secondPath);
+            }
+        } else if (level-- == 0) {
+            if (subLevel == 0) {
                 title = "candy_same_side";
                 int w = width / 10;
                 int h = height / 6;
@@ -384,45 +424,46 @@ public class LevelStore {
 
                 paths.add(secondPath);
             }
-        } else if (level-- == 0) {
-            if (subLevel == 0) {
-                title = "2_half_rectangles_and_a_point";
-                GamePath path = new GamePath(parent, initializeAnimator(6000), 120);
-                path.moveTo(350, 120);
-                path.lineTo(width - 150, 120);
-                path.lineTo(width - 150, cY);
-                paths.add(path);
+        } else //noinspection UnusedAssignment
+            if (level-- == 0) {
+                if (subLevel == 0) {
+                    title = "2_half_rectangles_and_a_point";
+                    GamePath path = new GamePath(parent, initializeAnimator(6000), 120);
+                    path.moveTo(350, 120);
+                    path.lineTo(width - 150, 120);
+                    path.lineTo(width - 150, cY);
+                    paths.add(path);
 
-                GamePath secondPath = new GamePath(parent, initializeAnimator(6000), 120);
-                secondPath.moveTo(width - 350, height - 120);
-                secondPath.lineTo(150, height - 120);
-                secondPath.lineTo(150, cY);
-                paths.add(secondPath);
+                    GamePath secondPath = new GamePath(parent, initializeAnimator(6000), 120);
+                    secondPath.moveTo(width - 350, height - 120);
+                    secondPath.lineTo(150, height - 120);
+                    secondPath.lineTo(150, cY);
+                    paths.add(secondPath);
 
-                GamePath thirdPath = new GamePath(parent, initializeAnimator(4500), 120);
-                thirdPath.moveTo(cX - 1, cY);
-                thirdPath.lineTo(cX + 1, cY);
-                paths.add(thirdPath);
-            } else if (subLevel == 1) {
-                title = "3_lines_1_reversed";
-                GamePath path = new GamePath(parent, initializeAnimator(4500), 120);
-                path.moveTo(150, height / 4);
-                path.lineTo(width - 250, height / 4);
-                paths.add(path);
+                    GamePath thirdPath = new GamePath(parent, initializeAnimator(4500), 120);
+                    thirdPath.moveTo(cX - 1, cY);
+                    thirdPath.lineTo(cX + 1, cY);
+                    paths.add(thirdPath);
+                } else if (subLevel == 1) {
+                    title = "3_lines_1_reversed";
+                    GamePath path = new GamePath(parent, initializeAnimator(4500), 120);
+                    path.moveTo(150, height / 4);
+                    path.lineTo(width - 250, height / 4);
+                    paths.add(path);
 
-                GamePath secondPath = new GamePath(parent, initializeAnimator(4500), 120);
-                secondPath.moveTo(150, 3 * height / 4);
-                secondPath.lineTo(width - 250, 3 * height / 4);
-                paths.add(secondPath);
+                    GamePath secondPath = new GamePath(parent, initializeAnimator(4500), 120);
+                    secondPath.moveTo(150, 3 * height / 4);
+                    secondPath.lineTo(width - 250, 3 * height / 4);
+                    paths.add(secondPath);
 
-                GamePath thirdPath = new GamePath(parent, initializeAnimator(4500), 120);
-                thirdPath.moveTo(width - 150, cY);
-                thirdPath.lineTo(250, cY);
-                paths.add(thirdPath);
+                    GamePath thirdPath = new GamePath(parent, initializeAnimator(4500), 120);
+                    thirdPath.moveTo(width - 150, cY);
+                    thirdPath.lineTo(250, cY);
+                    paths.add(thirdPath);
+                }
+            } else {
+                throw new RuntimeException("Unknown level.");
             }
-        } else {
-            throw new RuntimeException("Unknown level.");
-        }
 
         for (GamePath path : paths) {
             path.build();
@@ -445,9 +486,7 @@ public class LevelStore {
     }
 
     private static void drawCircleQuadrant(GamePath path, int quadrant, int cX, int cY, float radius) {
-        // see http://spencermortensen.com/articles/bezier-circle/
-        float c = (float) 0.5519;
-        float cRadius = c * radius;
+        float cRadius = BEZIER_CIRCLE_CONSTANT * radius;
         if (quadrant == 0) {
             path.cubicTo(cX + radius, cY - cRadius, cX + cRadius, cY - radius, cX, cY - radius);
         } else if (quadrant == 1) {
