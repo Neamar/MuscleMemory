@@ -73,7 +73,7 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
-            if(getLevelStatus(prefs, position) != LEVEL_LOCKED) {
+            if (getLevelStatus(prefs, position) != LEVEL_LOCKED) {
                 Intent i = new Intent(v.getContext(), LevelActivity.class);
                 i.putExtra("level", position);
                 i.putExtra("subLevel", 1);
@@ -120,15 +120,13 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
     @Override
     public void onBindViewHolder(@NonNull final PackViewHolder holder, int position) {
         int status = getLevelStatus(prefs, position);
-        if(status == LEVEL_LOCKED) {
+        if (status == LEVEL_LOCKED) {
             holder.lockImageView.setImageResource(R.drawable.outline_lock_black_36);
             holder.lockImageView.setColorFilter(Color.RED);
-        }
-        else if(status == LEVEL_UNLOCKED){
+        } else if (status == LEVEL_UNLOCKED) {
             holder.lockImageView.setImageResource(R.drawable.outline_lock_open_black_36);
             holder.lockImageView.setColorFilter(null);
-        }
-        else {
+        } else {
             holder.lockImageView.setImageResource(R.drawable.outline_check_circle_black_36);
             holder.lockImageView.setColorFilter(Color.GREEN);
         }
@@ -139,7 +137,9 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
             @Override
             public void run() {
                 Bitmap bitmap = drawLevel(holder.getAdapterPosition(), 0);
-                Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, holder.firstSubLevel.getWidth(), holder.firstSubLevel.getHeight(), false);
+                int width = holder.firstSubLevel.getWidth();
+                int height = holder.firstSubLevel.getHeight();
+                Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, width != 0 ? width : 100, height != 0 ? height : 50, false);
                 holder.firstSubLevel.setImageBitmap(scaledBitmap);
             }
         });
@@ -148,7 +148,9 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
             @Override
             public void run() {
                 Bitmap bitmap = drawLevel(holder.getAdapterPosition(), 1);
-                Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, holder.secondSubLevel.getWidth(), holder.secondSubLevel.getHeight(), false);
+                int width = holder.secondSubLevel.getWidth();
+                int height = holder.secondSubLevel.getHeight();
+                Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, width != 0 ? width : 100, height != 0 ? height : 50, false);
                 holder.secondSubLevel.setImageBitmap(scaledBitmap);
             }
         });
@@ -174,8 +176,8 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
 
     public int getFirstUnlocked() {
         int count = getItemCount();
-        for(int i = 0; i < count; i++) {
-            if(getLevelStatus(prefs, i) == LEVEL_UNLOCKED) {
+        for (int i = 0; i < count; i++) {
+            if (getLevelStatus(prefs, i) == LEVEL_UNLOCKED) {
                 return i;
             }
         }
@@ -188,16 +190,16 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
         Set<String> finishedLevels = prefs.getStringSet("finished_levels", new HashSet<String>());
 
         // Finished levels are unlocked
-        if(finishedLevels.contains(Integer.toString(level))) {
+        if (finishedLevels.contains(Integer.toString(level))) {
             return LEVEL_FINISHED;
         }
         // Up to two unfinished levels can be played
         // (+1 because level is zero-based)
-        else if(finishedLevels.size() + 1 >= level) {
+        else if (finishedLevels.size() + 1 >= level) {
             isLocked = false;
         }
         // First time, you HAVE to play level 0
-        if(finishedLevels.size() == 0 && level != 0) {
+        if (finishedLevels.size() == 0 && level != 0) {
             isLocked = true;
         }
 
