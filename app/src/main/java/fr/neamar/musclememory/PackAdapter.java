@@ -49,9 +49,7 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
-    class PackViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener
-
-    {
+    class PackViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         // each data item is just a string in this case
         ImageView lockImageView;
         TextView levelName;
@@ -131,7 +129,7 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
             holder.lockImageView.setColorFilter(Color.GREEN);
         }
 
-        holder.levelName.setText(String.format("#%s", position + 1));
+        holder.levelName.setText(String.format(holder.levelName.getContext().getString(R.string.level_number), position + 1));
 
         holder.firstSubLevel.post(new Runnable() {
             @Override
