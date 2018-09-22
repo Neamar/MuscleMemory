@@ -394,18 +394,19 @@ public class LevelStore {
         } else if (level-- == 0) {
             if (subLevel == 0) {
                 title = "two_fingers_rectangle";
+                int margin = 150;
                 GamePath path = new GamePath(parent, initializeAnimator(6000));
-                path.moveTo(100, height - 100);
-                path.lineTo(100, 100);
-                path.lineTo(width - 200, 100);
-                path.lineTo(width - 200, height - 150);
+                path.moveTo(margin, height - margin);
+                path.lineTo(margin, margin);
+                path.lineTo(width - 2 * margin, margin);
+                path.lineTo(width - 2 * margin, height - 1.5f * margin);
                 paths.add(path);
 
                 GamePath secondPath = new GamePath(parent, initializeAnimator(6000));
-                secondPath.moveTo(width - 100, 100);
-                secondPath.lineTo(width - 100, height - 100);
-                secondPath.lineTo(200, height - 100);
-                secondPath.lineTo(200, 150);
+                secondPath.moveTo(width - margin, margin);
+                secondPath.lineTo(width - margin, height - margin);
+                secondPath.lineTo(2 * margin, height - margin);
+                secondPath.lineTo(2 * margin, 1.5f * margin);
                 paths.add(secondPath);
             } else if (subLevel == 1) {
                 int s = D / 6;

@@ -47,7 +47,6 @@ public class GamePath extends Path {
 
     public float fakeProgress = 0;
     private ValueAnimator fakeProgressAnimator;
-    private Path fakeProgressPath = new Path();
     public PointF fakeCirclePosition = new PointF();
 
 
@@ -142,6 +141,9 @@ public class GamePath extends Path {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 fakeProgress = (float) animation.getAnimatedValue();
+                if (fakeProgress * pathLength > 6 * circleRadius) {
+                    fakeProgressAnimator.start();
+                }
                 parent.invalidate();
             }
         });
@@ -170,8 +172,7 @@ public class GamePath extends Path {
 
             if (!currentlyCovered) {
                 lostColorAnimator = ValueAnimator.ofArgb((int) progressColorAnimator.getAnimatedValue(), LOST_COLOR, START_COLOR);
-            }
-            else {
+            } else {
                 lostColorAnimator = ValueAnimator.ofArgb((int) progressColorAnimator.getAnimatedValue(), START_COLOR);
             }
             lostColorAnimator.setDuration(500);
@@ -230,15 +231,12 @@ public class GamePath extends Path {
     }
 
     public void onDraw(Canvas canvas) {
-        getPointOnPath(fakeProgress, fakeCirclePosition);
-        canvas.drawCircle(fakeCirclePosition.x, fakeCirclePosition.y, 20, linePaint);
-        canvas.drawCircle(fakeCirclePosition.x, fakeCirclePosition.y, 20, blurredLinePaint);
-        getPointOnPath((fakeProgress + 0.33f) % 1, fakeCirclePosition);
-        canvas.drawCircle(fakeCirclePosition.x, fakeCirclePosition.y, 20, linePaint);
-        canvas.drawCircle(fakeCirclePosition.x, fakeCirclePosition.y, 20, blurredLinePaint);
-        getPointOnPath((fakeProgress + 0.66f) % 1, fakeCirclePosition);
-        canvas.drawCircle(fakeCirclePosition.x, fakeCirclePosition.y, 20, linePaint);
-        canvas.drawCircle(fakeCirclePosition.x, fakeCirclePosition.y, 20, blurredLinePaint);
+        if (progress == 0 && fakeProgress * pathLength < 3 * circleRadius) {
+            getPointOnPath(fakeProgress, fakeCirclePosition);
+            float fakeProgressRadius = fakeProgress * pathLength <= 1.5 * circleRadius ? 20 : 40 - 40 * (pathLength * fakeProgress)/(circleRadius * 3);
+            canvas.drawCircle(fakeCirclePosition.x, fakeCirclePosition.y, fakeProgressRadius, linePaint);
+            canvas.drawCircle(fakeCirclePosition.x, fakeCirclePosition.y, fakeProgressRadius, blurredLinePaint);
+        }
 
         partialPath.reset();
         pathMeasure.getSegment(progress * pathLength, pathLength, partialPath, true);
