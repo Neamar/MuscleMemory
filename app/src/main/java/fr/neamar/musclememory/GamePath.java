@@ -21,6 +21,7 @@ public class GamePath extends Path {
     public final static int CIRCLE_ORIGINAL_COLOR = Color.argb(248, 255, 255, 255);
 
     public float progress = 0;
+    private ValueAnimator progressAnimator;
 
     private Invalidatable parent;
     private Paint linePaint;
@@ -44,7 +45,10 @@ public class GamePath extends Path {
     private boolean currentlyCovered = false;
     public boolean pathCompleted = false;
 
-    private ValueAnimator progressAnimator;
+    public float fakeProgress = 0;
+    private ValueAnimator fakeProgressAnimator;
+    private Path fakeProgressPath = new Path();
+    public PointF fakeCirclePosition = new PointF();
 
 
     private ArrayList<Pair<Float, PointF>> progressPoints;
@@ -109,6 +113,10 @@ public class GamePath extends Path {
             }
         });
 
+        fakeProgressAnimator = progressAnimator.clone();
+        fakeProgressAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        fakeProgressAnimator.start();
+
         // Add listeners on the animation
         initializeAnimator();
     }
@@ -130,6 +138,13 @@ public class GamePath extends Path {
                 }
             }
         });
+        fakeProgressAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                fakeProgress = (float) animation.getAnimatedValue();
+                parent.invalidate();
+            }
+        });
     }
 
     public void build() {
@@ -149,6 +164,7 @@ public class GamePath extends Path {
             if (lostColorAnimator != null) {
                 lostColorAnimator.end();
             }
+            fakeProgressAnimator.end();
         }
         if (state == LevelView.LOST) {
 
@@ -172,6 +188,7 @@ public class GamePath extends Path {
             progressAnimator.cancel();
             progress = 0;
             progressColorAnimator.cancel();
+            fakeProgressAnimator.start();
 
         }
 
@@ -213,6 +230,16 @@ public class GamePath extends Path {
     }
 
     public void onDraw(Canvas canvas) {
+        getPointOnPath(fakeProgress, fakeCirclePosition);
+        canvas.drawCircle(fakeCirclePosition.x, fakeCirclePosition.y, 20, linePaint);
+        canvas.drawCircle(fakeCirclePosition.x, fakeCirclePosition.y, 20, blurredLinePaint);
+        getPointOnPath((fakeProgress + 0.33f) % 1, fakeCirclePosition);
+        canvas.drawCircle(fakeCirclePosition.x, fakeCirclePosition.y, 20, linePaint);
+        canvas.drawCircle(fakeCirclePosition.x, fakeCirclePosition.y, 20, blurredLinePaint);
+        getPointOnPath((fakeProgress + 0.66f) % 1, fakeCirclePosition);
+        canvas.drawCircle(fakeCirclePosition.x, fakeCirclePosition.y, 20, linePaint);
+        canvas.drawCircle(fakeCirclePosition.x, fakeCirclePosition.y, 20, blurredLinePaint);
+
         partialPath.reset();
         pathMeasure.getSegment(progress * pathLength, pathLength, partialPath, true);
         partialPath.rLineTo(0.0f, 0.0f); // workaround to display on hardware accelerated canvas as described in docs
