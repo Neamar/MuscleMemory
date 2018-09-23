@@ -410,24 +410,25 @@ public class LevelStore {
 
                 paths.add(secondPath);
             } else if (subLevel == 1) {
-                title = "yin_yang";
+                title = "square_in_circle";
                 int margin = 70;
                 int bigRadius = D - margin / 2;
-                int smallRadius = bigRadius / 2;
+                int smallRadius = bigRadius / 2 - margin;
                 GamePath path = new GamePath(parent, initializeAnimator(6000));
                 path.moveTo(cX, cY - bigRadius);
                 drawCircleQuadrant(path, 1, cX, cY, bigRadius);
                 drawCircleQuadrant(path, 2, cX, cY, bigRadius);
-                drawCircleQuadrant(path, 3, cX, cY + smallRadius, smallRadius);
-                drawCircleQuadrant(path, 0, cX, cY + smallRadius, smallRadius);
+                drawCircleQuadrant(path, 3, cX, cY, bigRadius);
+                drawCircleQuadrant(path, 0, cX, cY, bigRadius);
                 paths.add(path);
 
                 GamePath secondPath = new GamePath(parent, initializeAnimator(6000));
-                secondPath.moveTo(cX, cY + bigRadius);
-                drawCircleQuadrant(secondPath, 3, cX, cY, bigRadius);
-                drawCircleQuadrant(secondPath, 0, cX, cY, bigRadius);
-                drawCircleQuadrant(secondPath, 1, cX, cY - smallRadius, smallRadius);
-                drawCircleQuadrant(secondPath, 2, cX, cY - smallRadius, smallRadius);
+                secondPath.moveTo(cX, cY - smallRadius);
+                secondPath.lineTo(cX-smallRadius, cY - smallRadius);
+                secondPath.lineTo(cX-smallRadius, cY + smallRadius);
+                secondPath.lineTo(cX+smallRadius, cY + smallRadius);
+                secondPath.lineTo(cX+smallRadius, cY - smallRadius);
+                secondPath.lineTo(cX, cY - smallRadius);
 
                 paths.add(secondPath);
             }
@@ -564,7 +565,7 @@ public class LevelStore {
     }
 
     public static int getLevelCount() {
-        return 15;
+        return 16;
     }
 
     private static ValueAnimator initializeAnimator(int duration) {
