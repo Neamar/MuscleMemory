@@ -343,6 +343,93 @@ public class LevelStore {
             }
         } else if (level-- == 0) {
             if (subLevel == 0) {
+                title = "candy_same_side";
+                int w = width / 10;
+                int h = height / 6;
+                GamePath path = new GamePath(parent, initializeAnimator(8000));
+                path.moveTo(w, 5 * h);
+                path.lineTo(w, h);
+                path.lineTo(3 * w, h);
+                path.lineTo(4 * w, 3 * h);
+                path.lineTo(6 * w, 3 * h);
+                path.lineTo(7 * w, 5 * h);
+                paths.add(path);
+
+                GamePath secondPath = new GamePath(parent, initializeAnimator(8000));
+                secondPath.moveTo(3 * w, 5 * h);
+                secondPath.lineTo(4 * w, 3 * h);
+                secondPath.lineTo(6 * w, 3 * h);
+                secondPath.lineTo(7 * w, h);
+                secondPath.lineTo(9 * w, h);
+                secondPath.lineTo(9 * w, 5 * h);
+
+
+                paths.add(secondPath);
+            } else if (subLevel == 1) {
+                title = "candy_cross";
+                int w = width / 13;
+                int h = height / 6;
+                GamePath path = new GamePath(parent, initializeAnimator(6000));
+                path.moveTo(2 * w, 2 * h);
+                path.lineTo(3 * w, 3 * h);
+                path.lineTo(7 * w, 3 * h);
+                path.lineTo(9 * w, 5 * h);
+                path.lineTo(12 * w, 5 * h);
+                paths.add(path);
+
+                GamePath secondPath = new GamePath(parent, initializeAnimator(6000));
+                secondPath.moveTo(12 * w, 5 * h);
+                secondPath.lineTo(12 * w, h);
+                secondPath.lineTo(9 * w, h);
+                secondPath.lineTo(7 * w, 3 * h);
+                secondPath.lineTo(3 * w, 3 * h);
+                secondPath.lineTo(2 * w, 4 * h);
+
+                paths.add(secondPath);
+            }
+        } else if (level-- == 0) {
+            if (subLevel == 0) {
+                title = "one_circle_two_fingers";
+                int margin = 70;
+                float bigRadius = D - margin / 2;
+                float smallRadius = bigRadius / 2;
+                GamePath path = new GamePath(parent, initializeAnimator(4000));
+                path.moveTo(cX, cY - bigRadius);
+                drawCircleQuadrant(path, 1, cX, cY, bigRadius);
+                drawCircleQuadrant(path, 2, cX, cY, bigRadius);
+                paths.add(path);
+
+                GamePath secondPath = new GamePath(parent, initializeAnimator(4000));
+                secondPath.moveTo(cX, cY + bigRadius);
+                drawCircleQuadrant(secondPath, 3, cX, cY, bigRadius);
+                drawCircleQuadrant(secondPath, 0, cX, cY, bigRadius);
+
+                paths.add(secondPath);
+            } else if (subLevel == 1) {
+                title = "square_in_circle";
+                int margin = 70;
+                int bigRadius = D - margin / 2;
+                int smallRadius = bigRadius / 2 - margin;
+                GamePath path = new GamePath(parent, initializeAnimator(6000));
+                path.moveTo(cX, cY - bigRadius);
+                drawCircleQuadrant(path, 1, cX, cY, bigRadius);
+                drawCircleQuadrant(path, 2, cX, cY, bigRadius);
+                drawCircleQuadrant(path, 3, cX, cY, bigRadius);
+                drawCircleQuadrant(path, 0, cX, cY, bigRadius);
+                paths.add(path);
+
+                GamePath secondPath = new GamePath(parent, initializeAnimator(6000));
+                secondPath.moveTo(cX, cY - smallRadius);
+                secondPath.lineTo(cX - smallRadius, cY - smallRadius);
+                secondPath.lineTo(cX - smallRadius, cY + smallRadius);
+                secondPath.lineTo(cX + smallRadius, cY + smallRadius);
+                secondPath.lineTo(cX + smallRadius, cY - smallRadius);
+                secondPath.lineTo(cX, cY - smallRadius);
+
+                paths.add(secondPath);
+            }
+        } else if (level-- == 0) {
+            if (subLevel == 0) {
                 title = "sawtooth_square_wave_one_finger";
                 int repetitions = 6;
                 float amplitude = 1.5f * cY / 4;
@@ -393,47 +480,6 @@ public class LevelStore {
             }
         } else if (level-- == 0) {
             if (subLevel == 0) {
-                title = "one_circle_two_fingers";
-                int margin = 70;
-                float bigRadius = D - margin / 2;
-                float smallRadius = bigRadius / 2;
-                GamePath path = new GamePath(parent, initializeAnimator(4000));
-                path.moveTo(cX, cY - bigRadius);
-                drawCircleQuadrant(path, 1, cX, cY, bigRadius);
-                drawCircleQuadrant(path, 2, cX, cY, bigRadius);
-                paths.add(path);
-
-                GamePath secondPath = new GamePath(parent, initializeAnimator(4000));
-                secondPath.moveTo(cX, cY + bigRadius);
-                drawCircleQuadrant(secondPath, 3, cX, cY, bigRadius);
-                drawCircleQuadrant(secondPath, 0, cX, cY, bigRadius);
-
-                paths.add(secondPath);
-            } else if (subLevel == 1) {
-                title = "square_in_circle";
-                int margin = 70;
-                int bigRadius = D - margin / 2;
-                int smallRadius = bigRadius / 2 - margin;
-                GamePath path = new GamePath(parent, initializeAnimator(6000));
-                path.moveTo(cX, cY - bigRadius);
-                drawCircleQuadrant(path, 1, cX, cY, bigRadius);
-                drawCircleQuadrant(path, 2, cX, cY, bigRadius);
-                drawCircleQuadrant(path, 3, cX, cY, bigRadius);
-                drawCircleQuadrant(path, 0, cX, cY, bigRadius);
-                paths.add(path);
-
-                GamePath secondPath = new GamePath(parent, initializeAnimator(6000));
-                secondPath.moveTo(cX, cY - smallRadius);
-                secondPath.lineTo(cX-smallRadius, cY - smallRadius);
-                secondPath.lineTo(cX-smallRadius, cY + smallRadius);
-                secondPath.lineTo(cX+smallRadius, cY + smallRadius);
-                secondPath.lineTo(cX+smallRadius, cY - smallRadius);
-                secondPath.lineTo(cX, cY - smallRadius);
-
-                paths.add(secondPath);
-            }
-        } else if (level-- == 0) {
-            if (subLevel == 0) {
                 title = "two_fingers_rectangle";
                 int margin = 150;
                 GamePath path = new GamePath(parent, initializeAnimator(6000));
@@ -468,52 +514,6 @@ public class LevelStore {
                 drawCircleQuadrant(secondPath, 0, cX, cY, 4 * s);
                 secondPath.cubicTo(cX - 5 * s * BEZIER_CIRCLE_CONSTANT, cY - 4 * s, cX - 5 * s, cY - 4 * s * BEZIER_CIRCLE_CONSTANT, cX - 5 * s, cY);
                 drawCircleQuadrant(secondPath, 2, cX, cY, 5 * s);
-                paths.add(secondPath);
-            }
-        } else if (level-- == 0) {
-            if (subLevel == 0) {
-                title = "candy_same_side";
-                int w = width / 10;
-                int h = height / 6;
-                GamePath path = new GamePath(parent, initializeAnimator(8000));
-                path.moveTo(w, 5 * h);
-                path.lineTo(w, h);
-                path.lineTo(3 * w, h);
-                path.lineTo(4 * w, 3 * h);
-                path.lineTo(6 * w, 3 * h);
-                path.lineTo(7 * w, 5 * h);
-                paths.add(path);
-
-                GamePath secondPath = new GamePath(parent, initializeAnimator(8000));
-                secondPath.moveTo(3 * w, 5 * h);
-                secondPath.lineTo(4 * w, 3 * h);
-                secondPath.lineTo(6 * w, 3 * h);
-                secondPath.lineTo(7 * w, h);
-                secondPath.lineTo(9 * w, h);
-                secondPath.lineTo(9 * w, 5 * h);
-
-
-                paths.add(secondPath);
-            } else if (subLevel == 1) {
-                title = "candy_cross";
-                int w = width / 13;
-                int h = height / 6;
-                GamePath path = new GamePath(parent, initializeAnimator(6000));
-                path.moveTo(2 * w, 2 * h);
-                path.lineTo(3 * w, 3 * h);
-                path.lineTo(7 * w, 3 * h);
-                path.lineTo(9 * w, 5 * h);
-                path.lineTo(12 * w, 5 * h);
-                paths.add(path);
-
-                GamePath secondPath = new GamePath(parent, initializeAnimator(6000));
-                secondPath.moveTo(12 * w, 5 * h);
-                secondPath.lineTo(12 * w, h);
-                secondPath.lineTo(9 * w, h);
-                secondPath.lineTo(7 * w, 3 * h);
-                secondPath.lineTo(3 * w, 3 * h);
-                secondPath.lineTo(2 * w, 4 * h);
-
                 paths.add(secondPath);
             }
         } else //noinspection UnusedAssignment
