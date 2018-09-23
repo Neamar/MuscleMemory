@@ -74,7 +74,7 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
             if (getLevelStatus(prefs, position) != LEVEL_LOCKED) {
                 Intent i = new Intent(v.getContext(), LevelActivity.class);
                 i.putExtra("level", position);
-                i.putExtra("subLevel", 0);
+                i.putExtra("subLevel", 1);
                 v.getContext().startActivity(i);
             }
         }

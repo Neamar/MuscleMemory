@@ -393,6 +393,46 @@ public class LevelStore {
             }
         } else if (level-- == 0) {
             if (subLevel == 0) {
+                title = "one_circle_two_fingers";
+                int margin = 70;
+                float bigRadius = D - margin / 2;
+                float smallRadius = bigRadius / 2;
+                GamePath path = new GamePath(parent, initializeAnimator(4000));
+                path.moveTo(cX, cY - bigRadius);
+                drawCircleQuadrant(path, 1, cX, cY, bigRadius);
+                drawCircleQuadrant(path, 2, cX, cY, bigRadius);
+                paths.add(path);
+
+                GamePath secondPath = new GamePath(parent, initializeAnimator(4000));
+                secondPath.moveTo(cX, cY + bigRadius);
+                drawCircleQuadrant(secondPath, 3, cX, cY, bigRadius);
+                drawCircleQuadrant(secondPath, 0, cX, cY, bigRadius);
+
+                paths.add(secondPath);
+            } else if (subLevel == 1) {
+                title = "yin_yang";
+                int margin = 70;
+                int bigRadius = D - margin / 2;
+                int smallRadius = bigRadius / 2;
+                GamePath path = new GamePath(parent, initializeAnimator(6000));
+                path.moveTo(cX, cY - bigRadius);
+                drawCircleQuadrant(path, 1, cX, cY, bigRadius);
+                drawCircleQuadrant(path, 2, cX, cY, bigRadius);
+                drawCircleQuadrant(path, 3, cX, cY + smallRadius, smallRadius);
+                drawCircleQuadrant(path, 0, cX, cY + smallRadius, smallRadius);
+                paths.add(path);
+
+                GamePath secondPath = new GamePath(parent, initializeAnimator(6000));
+                secondPath.moveTo(cX, cY + bigRadius);
+                drawCircleQuadrant(secondPath, 3, cX, cY, bigRadius);
+                drawCircleQuadrant(secondPath, 0, cX, cY, bigRadius);
+                drawCircleQuadrant(secondPath, 1, cX, cY - smallRadius, smallRadius);
+                drawCircleQuadrant(secondPath, 2, cX, cY - smallRadius, smallRadius);
+
+                paths.add(secondPath);
+            }
+        } else if (level-- == 0) {
+            if (subLevel == 0) {
                 title = "two_fingers_rectangle";
                 int margin = 150;
                 GamePath path = new GamePath(parent, initializeAnimator(6000));
@@ -524,7 +564,7 @@ public class LevelStore {
     }
 
     public static int getLevelCount() {
-        return 14;
+        return 15;
     }
 
     private static ValueAnimator initializeAnimator(int duration) {
