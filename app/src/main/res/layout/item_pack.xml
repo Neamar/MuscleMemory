@@ -1,30 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="300dp"
-    android:gravity="center"
-    android:padding="30dp"
+    android:layout_height="match_parent"
     android:background="?android:attr/selectableItemBackground"
-    android:layout_height="match_parent">
+    android:gravity="center"
+    android:padding="30dp">
 
     <TextView
         android:id="@+id/levelTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginBottom="6dp"
         android:text="@string/level_number" />
 
 
     <ImageView
         android:id="@+id/lockImageView"
-        android:layout_below="@+id/levelTitle"
         android:layout_width="wrap_content"
-        android:contentDescription="@string/level_state"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/levelTitle"
         android:layout_centerHorizontal="true"
+        android:contentDescription="@string/level_state"
         app:srcCompat="@drawable/outline_lock_black_36" />
 
     <LinearLayout
@@ -40,8 +39,8 @@
             android:layout_height="200dp"
             android:layout_marginTop="20dp"
             android:layout_weight="1"
-            app:srcCompat="@android:color/black"
-            android:contentDescription="@string/first_level_preview" />
+            android:contentDescription="@string/first_level_preview"
+            app:srcCompat="@android:color/black" />
 
         <ImageView
             android:id="@+id/secondSubLevel"
@@ -49,8 +48,8 @@
             android:layout_height="200dp"
             android:layout_marginTop="20dp"
             android:layout_weight="1"
-            app:srcCompat="@android:color/black"
-            android:contentDescription="@string/second_level_preview" />
+            android:contentDescription="@string/second_level_preview"
+            app:srcCompat="@android:color/black" />
     </LinearLayout>
 
 </RelativeLayout>

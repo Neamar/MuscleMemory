@@ -278,13 +278,17 @@ public class GamePath extends Path {
         progressAnimator.cancel();
         pulseAnimator.removeAllUpdateListeners();
         pulseAnimator.cancel();
-        dyingPulseAnimator.removeAllUpdateListeners();
-        dyingPulseAnimator.cancel();
         progressColorAnimator.removeAllUpdateListeners();
         progressColorAnimator.cancel();
-        lostColorAnimator.removeAllUpdateListeners();
-        lostColorAnimator.cancel();
         tracerProgressAnimator.removeAllUpdateListeners();
         tracerProgressAnimator.cancel();
+        if(dyingPulseAnimator != null) {
+            dyingPulseAnimator.removeAllUpdateListeners();
+            dyingPulseAnimator.cancel();
+        }
+        if(lostColorAnimator != null) {
+            lostColorAnimator.removeAllUpdateListeners();
+            lostColorAnimator.cancel();
+        }
     }
 }

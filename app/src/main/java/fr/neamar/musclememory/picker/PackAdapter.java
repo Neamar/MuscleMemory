@@ -1,6 +1,7 @@
 package fr.neamar.musclememory.picker;
 
-import android.content.Context;
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -21,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -42,6 +44,8 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
     private final Paint fillCirclePaint;
 
     private final SharedPreferences prefs;
+
+    private final WeakReference<Activity> activity;
 
     static class DummyInvalidatable implements Invalidatable {
         @Override
@@ -86,7 +90,17 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
                 Intent i = new Intent(v.getContext(), LevelActivity.class);
                 i.putExtra("level", position);
                 i.putExtra("subLevel", 0);
-                v.getContext().startActivity(i);
+                Activity a = activity.get();
+                if(a != null) {
+                    ActivityOptions options = ActivityOptions
+                            .makeScaleUpAnimation(firstSubLevel, 0, 0, firstSubLevel.getWidth(), firstSubLevel.getHeight());
+                    // start the new activity
+                    a.startActivity(i, options.toBundle());
+                }
+                else {
+                    // Should never happen!
+                    v.getContext().startActivity(i);
+                }
             }
             else {
                 ScaleAnimation anim = new ScaleAnimation(1, 1.5f, 1, 1.5f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -108,10 +122,10 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
         }
     }
 
-    PackAdapter(Context context, int screenWidth, int screenHeight) {
+    PackAdapter(Activity activity, int screenWidth, int screenHeight) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
-        prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        prefs = PreferenceManager.getDefaultSharedPreferences(activity);
 
         pathPaint.setColor(GamePath.CIRCLE_ORIGINAL_COLOR);
         pathPaint.setDither(true);
@@ -123,6 +137,8 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
         fillCirclePaint = new Paint();
         fillCirclePaint.setColor(Color.BLACK);
         fillCirclePaint.setStyle(Paint.Style.FILL);
+
+        this.activity = new WeakReference<>(activity);
     }
 
     // Create new views (invoked by the layout manager)
