@@ -44,10 +44,11 @@ public class GamePath extends Path {
     private boolean currentlyCovered = false;
     boolean pathCompleted = false;
 
-    private float fakeProgress = 0;
-    private ValueAnimator fakeProgressAnimator;
-    private PointF fakeCirclePosition = new PointF();
-    float fakeProgressCurrentPlayTime;
+    // Small circle to tell you how fast the level will be
+    private float tracerProgress = 0;
+    private ValueAnimator tracerProgressAnimator;
+    private PointF tracerCirclePosition = new PointF();
+    float tracerCurrentPlayTime;
 
 
     public GamePath(Invalidatable parent, ValueAnimator progressAnimator) {
@@ -110,9 +111,9 @@ public class GamePath extends Path {
             }
         });
 
-        fakeProgressAnimator = progressAnimator.clone();
-        fakeProgressAnimator.setRepeatCount(ValueAnimator.INFINITE);
-        fakeProgressAnimator.start();
+        tracerProgressAnimator = progressAnimator.clone();
+        tracerProgressAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        tracerProgressAnimator.start();
 
         // Add listeners on the animation
         initializeAnimator();
@@ -135,16 +136,19 @@ public class GamePath extends Path {
                 }
             }
         });
-        fakeProgressAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        tracerProgressAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                fakeProgress = (float) animation.getAnimatedValue();
-                fakeProgressCurrentPlayTime = fakeProgressAnimator.getCurrentPlayTime();
+                tracerProgress = (float) animation.getAnimatedValue();
+                tracerCurrentPlayTime = tracerProgressAnimator.getCurrentPlayTime();
                 // Restart animation after a certain delay
-                if (animation.getCurrentPlayTime() > FAKE_PROGRESS_DURATION + 500) {
-                    fakeProgressAnimator.start();
+                if (tracerCurrentPlayTime > FAKE_PROGRESS_DURATION + 500) {
+                    tracerProgressAnimator.start();
                 }
-                parent.invalidate();
+                else if(tracerCurrentPlayTime <= FAKE_PROGRESS_DURATION) {
+                    // Draw the tracer
+                    parent.invalidate();
+                }
             }
         });
     }
@@ -166,7 +170,7 @@ public class GamePath extends Path {
             if (lostColorAnimator != null) {
                 lostColorAnimator.end();
             }
-            fakeProgressAnimator.end();
+            tracerProgressAnimator.end();
         }
         if (state == LevelView.LOST) {
 
@@ -189,7 +193,7 @@ public class GamePath extends Path {
             progressAnimator.cancel();
             progress = 0;
             progressColorAnimator.cancel();
-            fakeProgressAnimator.start();
+            tracerProgressAnimator.start();
 
         }
 
@@ -242,11 +246,11 @@ public class GamePath extends Path {
         partialPath.rLineTo(0.0f, 0.0f); // workaround to display on hardware accelerated canvas as described in docs
         canvas.drawPath(this, linePaint);
 
-        if (progress == 0 && fakeProgressCurrentPlayTime < FAKE_PROGRESS_DURATION) {
-            getPointOnPath(fakeProgress, fakeCirclePosition);
-            float fakeProgressRadius = fakeProgressCurrentPlayTime <= FAKE_PROGRESS_DURATION / 2 ? 20 : 40 * (FAKE_PROGRESS_DURATION - fakeProgressCurrentPlayTime)/FAKE_PROGRESS_DURATION;
-            canvas.drawCircle(fakeCirclePosition.x, fakeCirclePosition.y, fakeProgressRadius, linePaint);
-            canvas.drawCircle(fakeCirclePosition.x, fakeCirclePosition.y, fakeProgressRadius, blurredLinePaint);
+        if (progress == 0 && tracerCurrentPlayTime < FAKE_PROGRESS_DURATION) {
+            getPointOnPath(tracerProgress, tracerCirclePosition);
+            float fakeProgressRadius = tracerCurrentPlayTime <= FAKE_PROGRESS_DURATION / 2 ? 20 : 40 * (FAKE_PROGRESS_DURATION - tracerCurrentPlayTime)/FAKE_PROGRESS_DURATION;
+            canvas.drawCircle(tracerCirclePosition.x, tracerCirclePosition.y, fakeProgressRadius, linePaint);
+            canvas.drawCircle(tracerCirclePosition.x, tracerCirclePosition.y, fakeProgressRadius, blurredLinePaint);
         }
 
         canvas.drawPath(partialPath, blurredLinePaint);
