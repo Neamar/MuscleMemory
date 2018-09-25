@@ -30,7 +30,9 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
 
     private final int screenWidth;
     private final int screenHeight;
-    private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint pathPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint fillCirclePaint;
+
     private final SharedPreferences prefs;
 
     static class DummyInvalidatable implements Invalidatable {
@@ -96,12 +98,16 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
         this.screenHeight = screenHeight;
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
-        paint.setColor(GamePath.CIRCLE_ORIGINAL_COLOR);
-        paint.setDither(true);
-        paint.setStrokeWidth(10f);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeJoin(Paint.Join.ROUND);
-        paint.setStrokeCap(Paint.Cap.ROUND);
+        pathPaint.setColor(GamePath.CIRCLE_ORIGINAL_COLOR);
+        pathPaint.setDither(true);
+        pathPaint.setStrokeWidth(10f);
+        pathPaint.setStyle(Paint.Style.STROKE);
+        pathPaint.setStrokeJoin(Paint.Join.ROUND);
+        pathPaint.setStrokeCap(Paint.Cap.ROUND);
+
+        fillCirclePaint = new Paint();
+        fillCirclePaint.setColor(Color.BLACK);
+        fillCirclePaint.setStyle(Paint.Style.FILL);
     }
 
     // Create new views (invoked by the layout manager)
@@ -132,41 +138,30 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
 
         holder.levelName.setText(String.format(holder.levelName.getContext().getString(R.string.level_number), position + 1));
 
-        holder.firstSubLevel.post(new Runnable() {
-            @Override
-            public void run() {
-                Bitmap bitmap = drawLevel(holder.getAdapterPosition(), 0);
-                int width = holder.firstSubLevel.getWidth();
-                int height = holder.firstSubLevel.getHeight();
-                Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, width != 0 ? width : 100, height != 0 ? height : 50, false);
-                holder.firstSubLevel.setImageBitmap(scaledBitmap);
-            }
-        });
-
-        holder.secondSubLevel.post(new Runnable() {
-            @Override
-            public void run() {
-                Bitmap bitmap = drawLevel(holder.getAdapterPosition(), 1);
-                int width = holder.secondSubLevel.getWidth();
-                int height = holder.secondSubLevel.getHeight();
-                Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, width != 0 ? width : 100, height != 0 ? height : 50, false);
-                holder.secondSubLevel.setImageBitmap(scaledBitmap);
-            }
-        });
+        drawLevel(position, 0, holder.firstSubLevel);
+        drawLevel(position, 1, holder.secondSubLevel);
     }
 
-    private Bitmap drawLevel(int level, int subLevel) {
+    private void drawLevel(int level, int subLevel, ImageView imageView) {
         Bitmap bitmap = Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         canvas.drawColor(Color.BLACK);
         Pair<String, ArrayList<GamePath>> levelData = LevelStore.getPathsForLevel(dummyInvalidatable, screenWidth, screenHeight, level, subLevel);
+
+        // Draw path
         for (GamePath p : levelData.second) {
-            canvas.drawPath(p, paint);
-            PointF start = p.getStartingPoint();
-            canvas.drawCircle(start.x, start.y, p.circleRadius / 2, paint);
+            canvas.drawPath(p, pathPaint);
         }
 
-        return bitmap;
+        // Draw circle on top (after the path)
+        for (GamePath p : levelData.second) {
+            PointF start = p.getStartingPoint();
+            canvas.drawCircle(start.x, start.y, p.circleRadius / 2, fillCirclePaint);
+            canvas.drawCircle(start.x, start.y, p.circleRadius / 2, pathPaint);
+        }
+
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, screenWidth / 3, screenHeight / 3, false);
+        imageView.setImageBitmap(scaledBitmap);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
