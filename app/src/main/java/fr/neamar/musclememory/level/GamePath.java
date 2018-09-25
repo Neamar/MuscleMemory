@@ -17,6 +17,8 @@ public class GamePath extends Path {
     private final static int LOST_COLOR = Color.argb(235, 200, 30, 30);
     public final static int CIRCLE_ORIGINAL_COLOR = Color.argb(248, 255, 255, 255);
 
+    private final static int FAKE_PROGRESS_DURATION = 1000;
+
     float progress = 0;
     private ValueAnimator progressAnimator;
 
@@ -45,7 +47,9 @@ public class GamePath extends Path {
     private float fakeProgress = 0;
     private ValueAnimator fakeProgressAnimator;
     private PointF fakeCirclePosition = new PointF();
-    
+    float fakeProgressCurrentPlayTime;
+
+
     public GamePath(Invalidatable parent, ValueAnimator progressAnimator) {
         this(parent, progressAnimator, 90);
     }
@@ -135,7 +139,9 @@ public class GamePath extends Path {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 fakeProgress = (float) animation.getAnimatedValue();
-                if (fakeProgress * pathLength > 6 * circleRadius) {
+                fakeProgressCurrentPlayTime = fakeProgressAnimator.getCurrentPlayTime();
+                // Restart animation after a certain delay
+                if (animation.getCurrentPlayTime() > FAKE_PROGRESS_DURATION + 500) {
                     fakeProgressAnimator.start();
                 }
                 parent.invalidate();
@@ -231,18 +237,20 @@ public class GamePath extends Path {
     }
 
     void onDrawPath(Canvas canvas) {
-        if (progress == 0 && fakeProgress * pathLength < 3 * circleRadius) {
-            getPointOnPath(fakeProgress, fakeCirclePosition);
-            float fakeProgressRadius = fakeProgress * pathLength <= 1.5 * circleRadius ? 20 : 40 - 40 * (pathLength * fakeProgress) / (circleRadius * 3);
-            canvas.drawCircle(fakeCirclePosition.x, fakeCirclePosition.y, fakeProgressRadius, linePaint);
-            canvas.drawCircle(fakeCirclePosition.x, fakeCirclePosition.y, fakeProgressRadius, blurredLinePaint);
-        }
-
         partialPath.reset();
         pathMeasure.getSegment(progress * pathLength, pathLength, partialPath, true);
         partialPath.rLineTo(0.0f, 0.0f); // workaround to display on hardware accelerated canvas as described in docs
         canvas.drawPath(this, linePaint);
+
+        if (progress == 0 && fakeProgressCurrentPlayTime < FAKE_PROGRESS_DURATION) {
+            getPointOnPath(fakeProgress, fakeCirclePosition);
+            float fakeProgressRadius = fakeProgressCurrentPlayTime <= FAKE_PROGRESS_DURATION / 2 ? 20 : 40 * (FAKE_PROGRESS_DURATION - fakeProgressCurrentPlayTime)/FAKE_PROGRESS_DURATION;
+            canvas.drawCircle(fakeCirclePosition.x, fakeCirclePosition.y, fakeProgressRadius, linePaint);
+            canvas.drawCircle(fakeCirclePosition.x, fakeCirclePosition.y, fakeProgressRadius, blurredLinePaint);
+        }
+
         canvas.drawPath(partialPath, blurredLinePaint);
+
     }
 
     void onDrawCircle(Canvas canvas) {
