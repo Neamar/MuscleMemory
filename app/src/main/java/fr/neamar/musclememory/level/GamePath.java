@@ -17,7 +17,8 @@ public class GamePath extends Path {
     private final static int LOST_COLOR = Color.argb(235, 200, 30, 30);
     public final static int CIRCLE_ORIGINAL_COLOR = Color.argb(248, 255, 255, 255);
 
-    private final static int FAKE_PROGRESS_DURATION = 1000;
+    private final static int TRACER_DURATION = 1000;
+    private final static int TRACER_COOLDOWN = 500;
 
     float progress = 0;
     private ValueAnimator progressAnimator;
@@ -142,10 +143,10 @@ public class GamePath extends Path {
                 tracerProgress = (float) animation.getAnimatedValue();
                 tracerCurrentPlayTime = tracerProgressAnimator.getCurrentPlayTime();
                 // Restart animation after a certain delay
-                if (tracerCurrentPlayTime > FAKE_PROGRESS_DURATION + 500) {
+                if (tracerCurrentPlayTime > TRACER_DURATION + TRACER_COOLDOWN) {
                     tracerProgressAnimator.start();
                 }
-                else if(tracerCurrentPlayTime <= FAKE_PROGRESS_DURATION) {
+                else if(tracerCurrentPlayTime <= TRACER_DURATION) {
                     // Draw the tracer
                     parent.invalidate();
                 }
@@ -171,9 +172,11 @@ public class GamePath extends Path {
                 lostColorAnimator.end();
             }
             tracerProgressAnimator.end();
+            // .end() finishes the animation, but we want to make sure
+            // we don't draw the tracer at the end before progressAnimator starts
+            tracerCurrentPlayTime = TRACER_DURATION * 2;
         }
         if (state == LevelView.LOST) {
-
             if (!currentlyCovered) {
                 lostColorAnimator = ValueAnimator.ofArgb((int) progressColorAnimator.getAnimatedValue(), LOST_COLOR, START_COLOR);
             } else {
@@ -246,9 +249,9 @@ public class GamePath extends Path {
         partialPath.rLineTo(0.0f, 0.0f); // workaround to display on hardware accelerated canvas as described in docs
         canvas.drawPath(this, linePaint);
 
-        if (progress == 0 && tracerCurrentPlayTime < FAKE_PROGRESS_DURATION) {
+        if (progress == 0 && tracerCurrentPlayTime < TRACER_DURATION) {
             getPointOnPath(tracerProgress, tracerCirclePosition);
-            float fakeProgressRadius = tracerCurrentPlayTime <= FAKE_PROGRESS_DURATION / 2 ? 20 : 40 * (FAKE_PROGRESS_DURATION - tracerCurrentPlayTime)/FAKE_PROGRESS_DURATION;
+            float fakeProgressRadius = tracerCurrentPlayTime <= TRACER_DURATION / 2 ? 20 : 40 * (TRACER_DURATION - tracerCurrentPlayTime)/ TRACER_DURATION;
             canvas.drawCircle(tracerCirclePosition.x, tracerCirclePosition.y, fakeProgressRadius, linePaint);
             canvas.drawCircle(tracerCirclePosition.x, tracerCirclePosition.y, fakeProgressRadius, blurredLinePaint);
         }

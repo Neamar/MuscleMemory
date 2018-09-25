@@ -51,7 +51,12 @@ public class LevelView extends TouchEventView implements Invalidatable {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         super.onTouchEvent(event);
+        ensureAllCirclesCovered();
 
+        return true;
+    }
+
+    private void ensureAllCirclesCovered() {
         // Do we have all circles covered?
         boolean allCirclesCovered = true;
         for(GamePath path: paths) {
@@ -84,8 +89,6 @@ public class LevelView extends TouchEventView implements Invalidatable {
                 reset();
             }
         }
-
-        return true;
     }
 
     public void start() {

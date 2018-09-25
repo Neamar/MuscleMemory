@@ -20,10 +20,9 @@ public class TouchEventView extends View {
             Color.LTGRAY, Color.YELLOW };
 
     protected SparseArray<PointF> activePointers;
+
     private Paint mPaint;
-
     private Paint textPaint;
-
 
     public TouchEventView(Context context, AttributeSet attrs) {
         super(context, attrs);
