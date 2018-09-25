@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Muscle Memory</string>
-
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="level_number">Level #%d</string>
+    <string name="level_state">Level state</string>
+    <string name="first_level_preview">First level preview</string>
+    <string name="second_level_preview">First level preview</string>
 </resources>

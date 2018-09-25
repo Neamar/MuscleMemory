@@ -49,7 +49,7 @@ public class GamePath extends Path {
     private float tracerProgress = 0;
     private ValueAnimator tracerProgressAnimator;
     private PointF tracerCirclePosition = new PointF();
-    float tracerCurrentPlayTime;
+    private float tracerCurrentPlayTime;
 
 
     public GamePath(Invalidatable parent, ValueAnimator progressAnimator) {
@@ -270,5 +270,21 @@ public class GamePath extends Path {
 
     long getDuration() {
         return progressAnimator.getDuration();
+    }
+
+    void onStop() {
+        // Clean up animations to make sure future levels can have all CPU available
+        progressAnimator.removeAllUpdateListeners();
+        progressAnimator.cancel();
+        pulseAnimator.removeAllUpdateListeners();
+        pulseAnimator.cancel();
+        dyingPulseAnimator.removeAllUpdateListeners();
+        dyingPulseAnimator.cancel();
+        progressColorAnimator.removeAllUpdateListeners();
+        progressColorAnimator.cancel();
+        lostColorAnimator.removeAllUpdateListeners();
+        lostColorAnimator.cancel();
+        tracerProgressAnimator.removeAllUpdateListeners();
+        tracerProgressAnimator.cancel();
     }
 }

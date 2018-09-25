@@ -22,7 +22,7 @@ import fr.neamar.musclememory.R;
 public class LevelActivity extends AppCompatActivity {
     protected int level;
     protected int subLevel;
-
+    private LevelView levelView;
     protected int attemptsCountDuringSession = 0;
     protected SharedPreferences prefs;
 
@@ -36,7 +36,7 @@ public class LevelActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_level);
 
-        final LevelView levelView = findViewById(R.id.levelView);
+        levelView = findViewById(R.id.levelView);
 
         levelView.post(new Runnable() {
             @Override
@@ -131,6 +131,7 @@ public class LevelActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
+        levelView.onStop();
         Identify identify = new Identify().set("attempts", prefs.getInt("attempts", 0));
         Amplitude.getInstance().identify(identify);
         super.onStop();

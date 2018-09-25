@@ -1,5 +1,6 @@
 package fr.neamar.musclememory.level;
 
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -27,9 +28,28 @@ public class LevelView extends TouchEventView implements Invalidatable {
     public String title = "";
     private long startDate;
 
+    private ValueAnimator antiCheatAnimator;
+
     public LevelView(Context context, AttributeSet attrs) {
         super(context, attrs);
         currentText = "Touch all circles to start.";
+
+        // We're just looking for a ticker on the same frequency that we move our circle
+        // otherwise, if you don't move your finger at all, the circles would keep moving
+        // and we'd never notice that you're now outside
+        antiCheatAnimator = ValueAnimator.ofFloat(0, 1);
+        antiCheatAnimator.setDuration(1000);
+        antiCheatAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        final int[] counter = {0};
+        antiCheatAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                counter[0] += 1;
+                if(counter[0] % 10 == 0) {
+                    ensureAllCirclesCovered();
+                }
+            }
+        });
     }
 
     @Override
@@ -59,33 +79,33 @@ public class LevelView extends TouchEventView implements Invalidatable {
     private void ensureAllCirclesCovered() {
         // Do we have all circles covered?
         boolean allCirclesCovered = true;
-        for(GamePath path: paths) {
+        for (GamePath path : paths) {
             PointF circle = path.circlePosition;
             boolean covered = false;
-            for(int i = 0; i < activePointers.size(); i++) {
+            for (int i = 0; i < activePointers.size(); i++) {
                 PointF pointer = activePointers.valueAt(i);
                 double squaredDistance = Math.pow(circle.x - pointer.x, 2) + Math.pow(circle.y - pointer.y, 2);
-                if(squaredDistance < path.circleRadius * path.circleRadius) {
+                if (squaredDistance < path.circleRadius * path.circleRadius) {
                     covered = true;
                     path.setCurrentlyCovered(true);
                     break;
                 }
             }
 
-            if(!covered) {
+            if (!covered) {
                 allCirclesCovered = false;
                 path.setCurrentlyCovered(false);
             }
         }
 
-        if(allCirclesCovered) {
-            if(state == WAITING_FOR_ALL_CIRCLES) {
+        if (allCirclesCovered) {
+            if (state == WAITING_FOR_ALL_CIRCLES) {
                 start();
             }
         }
 
-        if(!allCirclesCovered) {
-            if(state == RUNNING) {
+        if (!allCirclesCovered) {
+            if (state == RUNNING) {
                 reset();
             }
         }
@@ -95,6 +115,7 @@ public class LevelView extends TouchEventView implements Invalidatable {
         currentText = "Stay in the circle!";
         setState(RUNNING);
         startDate = System.currentTimeMillis();
+        antiCheatAnimator.start();
     }
 
 
@@ -102,8 +123,9 @@ public class LevelView extends TouchEventView implements Invalidatable {
         currentText = "You've lost! Retry.";
         setState(LOST);
         setState(WAITING_FOR_ALL_CIRCLES);
+        antiCheatAnimator.end();
 
-        if(onLevelFinished != null) {
+        if (onLevelFinished != null) {
             onLevelFinished.levelFinished(false, System.currentTimeMillis() - startDate);
         }
     }
@@ -111,16 +133,16 @@ public class LevelView extends TouchEventView implements Invalidatable {
     public void onPathCompleted() {
         boolean allPathCompleted = true;
         for (GamePath path : paths) {
-            if(!path.pathCompleted) {
+            if (!path.pathCompleted) {
                 allPathCompleted = false;
                 break;
             }
         }
 
-        if(allPathCompleted) {
+        if (allPathCompleted) {
             currentText = "GG WP";
             setState(WON);
-            if(onLevelFinished != null) {
+            if (onLevelFinished != null) {
                 onLevelFinished.levelFinished(true, System.currentTimeMillis() - startDate);
             }
         }
@@ -151,7 +173,7 @@ public class LevelView extends TouchEventView implements Invalidatable {
 
     public long getLevelDuration() {
         long duration = 0;
-        for(GamePath path:paths) {
+        for (GamePath path : paths) {
             duration = Math.max(path.getDuration(), duration);
         }
 
@@ -160,10 +182,19 @@ public class LevelView extends TouchEventView implements Invalidatable {
 
     public float getProgress() {
         float progress = 1;
-        for(GamePath path:paths) {
+        for (GamePath path : paths) {
             progress = Math.min(path.progress, progress);
         }
 
         return progress;
+    }
+
+    public void onStop() {
+        antiCheatAnimator.removeAllUpdateListeners();
+        antiCheatAnimator.cancel();
+        for (GamePath path : paths) {
+            path.onStop();
+        }
+
     }
 }
