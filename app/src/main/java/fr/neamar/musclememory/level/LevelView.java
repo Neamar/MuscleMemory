@@ -1,4 +1,4 @@
-package fr.neamar.musclememory;
+package fr.neamar.musclememory.level;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -9,6 +9,8 @@ import android.util.Pair;
 import android.view.MotionEvent;
 
 import java.util.ArrayList;
+
+import fr.neamar.musclememory.LevelStore;
 
 public class LevelView extends TouchEventView implements Invalidatable {
     public final static int WAITING_FOR_ALL_CIRCLES = 0;

@@ -1,9 +1,11 @@
-package fr.neamar.musclememory;
+package fr.neamar.musclememory.picker;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+
+import fr.neamar.musclememory.R;
 
 public class LevelPickerActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;

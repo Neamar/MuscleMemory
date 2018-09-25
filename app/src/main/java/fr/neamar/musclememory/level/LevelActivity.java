@@ -1,4 +1,4 @@
-package fr.neamar.musclememory;
+package fr.neamar.musclememory.level;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,6 +15,9 @@ import org.json.JSONObject;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import fr.neamar.musclememory.picker.LevelPickerActivity;
+import fr.neamar.musclememory.R;
 
 public class LevelActivity extends AppCompatActivity {
     protected int level;

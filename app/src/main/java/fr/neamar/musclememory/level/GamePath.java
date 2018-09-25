@@ -1,4 +1,4 @@
-package fr.neamar.musclememory;
+package fr.neamar.musclememory.level;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -10,9 +10,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
 import android.graphics.PointF;
-import android.util.Pair;
-
-import java.util.ArrayList;
 
 public class GamePath extends Path {
     private final static int START_COLOR = Color.argb(235, 74, 138, 255);
@@ -20,7 +17,7 @@ public class GamePath extends Path {
     private final static int LOST_COLOR = Color.argb(235, 200, 30, 30);
     public final static int CIRCLE_ORIGINAL_COLOR = Color.argb(248, 255, 255, 255);
 
-    public float progress = 0;
+    float progress = 0;
     private ValueAnimator progressAnimator;
 
     private Invalidatable parent;
@@ -30,7 +27,7 @@ public class GamePath extends Path {
     private Paint fillCirclePaint;
     private Paint circlePaint;
     private Paint pulsatingCirclePaint;
-    public PointF circlePosition = new PointF();
+    PointF circlePosition = new PointF();
     public int circleRadius;
     private ValueAnimator pulseAnimator;
     private ValueAnimator dyingPulseAnimator;
@@ -43,20 +40,17 @@ public class GamePath extends Path {
     private final float[] position = new float[2];
 
     private boolean currentlyCovered = false;
-    public boolean pathCompleted = false;
+    boolean pathCompleted = false;
 
-    public float fakeProgress = 0;
+    private float fakeProgress = 0;
     private ValueAnimator fakeProgressAnimator;
-    public PointF fakeCirclePosition = new PointF();
-
-
-    private ArrayList<Pair<Float, PointF>> progressPoints;
-
-    GamePath(Invalidatable parent, ValueAnimator progressAnimator) {
+    private PointF fakeCirclePosition = new PointF();
+    
+    public GamePath(Invalidatable parent, ValueAnimator progressAnimator) {
         this(parent, progressAnimator, 90);
     }
 
-    GamePath(final Invalidatable parent, ValueAnimator progressAnimator, int circleRadius) {
+    public GamePath(final Invalidatable parent, ValueAnimator progressAnimator, int circleRadius) {
         this.parent = parent;
         this.progressAnimator = progressAnimator;
         this.circleRadius = circleRadius;
@@ -157,7 +151,7 @@ public class GamePath extends Path {
         getPointOnPath(0, circlePosition);
     }
 
-    public void onStateChange(int state) {
+    void onStateChange(int state) {
         if (state == LevelView.RUNNING) {
             pathCompleted = false;
 
@@ -196,7 +190,7 @@ public class GamePath extends Path {
         parent.invalidate();
     }
 
-    public void setCurrentlyCovered(boolean covered) {
+    void setCurrentlyCovered(boolean covered) {
         if (covered == this.currentlyCovered) {
             return;
         }
@@ -236,7 +230,7 @@ public class GamePath extends Path {
         return p;
     }
 
-    public void onDrawPath(Canvas canvas) {
+    void onDrawPath(Canvas canvas) {
         if (progress == 0 && fakeProgress * pathLength < 3 * circleRadius) {
             getPointOnPath(fakeProgress, fakeCirclePosition);
             float fakeProgressRadius = fakeProgress * pathLength <= 1.5 * circleRadius ? 20 : 40 - 40 * (pathLength * fakeProgress) / (circleRadius * 3);
@@ -251,7 +245,7 @@ public class GamePath extends Path {
         canvas.drawPath(partialPath, blurredLinePaint);
     }
 
-    public void onDrawCircle(Canvas canvas) {
+    void onDrawCircle(Canvas canvas) {
         getPointOnPath(progress, circlePosition);
 
         canvas.drawCircle(circlePosition.x, circlePosition.y, circleRadius, pulsatingCirclePaint);
@@ -259,7 +253,7 @@ public class GamePath extends Path {
         canvas.drawCircle(circlePosition.x, circlePosition.y, circleRadius, circlePaint);
     }
 
-    public long getDuration() {
+    long getDuration() {
         return progressAnimator.getDuration();
     }
 }

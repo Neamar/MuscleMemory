@@ -6,6 +6,9 @@ import android.view.animation.LinearInterpolator;
 
 import java.util.ArrayList;
 
+import fr.neamar.musclememory.level.GamePath;
+import fr.neamar.musclememory.level.Invalidatable;
+
 public class LevelStore {
     // see http://spencermortensen.com/articles/bezier-circle/
     private final static float BEZIER_CIRCLE_CONSTANT = (float) 0.5519;

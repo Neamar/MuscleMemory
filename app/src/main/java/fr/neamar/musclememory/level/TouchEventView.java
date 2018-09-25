@@ -1,4 +1,4 @@
-package fr.neamar.musclememory;
+package fr.neamar.musclememory.level;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

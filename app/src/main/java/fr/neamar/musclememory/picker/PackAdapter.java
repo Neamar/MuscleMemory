@@ -1,4 +1,4 @@
-package fr.neamar.musclememory;
+package fr.neamar.musclememory.picker;
 
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +22,12 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+
+import fr.neamar.musclememory.LevelStore;
+import fr.neamar.musclememory.R;
+import fr.neamar.musclememory.level.GamePath;
+import fr.neamar.musclememory.level.Invalidatable;
+import fr.neamar.musclememory.level.LevelActivity;
 
 public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder> {
     private final static int LEVEL_LOCKED = 0;
@@ -77,7 +83,7 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
             if (getLevelStatus(prefs, position) != LEVEL_LOCKED) {
                 Intent i = new Intent(v.getContext(), LevelActivity.class);
                 i.putExtra("level", position);
-                i.putExtra("subLevel", 0);
+                i.putExtra("subLevel", 1);
                 v.getContext().startActivity(i);
             }
         }
