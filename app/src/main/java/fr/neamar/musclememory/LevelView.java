@@ -36,7 +36,12 @@ public class LevelView extends TouchEventView implements Invalidatable {
 
         // draw all paths
         for (GamePath path : paths) {
-            path.onDraw(canvas);
+            path.onDrawPath(canvas);
+        }
+
+        // And then all circles
+        for (GamePath path : paths) {
+            path.onDrawCircle(canvas);
         }
     }
 

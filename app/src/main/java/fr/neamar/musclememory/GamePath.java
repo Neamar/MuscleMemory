@@ -236,10 +236,10 @@ public class GamePath extends Path {
         return p;
     }
 
-    public void onDraw(Canvas canvas) {
+    public void onDrawPath(Canvas canvas) {
         if (progress == 0 && fakeProgress * pathLength < 3 * circleRadius) {
             getPointOnPath(fakeProgress, fakeCirclePosition);
-            float fakeProgressRadius = fakeProgress * pathLength <= 1.5 * circleRadius ? 20 : 40 - 40 * (pathLength * fakeProgress)/(circleRadius * 3);
+            float fakeProgressRadius = fakeProgress * pathLength <= 1.5 * circleRadius ? 20 : 40 - 40 * (pathLength * fakeProgress) / (circleRadius * 3);
             canvas.drawCircle(fakeCirclePosition.x, fakeCirclePosition.y, fakeProgressRadius, linePaint);
             canvas.drawCircle(fakeCirclePosition.x, fakeCirclePosition.y, fakeProgressRadius, blurredLinePaint);
         }
@@ -249,7 +249,9 @@ public class GamePath extends Path {
         partialPath.rLineTo(0.0f, 0.0f); // workaround to display on hardware accelerated canvas as described in docs
         canvas.drawPath(this, linePaint);
         canvas.drawPath(partialPath, blurredLinePaint);
+    }
 
+    public void onDrawCircle(Canvas canvas) {
         getPointOnPath(progress, circlePosition);
 
         canvas.drawCircle(circlePosition.x, circlePosition.y, circleRadius, pulsatingCirclePaint);
