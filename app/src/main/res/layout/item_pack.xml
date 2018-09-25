@@ -8,26 +8,29 @@
     android:background="?android:attr/selectableItemBackground"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/levelTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="6dp"
+        android:text="@string/level_number" />
+
+
     <ImageView
         android:id="@+id/lockImageView"
+        android:layout_below="@+id/levelTitle"
         android:layout_width="wrap_content"
+        android:contentDescription="@string/level_state"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         app:srcCompat="@drawable/outline_lock_black_36" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/lockImageView"
-        android:layout_centerHorizontal="true"
-        android:text="TextView" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/textView"
+        android:layout_below="@id/lockImageView"
         android:orientation="vertical"
         android:weightSum="2">
 
@@ -37,7 +40,8 @@
             android:layout_height="200dp"
             android:layout_marginTop="20dp"
             android:layout_weight="1"
-            app:srcCompat="@android:color/black" />
+            app:srcCompat="@android:color/black"
+            android:contentDescription="@string/first_level_preview" />
 
         <ImageView
             android:id="@+id/secondSubLevel"
@@ -45,7 +49,8 @@
             android:layout_height="200dp"
             android:layout_marginTop="20dp"
             android:layout_weight="1"
-            app:srcCompat="@android:color/black" />
+            app:srcCompat="@android:color/black"
+            android:contentDescription="@string/second_level_preview" />
     </LinearLayout>
 
 </RelativeLayout>

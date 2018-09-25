@@ -15,6 +15,8 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -69,7 +71,7 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
         PackViewHolder(View v, SharedPreferences prefs) {
             super(v);
             this.lockImageView = v.findViewById(R.id.lockImageView);
-            this.levelName = v.findViewById(R.id.textView);
+            this.levelName = v.findViewById(R.id.levelTitle);
             this.firstSubLevel = v.findViewById(R.id.firstSubLevel);
             this.secondSubLevel = v.findViewById(R.id.secondSubLevel);
             this.prefs = prefs;
@@ -83,8 +85,15 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
             if (getLevelStatus(prefs, position) != LEVEL_LOCKED) {
                 Intent i = new Intent(v.getContext(), LevelActivity.class);
                 i.putExtra("level", position);
-                i.putExtra("subLevel", 1);
+                i.putExtra("subLevel", 0);
                 v.getContext().startActivity(i);
+            }
+            else {
+                ScaleAnimation anim = new ScaleAnimation(1, 1.5f, 1, 1.5f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                anim.setDuration(200);
+                anim.setRepeatMode(ScaleAnimation.REVERSE);
+                anim.setRepeatCount(1);
+                lockImageView.startAnimation(anim);
             }
         }
 
