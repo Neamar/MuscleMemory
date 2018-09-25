@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -74,7 +75,7 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
             if (getLevelStatus(prefs, position) != LEVEL_LOCKED) {
                 Intent i = new Intent(v.getContext(), LevelActivity.class);
                 i.putExtra("level", position);
-                i.putExtra("subLevel", 1);
+                i.putExtra("subLevel", 0);
                 v.getContext().startActivity(i);
             }
         }
@@ -161,6 +162,8 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
         Pair<String, ArrayList<GamePath>> levelData = LevelStore.getPathsForLevel(dummyInvalidatable, screenWidth, screenHeight, level, subLevel);
         for (GamePath p : levelData.second) {
             canvas.drawPath(p, paint);
+            PointF start = p.getStartingPoint();
+            canvas.drawCircle(start.x, start.y, p.circleRadius / 2, paint);
         }
 
         return bitmap;

@@ -230,6 +230,12 @@ public class GamePath extends Path {
         point.y = position[1];
     }
 
+    public PointF getStartingPoint() {
+        PointF p = new PointF();
+        getPointOnPath(0, p);
+        return p;
+    }
+
     public void onDraw(Canvas canvas) {
         if (progress == 0 && fakeProgress * pathLength < 3 * circleRadius) {
             getPointOnPath(fakeProgress, fakeCirclePosition);
