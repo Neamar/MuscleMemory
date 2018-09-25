@@ -188,6 +188,34 @@ public class LevelStore {
             }
         } else if (level-- == 0) {
             if (subLevel == 0) {
+                title = "number_4";
+                int h = height / 7;
+                int w = width / 8;
+                GamePath path = new GamePath(parent, initializeAnimator(4000));
+                path.moveTo(5 * w, 4 * h);
+                path.lineTo(2.5f * w, 4 * h);
+                path.lineTo(cX, h);
+                path.lineTo(cX, 6 * h);
+
+                paths.add(path);
+            } else if (subLevel == 1) {
+                title = "numbers_1_2";
+                int h = height / 7;
+                int w = width / 8;
+                GamePath path = new GamePath(parent, initializeAnimator(4000));
+                path.moveTo(2 * w, 6 * h);
+                path.lineTo(2 * w, 1.5f* h);
+                path.lineTo(w, 2.5f * h);
+                paths.add(path);
+                GamePath secondPath = new GamePath(parent, initializeAnimator(4000));
+                secondPath.moveTo(7 * w, 6 * h);
+                secondPath.lineTo(5 * w, 6 * h);
+                secondPath.lineTo(6.5f * w, 3 * h);
+                secondPath.cubicTo(7.5f * w, h, 4 * w, h, 5f * w, 3 * h);
+                paths.add(secondPath);
+            }
+        } else if (level-- == 0) {
+            if (subLevel == 0) {
                 title = "circle_made_of_squares";
                 int s = D / 3;
                 GamePath path = new GamePath(parent, initializeAnimator(6000));
@@ -568,7 +596,7 @@ public class LevelStore {
     }
 
     public static int getLevelCount() {
-        return 16;
+        return 17;
     }
 
     private static ValueAnimator initializeAnimator(int duration) {
