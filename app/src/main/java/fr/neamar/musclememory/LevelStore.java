@@ -265,8 +265,9 @@ public class LevelStore {
                 title = "pentagram";
                 GamePath path = new GamePath(parent, initializeAnimator(7000));
                 float twoPi = 2 * (float) Math.PI;
+                float baseAngle = (float) Math.PI / 10;
                 float[] angles = new float[]{
-                        0, twoPi / 5, 2 * twoPi / 5, 3 * twoPi / 5, 4 * twoPi / 5
+                        baseAngle, baseAngle + twoPi / 5, baseAngle + 2 * twoPi / 5, baseAngle + 3 * twoPi / 5, baseAngle + 4 * twoPi / 5
                 };
                 int radius = D - 50;
 
