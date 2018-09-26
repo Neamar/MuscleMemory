@@ -204,7 +204,7 @@ public class LevelStore {
                 int w = width / 8;
                 GamePath path = new GamePath(parent, initializeAnimator(4000));
                 path.moveTo(2 * w, 6 * h);
-                path.lineTo(2 * w, 1.5f* h);
+                path.lineTo(2 * w, 1.5f * h);
                 path.lineTo(w, 2.5f * h);
                 paths.add(path);
                 GamePath secondPath = new GamePath(parent, initializeAnimator(4000));
@@ -258,6 +258,39 @@ public class LevelStore {
                 path.lineTo(3 * x, 3 * y);
                 path.lineTo(x, 3 * y);
 
+                paths.add(path);
+            }
+        } else if (level-- == 0) {
+            if (subLevel == 0) {
+                title = "pentagram";
+                GamePath path = new GamePath(parent, initializeAnimator(7000));
+                float twoPi = 2 * (float) Math.PI;
+                float[] angles = new float[]{
+                        0, twoPi / 5, 2 * twoPi / 5, 3 * twoPi / 5, 4 * twoPi / 5
+                };
+                int radius = D - 50;
+
+                path.moveTo((float) (cX + radius * Math.cos(angles[0])), (float) (cY + radius * Math.sin(angles[0])));
+                path.lineTo((float) (cX + radius * Math.cos(angles[2])), (float) (cY + radius * Math.sin(angles[2])));
+                path.lineTo((float) (cX + radius * Math.cos(angles[4])), (float) (cY + radius * Math.sin(angles[4])));
+                path.lineTo((float) (cX + radius * Math.cos(angles[1])), (float) (cY + radius * Math.sin(angles[1])));
+                path.lineTo((float) (cX + radius * Math.cos(angles[3])), (float) (cY + radius * Math.sin(angles[3])));
+                path.lineTo((float) (cX + radius * Math.cos(angles[0])), (float) (cY + radius * Math.sin(angles[0])));
+
+                paths.add(path);
+            } else if (subLevel == 1) {
+                title = "triforce";
+                int s = D * 2 / 3;
+                GamePath path = new GamePath(parent, initializeAnimator(6000));
+                path.moveTo(cX - s / 2, cY);
+                path.lineTo(cX, cY - s);
+                path.lineTo(cX + s / 2, cY);
+                path.lineTo(cX - s / 2, cY);
+                path.lineTo(cX - s, cY + s);
+                path.lineTo(cX + s, cY + s);
+                path.lineTo(cX + s / 2, cY);
+                path.lineTo(cX, cY + s);
+                path.lineTo(cX - s / 2, cY);
                 paths.add(path);
             }
         } else if (level-- == 0) {
@@ -596,7 +629,7 @@ public class LevelStore {
     }
 
     public static int getLevelCount() {
-        return 17;
+        return 18;
     }
 
     private static ValueAnimator initializeAnimator(int duration) {
