@@ -224,6 +224,38 @@ public class LevelStore {
             }
         } else if (level-- == 0) {
             if (subLevel == 0) {
+                title = "half_square_then_stairway_to_heaven";
+                GamePath path = new GamePath(parent, initializeAnimator(6000));
+                path.moveTo(width - largePadding, largePadding);
+                path.lineTo(cX, largePadding);
+                path.lineTo(cX, height - largePadding);
+
+                int stairCount = 5;
+                int stairWidth = (cX - largePadding) / stairCount;
+                int stairHeight = (height - 2 * largePadding) / stairCount;
+
+                for (int i = 0; i < stairCount; i++) {
+                    path.lineTo(cX - (i + 1) * stairWidth, height - largePadding - i * stairHeight);
+                    path.lineTo(cX - (i + 1) * stairWidth, height - largePadding - (i + 1) * stairHeight);
+                }
+
+                paths.add(path);
+            } else if (subLevel == 1) {
+                title = "ocean_irregular_wave";
+                int waveCount = 3;
+                int waveLength = (width - 2 * largePadding) / 3;
+                GamePath path = new GamePath(parent, initializeAnimator(6000));
+                path.moveTo(largePadding, height - largePadding);
+
+                for (int i = 0; i < waveCount; i++) {
+                    path.cubicTo(largePadding + (2 * i + 1) * waveLength / 2, height - largePadding, largePadding + waveLength, largePadding, largePadding + (2 * i + 1) * waveLength / 2, largePadding);
+                    path.cubicTo(largePadding + (i + 1) * waveLength, largePadding, largePadding + 3 * waveLength / 2, height - largePadding, largePadding + (i + 1) * waveLength, height - largePadding);
+                }
+
+                paths.add(path);
+            }
+        } else if (level-- == 0) {
+            if (subLevel == 0) {
                 title = "IV";
                 GamePath path = new GamePath(parent, initializeAnimator(4000));
                 path.moveTo(cX / 4, largePadding);
