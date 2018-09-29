@@ -189,6 +189,41 @@ public class LevelStore {
             }
         } else if (level-- == 0) {
             if (subLevel == 0) {
+                title = "two_half_circles_and_a_line";
+                int radius = (D / 2) - padding;
+                GamePath path = new GamePath(parent, initializeAnimator(4000));
+                path.moveTo(largePadding, cY + radius);
+                drawCircleQuadrant(path, 3, largePadding, cY, radius);
+                drawCircleQuadrant(path, 0, largePadding, cY, radius);
+                path.lineTo(cX, cY - radius);
+                paths.add(path);
+
+                GamePath secondPath = new GamePath(parent, initializeAnimator(4000));
+                secondPath.moveTo(width - largePadding, cY - radius);
+                drawCircleQuadrant(secondPath, 1, width - largePadding, cY, radius);
+                drawCircleQuadrant(secondPath, 2, width - largePadding, cY, radius);
+                secondPath.lineTo(cX, cY + radius);
+                paths.add(secondPath);
+            } else if (subLevel == 1) {
+                title = "two_right_angle_triangles";
+                GamePath path = new GamePath(parent, initializeAnimator(6000));
+                path.moveTo(largePadding, largePadding);
+                path.lineTo(largePadding, height - largePadding);
+                path.lineTo(cX, height - largePadding);
+                path.lineTo(largePadding, largePadding);
+
+                paths.add(path);
+
+                GamePath secondPath = new GamePath(parent, initializeAnimator(6000));
+                secondPath.moveTo(width - largePadding, height - largePadding);
+                secondPath.lineTo(width - largePadding, largePadding);
+                secondPath.lineTo(cX, largePadding);
+                secondPath.lineTo(width - largePadding, height - largePadding);
+
+                paths.add(secondPath);
+            }
+        } else if (level-- == 0) {
+            if (subLevel == 0) {
                 title = "IV";
                 GamePath path = new GamePath(parent, initializeAnimator(4000));
                 path.moveTo(cX / 4, largePadding);
@@ -665,7 +700,7 @@ public class LevelStore {
     }
 
     public static int getLevelCount() {
-        return 18;
+        return 20;
     }
 
     private static ValueAnimator initializeAnimator(int duration) {
