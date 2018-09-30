@@ -1,6 +1,5 @@
 package fr.neamar.musclememory.picker;
 
-import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -45,7 +44,7 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
 
     private final SharedPreferences prefs;
 
-    private final WeakReference<Activity> activity;
+    private final WeakReference<LevelPickerActivity> activity;
 
     static class DummyInvalidatable implements Invalidatable {
         @Override
@@ -90,12 +89,13 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
                 Intent i = new Intent(v.getContext(), LevelActivity.class);
                 i.putExtra("level", position);
                 i.putExtra("subLevel", 0);
-                Activity a = activity.get();
+                LevelPickerActivity a = activity.get();
                 if(a != null) {
                     ActivityOptions options = ActivityOptions
                             .makeScaleUpAnimation(firstSubLevel, 0, 0, firstSubLevel.getWidth(), firstSubLevel.getHeight());
                     // start the new activity
                     a.startActivity(i, options.toBundle());
+                    a.notifyLevelStarted();
                 }
                 else {
                     // Should never happen!
@@ -122,7 +122,7 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
         }
     }
 
-    PackAdapter(Activity activity, int screenWidth, int screenHeight) {
+    PackAdapter(LevelPickerActivity activity, int screenWidth, int screenHeight) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         prefs = PreferenceManager.getDefaultSharedPreferences(activity);
@@ -201,7 +201,7 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
         return LevelStore.getLevelCount();
     }
 
-    public int getFirstUnlocked() {
+    int getFirstUnlocked() {
         int count = getItemCount();
         for (int i = 0; i < count; i++) {
             if (getLevelStatus(prefs, i) == LEVEL_UNLOCKED) {
