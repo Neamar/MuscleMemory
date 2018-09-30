@@ -4,4 +4,7 @@
     <string name="level_state">Level state</string>
     <string name="first_level_preview">First level preview</string>
     <string name="second_level_preview">First level preview</string>
+    <string name="move_to_next_universe">Move to next universe</string>
+    <string name="move_to_previous_universe">Move to previous universe</string>
+    <string name="toggle_volume">Toggle volume</string>
 </resources>

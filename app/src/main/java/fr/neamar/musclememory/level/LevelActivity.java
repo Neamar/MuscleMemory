@@ -16,8 +16,9 @@ import org.json.JSONObject;
 import java.util.HashSet;
 import java.util.Set;
 
-import fr.neamar.musclememory.picker.LevelPickerActivity;
+import fr.neamar.musclememory.MusicService;
 import fr.neamar.musclememory.R;
+import fr.neamar.musclememory.picker.LevelPickerActivity;
 
 public class LevelActivity extends AppCompatActivity {
     protected int level;
@@ -25,6 +26,7 @@ public class LevelActivity extends AppCompatActivity {
     private LevelView levelView;
     protected int attemptsCountDuringSession = 0;
     protected SharedPreferences prefs;
+    private boolean leavingToLevelPicker = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,5 +137,13 @@ public class LevelActivity extends AppCompatActivity {
         Identify identify = new Identify().set("attempts", prefs.getInt("attempts", 0));
         Amplitude.getInstance().identify(identify);
         super.onStop();
+    }
+
+    @Override
+    protected void onPause() {
+        if(!leavingToLevelPicker) {
+            stopService(new Intent(this, MusicService.class));
+        }
+        super.onPause();
     }
 }

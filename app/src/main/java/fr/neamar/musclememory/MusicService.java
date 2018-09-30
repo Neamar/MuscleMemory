@@ -11,10 +11,18 @@ import android.util.Log;
 import java.io.IOException;
 
 public class MusicService extends Service {
-    MediaPlayer mediaPlayer = new MediaPlayer();
+    private static final String TAG = "MusicService";
+    MediaPlayer mediaPlayer;
 
     // This is the object that receives interactions from clients.
     private final IBinder mBinder = new LocalBinder();
+
+    public void stopPlaying() {
+        mediaPlayer.stop();
+        mediaPlayer.release();
+        mediaPlayer = null;
+    }
+
     public class LocalBinder extends Binder {
         public MusicService getService() {
             return MusicService.this;
@@ -22,11 +30,12 @@ public class MusicService extends Service {
     }
 
     public void playMusicIfNotPlaying() {
-        if(mediaPlayer.isPlaying()) {
+        if (mediaPlayer != null) {
             return;
         }
 
         try {
+            mediaPlayer = new MediaPlayer();
             AssetFileDescriptor afd = getAssets().openFd("background.mp3");
             //sets the data source of audio file
             mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
@@ -39,8 +48,10 @@ public class MusicService extends Service {
 
         } catch (IOException e) {
             e.printStackTrace();
-            Log.i("show", "Error: " + e.toString());
+            Log.i(TAG, "Error: " + e.toString());
         }
+
+        Log.i(TAG, "Started playing music");
     }
 
     public void onDestroy() {
