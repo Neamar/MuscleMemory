@@ -318,6 +318,41 @@ public class LevelStore {
             }
         } else if (level-- == 0) {
             if (subLevel == 0) {
+                title = "falcon_millenium";
+                int radius = D - largePadding;
+                int chunk = radius / 4;
+                GamePath path = new GamePath(parent, initializeAnimator(5000));
+                path.moveTo(cX + radius / 3, cY);
+                path.lineTo(cX + radius / 3, cY - chunk);
+                path.lineTo(cX + radius, cY - 2 * chunk);
+                path.lineTo(cX + radius / 3, cY - 3 * chunk);
+                path.lineTo(cX, cY - radius);
+                drawCircleQuadrant(path, 1, cX, cY, radius);
+                drawCircleQuadrant(path, 2, cX, cY, radius);
+                path.lineTo(cX + radius / 3, cY + 3 * chunk);
+                path.lineTo(cX + radius, cY + 2 * chunk);
+                path.lineTo(cX + radius / 3, cY + chunk);
+                path.lineTo(cX + radius / 3, cY);
+
+                paths.add(path);
+            } else if (subLevel == 1) {
+                title = "viaduc_and_reflection";
+                int w = width / 11;
+                GamePath path = new GamePath(parent, initializeAnimator(7000));
+                int radius = w;
+                path.moveTo(w, cY);
+                for (int i = 1; i <= 4; i++) {
+                    drawCircleQuadrantReverse(path, 1, 2 * w * i, cY, radius);
+                    drawCircleQuadrantReverse(path, 0, 2 * w * i, cY, radius);
+                    path.lineTo(2 * w * i, cY);
+                    drawCircleQuadrant(path, 2, 2 * w * i + w, cY, radius);
+                    drawCircleQuadrant(path, 3, 2 * w * i + w, cY, radius);
+                    path.lineTo(2 * w * i + w, cY);
+                }
+                paths.add(path);
+            }
+        } else if (level-- == 0) {
+            if (subLevel == 0) {
                 title = "circle_made_of_squares";
                 int s = D / 3;
                 GamePath path = new GamePath(parent, initializeAnimator(6000));
@@ -732,7 +767,7 @@ public class LevelStore {
     }
 
     public static int getLevelCount() {
-        return 20;
+        return 22;
     }
 
     private static ValueAnimator initializeAnimator(int duration) {
@@ -754,6 +789,21 @@ public class LevelStore {
             path.cubicTo(cX - radius, cY + cRadius, cX - cRadius, cY + radius, cX, cY + radius);
         } else if (quadrant == 3) {
             path.cubicTo(cX + cRadius, cY + radius, cX + radius, cY + cRadius, cX + radius, cY);
+        } else {
+            throw new RuntimeException("Invalid quadrant");
+        }
+    }
+
+    private static void drawCircleQuadrantReverse(GamePath path, int quadrant, int cX, int cY, float radius) {
+        float cRadius = BEZIER_CIRCLE_CONSTANT * radius;
+        if (quadrant == 0) {
+            path.cubicTo(cX + cRadius, cY - radius, cX + radius, cY - cRadius, cX + radius, cY);
+        } else if (quadrant == 1) {
+            path.cubicTo(cX - radius, cY - cRadius, cX - cRadius, cY - radius, cX, cY - radius);
+        } else if (quadrant == 2) {
+            path.cubicTo(cX - cRadius, cY + radius, cX - radius, cY + cRadius, cX - radius, cY);
+        } else if (quadrant == 3) {
+            path.cubicTo(cX + radius, cY + cRadius, cX + cRadius, cY + radius, cX, cY + radius);
         } else {
             throw new RuntimeException("Invalid quadrant");
         }

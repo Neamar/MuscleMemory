@@ -28,6 +28,7 @@ public class LevelPickerActivity extends AppCompatActivity {
             @Override
             public void run() {
                 mAdapter = new PackAdapter(LevelPickerActivity.this, mRecyclerView.getWidth(), mRecyclerView.getHeight());
+                mAdapter.setHasStableIds(true);
                 mRecyclerView.setAdapter(mAdapter);
 
                 int nextUnlocked = mAdapter.getFirstUnlocked();

@@ -116,7 +116,7 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
             Set<String> finishedLevels = prefs.getStringSet("finished_levels", new HashSet<String>());
             finishedLevels.add(Integer.toString(getAdapterPosition()));
             prefs.edit().putStringSet("finished_levels", finishedLevels).apply();
-            PackAdapter.this.notifyItemChanged(getAdapterPosition());
+            PackAdapter.this.notifyDataSetChanged();
             Toast.makeText(v.getContext(), "You little cheater ;) Here you go, it's unlocked.", Toast.LENGTH_SHORT).show();
             return true;
         }
@@ -231,5 +231,10 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
         }
 
         return isLocked ? LEVEL_LOCKED : LEVEL_UNLOCKED;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 }
