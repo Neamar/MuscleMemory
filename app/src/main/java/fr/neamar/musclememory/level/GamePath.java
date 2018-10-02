@@ -272,7 +272,7 @@ public class GamePath extends Path {
         return progressAnimator.getDuration();
     }
 
-    void onStop() {
+    void onDestroy() {
         // Clean up animations to make sure future levels can have all CPU available
         progressAnimator.removeAllUpdateListeners();
         progressAnimator.cancel();

@@ -189,11 +189,11 @@ public class LevelView extends TouchEventView implements Invalidatable {
         return progress;
     }
 
-    public void onStop() {
+    public void onDestroy() {
         antiCheatAnimator.removeAllUpdateListeners();
         antiCheatAnimator.cancel();
         for (GamePath path : paths) {
-            path.onStop();
+            path.onDestroy();
         }
 
     }

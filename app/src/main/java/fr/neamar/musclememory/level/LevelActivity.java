@@ -26,7 +26,6 @@ public class LevelActivity extends AppCompatActivity {
     private LevelView levelView;
     protected int attemptsCountDuringSession = 0;
     protected SharedPreferences prefs;
-    private boolean leavingToLevelPicker = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,18 +131,26 @@ public class LevelActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
-        levelView.onStop();
+    protected void onDestroy() {
+        levelView.onDestroy();
         Identify identify = new Identify().set("attempts", prefs.getInt("attempts", 0));
         Amplitude.getInstance().identify(identify);
-        super.onStop();
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onPostResume() {
+        Intent i = new Intent(this, MusicService.class);
+        i.putExtra(MusicService.ACTION_KEY, MusicService.PLAY_MUSIC);
+        startService(i);
+        super.onPostResume();
     }
 
     @Override
     protected void onPause() {
-        if(!leavingToLevelPicker) {
-            stopService(new Intent(this, MusicService.class));
-        }
+        Intent i = new Intent(this, MusicService.class);
+        i.putExtra(MusicService.ACTION_KEY, MusicService.STOP_MUSIC_IF_LAST);
+        startService(i);
         super.onPause();
     }
 }
