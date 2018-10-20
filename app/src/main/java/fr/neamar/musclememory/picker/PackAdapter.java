@@ -43,6 +43,7 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
     private final Paint fillCirclePaint;
 
     private final SharedPreferences prefs;
+    private final int universe;
 
     private final WeakReference<LevelPickerActivity> activity;
 
@@ -65,19 +66,21 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
     // you provide access to all the views for a data item in a view holder
     class PackViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         // each data item is just a string in this case
-        ImageView lockImageView;
-        TextView levelName;
-        ImageView firstSubLevel;
-        ImageView secondSubLevel;
-        SharedPreferences prefs;
+        private final ImageView lockImageView;
+        private final TextView levelName;
+        private final ImageView firstSubLevel;
+        private final ImageView secondSubLevel;
+        private final SharedPreferences prefs;
+        private final int universe;
 
-        PackViewHolder(View v, SharedPreferences prefs) {
+        PackViewHolder(View v, SharedPreferences prefs, int universe) {
             super(v);
             this.lockImageView = v.findViewById(R.id.lockImageView);
             this.levelName = v.findViewById(R.id.levelTitle);
             this.firstSubLevel = v.findViewById(R.id.firstSubLevel);
             this.secondSubLevel = v.findViewById(R.id.secondSubLevel);
             this.prefs = prefs;
+            this.universe = universe;
             v.setOnClickListener(this);
             v.setOnLongClickListener(this);
         }
@@ -122,10 +125,11 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
         }
     }
 
-    PackAdapter(LevelPickerActivity activity, int screenWidth, int screenHeight) {
+    PackAdapter(LevelPickerActivity activity, int screenWidth, int screenHeight, int universe) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         prefs = PreferenceManager.getDefaultSharedPreferences(activity);
+        this.universe = universe;
 
         pathPaint.setColor(GamePath.CIRCLE_ORIGINAL_COLOR);
         pathPaint.setDither(true);
@@ -149,7 +153,7 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_pack, parent, false);
-        return new PackViewHolder(v, prefs);
+        return new PackViewHolder(v, prefs, universe);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -167,17 +171,19 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
             holder.lockImageView.setColorFilter(Color.GREEN);
         }
 
-        holder.levelName.setText(String.format(holder.levelName.getContext().getString(R.string.level_number), position + 1));
+        String[] universes = new String[] {"Ⅰ", "Ⅱ", "Ⅲ"};
 
-        drawLevel(position, 0, holder.firstSubLevel);
-        drawLevel(position, 1, holder.secondSubLevel);
+        holder.levelName.setText(String.format(holder.levelName.getContext().getString(R.string.level_number), universes[universe], position + 1));
+
+        drawLevel(universe, position, 0, holder.firstSubLevel);
+        drawLevel(universe, position, 1, holder.secondSubLevel);
     }
 
-    private void drawLevel(int level, int subLevel, ImageView imageView) {
+    private void drawLevel(int universe, int level, int subLevel, ImageView imageView) {
         Bitmap bitmap = Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         canvas.drawColor(Color.BLACK);
-        Pair<String, ArrayList<GamePath>> levelData = LevelStore.getPathsForLevel(dummyInvalidatable, screenWidth, screenHeight, level, subLevel);
+        Pair<String, ArrayList<GamePath>> levelData = LevelStore.getPathsForLevel(dummyInvalidatable, screenWidth, screenHeight, universe, level, subLevel);
 
         // Draw path
         for (GamePath p : levelData.second) {
@@ -198,7 +204,7 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return LevelStore.getLevelCount();
+        return LevelStore.getLevelCount(universe);
     }
 
     int getFirstUnlocked() {
