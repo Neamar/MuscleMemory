@@ -41,7 +41,7 @@ public class LevelPickerActivity extends AppCompatActivity {
         mRecyclerView.post(new Runnable() {
             @Override
             public void run() {
-                mAdapter = new PackAdapter(LevelPickerActivity.this, mRecyclerView.getWidth(), mRecyclerView.getHeight(), 0);
+                mAdapter = new PackAdapter(LevelPickerActivity.this,0);
                 mAdapter.setHasStableIds(true);
                 mRecyclerView.setAdapter(mAdapter);
 

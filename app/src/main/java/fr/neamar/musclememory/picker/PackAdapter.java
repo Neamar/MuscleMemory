@@ -3,6 +3,7 @@ package fr.neamar.musclememory.picker;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -125,9 +126,9 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
         }
     }
 
-    PackAdapter(LevelPickerActivity activity, int screenWidth, int screenHeight, int universe) {
-        this.screenWidth = screenWidth;
-        this.screenHeight = screenHeight;
+    PackAdapter(LevelPickerActivity activity, int universe) {
+        this.screenWidth = Math.max(Resources.getSystem().getDisplayMetrics().widthPixels, Resources.getSystem().getDisplayMetrics().heightPixels);
+        this.screenHeight = Math.min(Resources.getSystem().getDisplayMetrics().widthPixels, Resources.getSystem().getDisplayMetrics().heightPixels);
         prefs = PreferenceManager.getDefaultSharedPreferences(activity);
         this.universe = universe;
 
@@ -163,7 +164,7 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
         if (status == LEVEL_LOCKED) {
             holder.lockImageView.setImageResource(R.drawable.outline_lock_black_36);
             holder.lockImageView.setColorFilter(holder.lockImageView.getContext().getResources().getColor(R.color.redLocked));
-        } else if (status == LEVEL_UNLOCKED) { 
+        } else if (status == LEVEL_UNLOCKED) {
             holder.lockImageView.setImageResource(R.drawable.outline_lock_open_black_36);
             holder.lockImageView.setColorFilter(null);
         } else {

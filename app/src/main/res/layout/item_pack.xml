@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     app:cardCornerRadius="20dp"
-    android:padding="20dp"
+    app:contentPaddingTop="10dp"
+    app:contentPaddingBottom="10dp"
     android:background="@color/whiteBackground"
     android:elevation="8dp">
 
