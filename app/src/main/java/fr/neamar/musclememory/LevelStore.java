@@ -13,6 +13,10 @@ public class LevelStore {
     // see http://spencermortensen.com/articles/bezier-circle/
     private final static float BEZIER_CIRCLE_CONSTANT = (float) 0.5519;
 
+    public final static String[] UNIVERSES_NAME = new String[] {"Ⅰ", "Ⅱ", "Ⅲ"};
+    public final static int[] UNIVERSES_TITLE = new int[] {R.string.tutorial, R.string.two_fingers, R.string.three_fingers};
+
+
     @SuppressWarnings("UnusedAssignment")
     public static Pair<String, ArrayList<GamePath>> getPathsForLevel(Invalidatable parent, int width, int height, int universe, int level, int subLevel) {
         String title = "TBD";
@@ -783,6 +787,10 @@ public class LevelStore {
         }
 
         throw new RuntimeException("Unknown universe");
+    }
+
+    public static int getUniverseCount() {
+        return 3;
     }
 
     private static ValueAnimator initializeAnimator(int duration) {

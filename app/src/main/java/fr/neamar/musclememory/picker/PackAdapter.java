@@ -172,9 +172,8 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
             holder.lockImageView.setColorFilter(holder.lockImageView.getContext().getResources().getColor(R.color.greenUnlocked));
         }
 
-        String[] universes = new String[] {"Ⅰ", "Ⅱ", "Ⅲ"};
 
-        holder.levelName.setText(String.format(holder.levelName.getContext().getString(R.string.level_number), universes[universe], position + 1));
+        holder.levelName.setText(String.format(holder.levelName.getContext().getString(R.string.level_number), LevelStore.UNIVERSES_NAME[universe], position + 1));
 
         drawLevel(universe, position, 0, holder.firstSubLevel);
         drawLevel(universe, position, 1, holder.secondSubLevel);

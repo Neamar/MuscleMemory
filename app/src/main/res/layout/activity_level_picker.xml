@@ -7,14 +7,14 @@
     tools:context=".picker.LevelPickerActivity">
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/universe_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:elevation="8dp"
-        android:padding="8dp"
         android:background="@color/whiteBackground"
+        android:elevation="8dp"
         android:fontFamily="@font/modern_sans_serif_7"
+        android:gravity="center_horizontal"
+        android:padding="8dp"
         android:text="Tutorial"
         android:textSize="35sp" />
 
@@ -60,10 +60,10 @@
             android:src="@drawable/ic_arrow_right" />
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/actionMenu"
-        android:layout_below="@+id/title" />
+        android:layout_below="@+id/universe_title" />
 </RelativeLayout>
