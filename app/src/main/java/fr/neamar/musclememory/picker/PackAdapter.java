@@ -162,13 +162,13 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
         int status = getLevelStatus(prefs, position);
         if (status == LEVEL_LOCKED) {
             holder.lockImageView.setImageResource(R.drawable.outline_lock_black_36);
-            holder.lockImageView.setColorFilter(Color.RED);
-        } else if (status == LEVEL_UNLOCKED) {
+            holder.lockImageView.setColorFilter(holder.lockImageView.getContext().getResources().getColor(R.color.redLocked));
+        } else if (status == LEVEL_UNLOCKED) { 
             holder.lockImageView.setImageResource(R.drawable.outline_lock_open_black_36);
             holder.lockImageView.setColorFilter(null);
         } else {
             holder.lockImageView.setImageResource(R.drawable.outline_check_circle_black_36);
-            holder.lockImageView.setColorFilter(Color.GREEN);
+            holder.lockImageView.setColorFilter(holder.lockImageView.getContext().getResources().getColor(R.color.greenUnlocked));
         }
 
         String[] universes = new String[] {"Ⅰ", "Ⅱ", "Ⅲ"};
