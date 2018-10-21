@@ -103,6 +103,7 @@ public class LevelActivity extends AppCompatActivity {
                     if (subLevel == 0) {
                         // Move on to next sublevel
                         Intent i = new Intent(LevelActivity.this, LevelActivity.class);
+                        i.putExtra("universe", universe);
                         i.putExtra("level", level);
                         i.putExtra("subLevel", subLevel + 1);
 

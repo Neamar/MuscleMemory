@@ -11,6 +11,9 @@ import android.graphics.PathMeasure;
 import android.graphics.PointF;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
+import java.util.HashSet;
+import java.util.Iterator;
+
 public class GamePath extends Path {
     private final static int START_COLOR = Color.parseColor("#7E57C2");
     private final static int END_COLOR = Color.parseColor("#311B92");
@@ -51,6 +54,8 @@ public class GamePath extends Path {
     private PointF tracerCirclePosition = new PointF();
     private float tracerCurrentPlayTime;
 
+    private HashSet<Particle> particles = new HashSet<>(40);
+
     public GamePath(Invalidatable parent, ValueAnimator progressAnimator) {
         this(parent, progressAnimator, 90);
     }
@@ -89,6 +94,12 @@ public class GamePath extends Path {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 progress = (float) animation.getAnimatedValue();
+                if(pathMeasure != null) {
+                    pathMeasure.getPosTan(progress * pathLength, position, tangent);
+                    float maxProgress = progress + 1000f / animation.getDuration();
+
+                    particles.add(new Particle(position[0], position[1], tangent[0], tangent[1], progress, maxProgress));
+                }
                 parent.invalidate();
             }
         });
@@ -207,6 +218,7 @@ public class GamePath extends Path {
             progress = 0;
             progressColorAnimator.cancel();
             tracerProgressAnimator.start();
+            particles.clear();
         }
 
         parent.invalidate();
@@ -286,6 +298,14 @@ public class GamePath extends Path {
             canvas.drawCircle(tracerCirclePosition.x, tracerCirclePosition.y, fakeProgressRadius, linePaint);
             canvas.drawCircle(tracerCirclePosition.x, tracerCirclePosition.y, fakeProgressRadius, fillCirclePaint);
         }
+
+        for (Iterator<Particle> iterator = particles.iterator(); iterator.hasNext();) {
+            Particle p = iterator.next();
+            boolean state = p.onDraw(canvas, linePaint, progress);
+            if(state == Particle.SHOULD_DISAPPEAR) {
+                iterator.remove();
+            }
+        }
     }
 
     void onDrawCircle(Canvas canvas) {
@@ -317,5 +337,6 @@ public class GamePath extends Path {
             lostColorAnimator.removeAllUpdateListeners();
             lostColorAnimator.cancel();
         }
+        particles.clear();
     }
 }
