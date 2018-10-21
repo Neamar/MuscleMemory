@@ -124,7 +124,7 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
         prefs = PreferenceManager.getDefaultSharedPreferences(activity);
         this.universe = universe;
 
-        pathPaint.setColor(GamePath.CIRCLE_ORIGINAL_COLOR);
+        pathPaint.setColor(GamePath.UNSELECTED_CIRCLE_COLOR);
         pathPaint.setDither(true);
         pathPaint.setStrokeWidth(10f);
         pathPaint.setStyle(Paint.Style.STROKE);
