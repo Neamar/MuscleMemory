@@ -3,6 +3,7 @@ package fr.neamar.musclememory.picker;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -23,8 +24,6 @@ import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 import fr.neamar.musclememory.LevelStore;
 import fr.neamar.musclememory.R;
@@ -33,16 +32,13 @@ import fr.neamar.musclememory.level.Invalidatable;
 import fr.neamar.musclememory.level.LevelActivity;
 
 public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder> {
-    private final static int LEVEL_LOCKED = 0;
-    private final static int LEVEL_UNLOCKED = 1;
-    private final static int LEVEL_FINISHED = 2;
-
     private final int screenWidth;
     private final int screenHeight;
     private final Paint pathPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint fillCirclePaint;
 
     private final SharedPreferences prefs;
+    private final int universe;
 
     private final WeakReference<LevelPickerActivity> activity;
 
@@ -65,19 +61,21 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
     // you provide access to all the views for a data item in a view holder
     class PackViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         // each data item is just a string in this case
-        ImageView lockImageView;
-        TextView levelName;
-        ImageView firstSubLevel;
-        ImageView secondSubLevel;
-        SharedPreferences prefs;
+        private final ImageView lockImageView;
+        private final TextView levelName;
+        private final ImageView firstSubLevel;
+        private final ImageView secondSubLevel;
+        private final SharedPreferences prefs;
+        private final int universe;
 
-        PackViewHolder(View v, SharedPreferences prefs) {
+        PackViewHolder(View v, SharedPreferences prefs, int universe) {
             super(v);
             this.lockImageView = v.findViewById(R.id.lockImageView);
             this.levelName = v.findViewById(R.id.levelTitle);
             this.firstSubLevel = v.findViewById(R.id.firstSubLevel);
             this.secondSubLevel = v.findViewById(R.id.secondSubLevel);
             this.prefs = prefs;
+            this.universe = universe;
             v.setOnClickListener(this);
             v.setOnLongClickListener(this);
         }
@@ -85,8 +83,9 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
-            if (getLevelStatus(prefs, position) != LEVEL_LOCKED) {
+            if (LevelStore.getLevelStatus(prefs, universe, position) != LevelStore.LEVEL_LOCKED) {
                 Intent i = new Intent(v.getContext(), LevelActivity.class);
+                i.putExtra("universe", universe);
                 i.putExtra("level", position);
                 i.putExtra("subLevel", 0);
                 LevelPickerActivity a = activity.get();
@@ -113,21 +112,20 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
 
         @Override
         public boolean onLongClick(View v) {
-            Set<String> finishedLevels = prefs.getStringSet("finished_levels", new HashSet<String>());
-            finishedLevels.add(Integer.toString(getAdapterPosition()));
-            prefs.edit().putStringSet("finished_levels", finishedLevels).apply();
+            LevelStore.unlockLevel(prefs, universe, getAdapterPosition());
             PackAdapter.this.notifyDataSetChanged();
             Toast.makeText(v.getContext(), "You little cheater ;) Here you go, it's unlocked.", Toast.LENGTH_SHORT).show();
             return true;
         }
     }
 
-    PackAdapter(LevelPickerActivity activity, int screenWidth, int screenHeight) {
-        this.screenWidth = screenWidth;
-        this.screenHeight = screenHeight;
+    PackAdapter(LevelPickerActivity activity, int universe) {
+        this.screenWidth = Math.max(Resources.getSystem().getDisplayMetrics().widthPixels, Resources.getSystem().getDisplayMetrics().heightPixels);
+        this.screenHeight = Math.min(Resources.getSystem().getDisplayMetrics().widthPixels, Resources.getSystem().getDisplayMetrics().heightPixels);
         prefs = PreferenceManager.getDefaultSharedPreferences(activity);
+        this.universe = universe;
 
-        pathPaint.setColor(GamePath.CIRCLE_ORIGINAL_COLOR);
+        pathPaint.setColor(GamePath.UNSELECTED_CIRCLE_COLOR);
         pathPaint.setDither(true);
         pathPaint.setStrokeWidth(10f);
         pathPaint.setStyle(Paint.Style.STROKE);
@@ -149,35 +147,36 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_pack, parent, false);
-        return new PackViewHolder(v, prefs);
+        return new PackViewHolder(v, prefs, universe);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(@NonNull final PackViewHolder holder, int position) {
-        int status = getLevelStatus(prefs, position);
-        if (status == LEVEL_LOCKED) {
+        int status = LevelStore.getLevelStatus(prefs, universe, position);
+        if (status == LevelStore.LEVEL_LOCKED) {
             holder.lockImageView.setImageResource(R.drawable.outline_lock_black_36);
-            holder.lockImageView.setColorFilter(Color.RED);
-        } else if (status == LEVEL_UNLOCKED) {
+            holder.lockImageView.setColorFilter(holder.lockImageView.getContext().getResources().getColor(R.color.redLocked));
+        } else if (status == LevelStore.LEVEL_UNLOCKED) {
             holder.lockImageView.setImageResource(R.drawable.outline_lock_open_black_36);
             holder.lockImageView.setColorFilter(null);
         } else {
             holder.lockImageView.setImageResource(R.drawable.outline_check_circle_black_36);
-            holder.lockImageView.setColorFilter(Color.GREEN);
+            holder.lockImageView.setColorFilter(holder.lockImageView.getContext().getResources().getColor(R.color.greenUnlocked));
         }
 
-        holder.levelName.setText(String.format(holder.levelName.getContext().getString(R.string.level_number), position + 1));
 
-        drawLevel(position, 0, holder.firstSubLevel);
-        drawLevel(position, 1, holder.secondSubLevel);
+        holder.levelName.setText(String.format(holder.levelName.getContext().getString(R.string.level_number), LevelStore.UNIVERSES_NAME[universe], position + 1));
+
+        drawLevel(universe, position, 0, holder.firstSubLevel);
+        drawLevel(universe, position, 1, holder.secondSubLevel);
     }
 
-    private void drawLevel(int level, int subLevel, ImageView imageView) {
+    private void drawLevel(int universe, int level, int subLevel, ImageView imageView) {
         Bitmap bitmap = Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
-        canvas.drawColor(Color.BLACK);
-        Pair<String, ArrayList<GamePath>> levelData = LevelStore.getPathsForLevel(dummyInvalidatable, screenWidth, screenHeight, level, subLevel);
+        canvas.drawColor(Color.WHITE);
+        Pair<String, ArrayList<GamePath>> levelData = LevelStore.getPathsForLevel(dummyInvalidatable, screenWidth, screenHeight, universe, level, subLevel);
 
         // Draw path
         for (GamePath p : levelData.second) {
@@ -198,39 +197,18 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return LevelStore.getLevelCount();
+        return LevelStore.getLevelCount(universe);
     }
 
     int getFirstUnlocked() {
         int count = getItemCount();
         for (int i = 0; i < count; i++) {
-            if (getLevelStatus(prefs, i) == LEVEL_UNLOCKED) {
+            if (LevelStore.getLevelStatus(prefs, universe, i) == LevelStore.LEVEL_UNLOCKED) {
                 return i;
             }
         }
 
         return -1;
-    }
-
-    private static int getLevelStatus(SharedPreferences prefs, int level) {
-        boolean isLocked = true;
-        Set<String> finishedLevels = prefs.getStringSet("finished_levels", new HashSet<String>());
-
-        // Finished levels are unlocked
-        if (finishedLevels.contains(Integer.toString(level))) {
-            return LEVEL_FINISHED;
-        }
-        // Up to two unfinished levels can be played
-        // (+1 because level is zero-based)
-        else if (finishedLevels.size() + 1 >= level) {
-            isLocked = false;
-        }
-        // First time, you HAVE to play level 0
-        if (finishedLevels.size() == 0 && level != 0) {
-            isLocked = true;
-        }
-
-        return isLocked ? LEVEL_LOCKED : LEVEL_UNLOCKED;
     }
 
     @Override

@@ -1,10 +1,14 @@
 <resources>
     <string name="app_name">Muscle Memory</string>
-    <string name="level_number">Level #%d</string>
+    <string name="level_number">Level #%s-%d</string>
     <string name="level_state">Level state</string>
     <string name="first_level_preview">First level preview</string>
     <string name="second_level_preview">First level preview</string>
     <string name="move_to_next_universe">Move to next universe</string>
     <string name="move_to_previous_universe">Move to previous universe</string>
     <string name="toggle_volume">Toggle volume</string>
+    <string name="tutorial">Tutorial</string>
+    <string name="two_fingers">One and Two</string>
+    <string name="three_fingers">Three and more</string>
+
 </resources>
