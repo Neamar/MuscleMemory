@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
 import android.graphics.PointF;
+import android.view.animation.AccelerateDecelerateInterpolator;
 
 public class GamePath extends Path {
     private final static int START_COLOR = Color.parseColor("#7E57C2");
@@ -103,12 +104,9 @@ public class GamePath extends Path {
         });
 
         // Pulse the circle radius until level is started
-        pulseAnimator = ValueAnimator.ofFloat(0, 30);
-        pulseAnimator.setDuration(400);
-        pulseAnimator.setStartDelay(1000);
-        pulseAnimator.setRepeatMode(ValueAnimator.REVERSE);
-        pulseAnimator.setRepeatCount(ValueAnimator.INFINITE);
-
+        pulseAnimator = ValueAnimator.ofFloat(0, 30, 0);
+        pulseAnimator.setDuration(500);
+        pulseAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
         pulseAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -145,6 +143,9 @@ public class GamePath extends Path {
                 // Restart animation after a certain delay
                 if (tracerCurrentPlayTime > TRACER_DURATION + TRACER_COOLDOWN) {
                     tracerProgressAnimator.start();
+                    if(!currentlyCovered) {
+                        pulseAnimator.start();
+                    }
                 } else if (tracerCurrentPlayTime <= TRACER_DURATION) {
                     // Draw the tracer
                     parent.invalidate();
@@ -283,6 +284,7 @@ public class GamePath extends Path {
             getPointOnPath(tracerProgress, tracerCirclePosition);
             float fakeProgressRadius = tracerCurrentPlayTime <= TRACER_DURATION / 2 ? 20 : 40 * (TRACER_DURATION - tracerCurrentPlayTime) / TRACER_DURATION;
             canvas.drawCircle(tracerCirclePosition.x, tracerCirclePosition.y, fakeProgressRadius, linePaint);
+            canvas.drawCircle(tracerCirclePosition.x, tracerCirclePosition.y, fakeProgressRadius, fillCirclePaint);
         }
     }
 

@@ -15,9 +15,7 @@ import android.view.View;
 public class TouchEventView extends View {
     public String currentText = "";
 
-    private int[] colors = { Color.BLUE, Color.GREEN, Color.MAGENTA,
-            Color.BLACK, Color.CYAN, Color.GRAY, Color.RED, Color.DKGRAY,
-            Color.LTGRAY, Color.YELLOW };
+    private int[] colors = { Color.parseColor("#5C6BC0"), Color.parseColor("#3949AB"), Color.parseColor("#283593"), Color.parseColor("#1A237E") };
 
     protected SparseArray<PointF> activePointers;
 
@@ -93,9 +91,9 @@ public class TouchEventView extends View {
         for (int size = activePointers.size(), i = 0; i < size; i++) {
             PointF point = activePointers.valueAt(i);
             if (point != null) {
-                mPaint.setColor(colors[i]);
-                canvas.drawLine(0, point.y, canvas.getWidth(), point.y, mPaint);
-                canvas.drawLine(point.x, 0, point.x, canvas.getHeight(), mPaint);
+                mPaint.setColor(colors[i % colors.length]);
+                canvas.drawLine(0, point.y, getWidth(), point.y, mPaint);
+                canvas.drawLine(point.x, 0, point.x, getHeight(), mPaint);
             }
         }
         canvas.drawText(currentText, 10, 40, textPaint);
