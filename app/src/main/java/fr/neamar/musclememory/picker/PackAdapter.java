@@ -24,8 +24,6 @@ import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 import fr.neamar.musclememory.LevelStore;
 import fr.neamar.musclememory.R;
@@ -34,10 +32,6 @@ import fr.neamar.musclememory.level.Invalidatable;
 import fr.neamar.musclememory.level.LevelActivity;
 
 public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder> {
-    private final static int LEVEL_LOCKED = 0;
-    private final static int LEVEL_UNLOCKED = 1;
-    private final static int LEVEL_FINISHED = 2;
-
     private final int screenWidth;
     private final int screenHeight;
     private final Paint pathPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -89,7 +83,7 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
-            if (getLevelStatus(prefs, position) != LEVEL_LOCKED) {
+            if (LevelStore.getLevelStatus(prefs, universe, position) != LevelStore.LEVEL_LOCKED) {
                 Intent i = new Intent(v.getContext(), LevelActivity.class);
                 i.putExtra("level", position);
                 i.putExtra("subLevel", 0);
@@ -117,9 +111,7 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
 
         @Override
         public boolean onLongClick(View v) {
-            Set<String> finishedLevels = prefs.getStringSet("finished_levels", new HashSet<String>());
-            finishedLevels.add(Integer.toString(getAdapterPosition()));
-            prefs.edit().putStringSet("finished_levels", finishedLevels).apply();
+            LevelStore.unlockLevel(prefs, universe, getAdapterPosition());
             PackAdapter.this.notifyDataSetChanged();
             Toast.makeText(v.getContext(), "You little cheater ;) Here you go, it's unlocked.", Toast.LENGTH_SHORT).show();
             return true;
@@ -160,11 +152,11 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(@NonNull final PackViewHolder holder, int position) {
-        int status = getLevelStatus(prefs, position);
-        if (status == LEVEL_LOCKED) {
+        int status = LevelStore.getLevelStatus(prefs, universe, position);
+        if (status == LevelStore.LEVEL_LOCKED) {
             holder.lockImageView.setImageResource(R.drawable.outline_lock_black_36);
             holder.lockImageView.setColorFilter(holder.lockImageView.getContext().getResources().getColor(R.color.redLocked));
-        } else if (status == LEVEL_UNLOCKED) {
+        } else if (status == LevelStore.LEVEL_UNLOCKED) {
             holder.lockImageView.setImageResource(R.drawable.outline_lock_open_black_36);
             holder.lockImageView.setColorFilter(null);
         } else {
@@ -210,33 +202,12 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
     int getFirstUnlocked() {
         int count = getItemCount();
         for (int i = 0; i < count; i++) {
-            if (getLevelStatus(prefs, i) == LEVEL_UNLOCKED) {
+            if (LevelStore.getLevelStatus(prefs, universe, i) == LevelStore.LEVEL_UNLOCKED) {
                 return i;
             }
         }
 
         return -1;
-    }
-
-    private static int getLevelStatus(SharedPreferences prefs, int level) {
-        boolean isLocked = true;
-        Set<String> finishedLevels = prefs.getStringSet("finished_levels", new HashSet<String>());
-
-        // Finished levels are unlocked
-        if (finishedLevels.contains(Integer.toString(level))) {
-            return LEVEL_FINISHED;
-        }
-        // Up to two unfinished levels can be played
-        // (+1 because level is zero-based)
-        else if (finishedLevels.size() + 1 >= level) {
-            isLocked = false;
-        }
-        // First time, you HAVE to play level 0
-        if (finishedLevels.size() == 0 && level != 0) {
-            isLocked = true;
-        }
-
-        return isLocked ? LEVEL_LOCKED : LEVEL_UNLOCKED;
     }
 
     @Override

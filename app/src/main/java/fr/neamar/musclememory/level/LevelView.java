@@ -148,8 +148,8 @@ public class LevelView extends TouchEventView implements Invalidatable {
         }
     }
 
-    public void setCurrentLevel(int level, int subLevel) {
-        Pair<String, ArrayList<GamePath>> data = LevelStore.getPathsForLevel(this, getWidth(), getHeight(), 0, level, subLevel);
+    public void setCurrentLevel(int universe, int level, int subLevel) {
+        Pair<String, ArrayList<GamePath>> data = LevelStore.getPathsForLevel(this, getWidth(), getHeight(), universe, level, subLevel);
         title = data.first;
         paths = data.second;
         setState(WAITING_FOR_ALL_CIRCLES);

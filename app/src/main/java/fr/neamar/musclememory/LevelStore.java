@@ -1,10 +1,13 @@
 package fr.neamar.musclememory;
 
 import android.animation.ValueAnimator;
+import android.content.SharedPreferences;
 import android.util.Pair;
 import android.view.animation.LinearInterpolator;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import fr.neamar.musclememory.level.GamePath;
 import fr.neamar.musclememory.level.Invalidatable;
@@ -16,6 +19,12 @@ public class LevelStore {
     public final static String[] UNIVERSES_NAME = new String[] {"Ⅰ", "Ⅱ", "Ⅲ"};
     public final static int[] UNIVERSES_TITLE = new int[] {R.string.tutorial, R.string.two_fingers, R.string.three_fingers};
 
+    public final static int LEVEL_LOCKED = 0;
+    public final static int LEVEL_UNLOCKED = 1;
+    public final static int LEVEL_FINISHED = 2;
+
+    public final static int SUBLEVEL_NOT_FINISHED = 1;
+    public final static int SUBLEVEL_FINISHED = 2;
 
     @SuppressWarnings("UnusedAssignment")
     public static Pair<String, ArrayList<GamePath>> getPathsForLevel(Invalidatable parent, int width, int height, int universe, int level, int subLevel) {
@@ -830,5 +839,68 @@ public class LevelStore {
         } else {
             throw new RuntimeException("Invalid quadrant");
         }
+    }
+
+    private static String universeStateKey(int universe) {
+        return String.format("finished_levels_universe_%s", universe);
+    }
+
+    private static String levelStateKey(int universe, int level) {
+        return String.format("finished_levels_universe_%s_level_%s", universe, level);
+    }
+
+    public static void unlockLevel(SharedPreferences prefs, int universe, int level) {
+        String key = universeStateKey(universe);
+        Set<String> finishedLevels = prefs.getStringSet(key, new HashSet<String>());
+        finishedLevels.add(Integer.toString(level));
+        prefs.edit().putStringSet(key, finishedLevels).apply();
+    }
+
+    public static int getLevelStatus(SharedPreferences prefs, int universe, int level) {
+        boolean isLocked = true;
+        String key = universeStateKey(universe);
+        Set<String> finishedLevels = prefs.getStringSet(key, new HashSet<String>());
+
+        // Finished levels are unlocked
+        if (finishedLevels.contains(Integer.toString(level))) {
+            return LEVEL_FINISHED;
+        }
+        // Up to two unfinished levels can be played
+        // (+1 because level is zero-based)
+        else if (finishedLevels.size() + 1 >= level) {
+            isLocked = false;
+        }
+        // First time, you HAVE to play level 0
+        if (finishedLevels.size() == 0 && level != 0) {
+            isLocked = true;
+        }
+
+        return isLocked ? LEVEL_LOCKED : LEVEL_UNLOCKED;
+    }
+
+
+    public static int getFinishedLevelCount(SharedPreferences prefs) {
+        int total = 0;
+        for(int i = 0; i < UNIVERSES_TITLE.length; i++) {
+            total += getFinishedLevelCount(prefs, i);
+        }
+        return total;
+    }
+
+    public static int getFinishedLevelCount(SharedPreferences prefs, int universe) {
+        return prefs.getStringSet(universeStateKey(universe), new HashSet<String>()).size();
+    }
+
+    public static void unlockSubLevel(SharedPreferences prefs, int universe, int level, int sublevel) {
+        String key = levelStateKey(universe, level);
+        Set<String> finishedSubLevels = prefs.getStringSet(key, new HashSet<String>());
+        finishedSubLevels.add(Integer.toString(sublevel));
+        prefs.edit().putStringSet(key, finishedSubLevels).apply();
+    }
+
+    public static int getSubLevelStatus(SharedPreferences prefs, int universe, int level, int sublevel) {
+        String key = levelStateKey(universe, level);
+        Set<String> finishedSubLevels = prefs.getStringSet(key, new HashSet<String>());
+        return finishedSubLevels.contains(Integer.toString(sublevel)) ? SUBLEVEL_FINISHED : SUBLEVEL_NOT_FINISHED;
     }
 }

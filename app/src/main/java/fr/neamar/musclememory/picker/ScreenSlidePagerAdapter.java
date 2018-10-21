@@ -8,7 +8,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import fr.neamar.musclememory.LevelStore;
 
 public class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
-    public ScreenSlidePagerAdapter(FragmentManager fm) {
+    ScreenSlidePagerAdapter(FragmentManager fm) {
         super(fm);
     }
 
