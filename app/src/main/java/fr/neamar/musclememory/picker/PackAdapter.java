@@ -85,6 +85,7 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
             int position = getAdapterPosition();
             if (LevelStore.getLevelStatus(prefs, universe, position) != LevelStore.LEVEL_LOCKED) {
                 Intent i = new Intent(v.getContext(), LevelActivity.class);
+                i.putExtra("universe", universe);
                 i.putExtra("level", position);
                 i.putExtra("subLevel", 0);
                 LevelPickerActivity a = activity.get();
@@ -174,7 +175,7 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
     private void drawLevel(int universe, int level, int subLevel, ImageView imageView) {
         Bitmap bitmap = Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
-        canvas.drawColor(Color.BLACK);
+        canvas.drawColor(Color.WHITE);
         Pair<String, ArrayList<GamePath>> levelData = LevelStore.getPathsForLevel(dummyInvalidatable, screenWidth, screenHeight, universe, level, subLevel);
 
         // Draw path

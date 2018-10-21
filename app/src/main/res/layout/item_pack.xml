@@ -27,7 +27,7 @@
                 android:layout_margin="8dp"
                 android:layout_weight="1"
                 android:contentDescription="@string/first_level_preview"
-                app:srcCompat="@android:color/black" />
+                app:srcCompat="@android:color/white" />
 
             <ImageView
                 android:id="@+id/secondSubLevel"
@@ -36,7 +36,7 @@
                 android:layout_margin="8dp"
                 android:layout_weight="1"
                 android:contentDescription="@string/second_level_preview"
-                app:srcCompat="@android:color/black" />
+                app:srcCompat="@android:color/white" />
         </LinearLayout>
 
         <ImageView

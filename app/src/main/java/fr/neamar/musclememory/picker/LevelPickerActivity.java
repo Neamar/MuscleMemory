@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,9 +19,6 @@ import fr.neamar.musclememory.R;
 public class LevelPickerActivity extends AppCompatActivity {
     private final static String TAG = "LevelPicker";
 
-    private RecyclerView mRecyclerView;
-    private PackAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
     private SharedPreferences prefs;
 
     @Override
@@ -66,6 +62,8 @@ public class LevelPickerActivity extends AppCompatActivity {
 
                 previousUniverse.setVisibility(position == 0 ? View.INVISIBLE : View.VISIBLE);
                 nextUniverse.setVisibility(position == LevelStore.getUniverseCount() - 1 ? View.INVISIBLE : View.VISIBLE);
+
+                prefs.edit().putInt("current_universe", position).apply();
             }
         });
         ScreenSlidePagerAdapter pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
@@ -87,6 +85,8 @@ public class LevelPickerActivity extends AppCompatActivity {
 
         nextUniverse.setOnClickListener(universeChangeListener);
         previousUniverse.setOnClickListener(universeChangeListener);
+
+        pager.setCurrentItem(prefs.getInt("current_universe", 0));
     }
 
     @Override

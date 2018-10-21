@@ -40,6 +40,7 @@ public class GamePath extends Path {
     private float pathLength;
     private Path partialPath = new Path();
     private final float[] position = new float[2];
+    private final float[] tangent = new float[2];
 
     private boolean currentlyCovered = false;
     boolean pathCompleted = false;
@@ -49,7 +50,6 @@ public class GamePath extends Path {
     private ValueAnimator tracerProgressAnimator;
     private PointF tracerCirclePosition = new PointF();
     private float tracerCurrentPlayTime;
-
 
     public GamePath(Invalidatable parent, ValueAnimator progressAnimator) {
         this(parent, progressAnimator, 90);
