@@ -53,8 +53,12 @@ public class GamePath extends Path {
     private ValueAnimator tracerProgressAnimator;
     private PointF tracerCirclePosition = new PointF();
     private float tracerCurrentPlayTime;
+    private float tracerMaxProgress;
 
     private HashSet<Particle> particles = new HashSet<>(40);
+
+    private float maxProgress = 0f;
+    private PointF maxProgressCirclePosition = new PointF();
 
     public GamePath(Invalidatable parent, ValueAnimator progressAnimator) {
         this(parent, progressAnimator, 90);
@@ -146,6 +150,7 @@ public class GamePath extends Path {
         tracerProgressAnimator.setRepeatCount(ValueAnimator.INFINITE);
         tracerProgressAnimator.start();
         tracerProgressAnimator.removeAllUpdateListeners();
+        tracerMaxProgress = (float) TRACER_DURATION / progressAnimator.getDuration();
         tracerProgressAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -212,6 +217,12 @@ public class GamePath extends Path {
                     parent.invalidate();
                 }
             });
+
+            // Update best position on screen
+            if(progress > maxProgress) {
+                maxProgress = progress;
+                getPointOnPath(maxProgress, maxProgressCirclePosition);
+            }
 
             pathCompleted = false;
             progressAnimator.cancel();
@@ -305,6 +316,11 @@ public class GamePath extends Path {
             if(state == Particle.SHOULD_DISAPPEAR) {
                 iterator.remove();
             }
+        }
+
+        if(maxProgress > tracerMaxProgress && progress < maxProgress) {
+            canvas.drawCircle(maxProgressCirclePosition.x, maxProgressCirclePosition.y, 5, linePaint);
+            canvas.drawCircle(maxProgressCirclePosition.x, maxProgressCirclePosition.y, 5, fillCirclePaint);
         }
     }
 
