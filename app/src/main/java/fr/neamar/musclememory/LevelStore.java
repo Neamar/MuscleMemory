@@ -16,8 +16,8 @@ public class LevelStore {
     // see http://spencermortensen.com/articles/bezier-circle/
     private final static float BEZIER_CIRCLE_CONSTANT = (float) 0.5519;
 
-    public final static String[] UNIVERSES_NAME = new String[] {"Ⅰ", "Ⅱ", "Ⅲ"};
-    public final static int[] UNIVERSES_TITLE = new int[] {R.string.tutorial, R.string.two_fingers, R.string.three_fingers};
+    public final static String[] UNIVERSES_NAME = new String[]{"Ⅰ", "Ⅱ", "Ⅲ"};
+    public final static int[] UNIVERSES_TITLE = new int[]{R.string.tutorial, R.string.two_fingers, R.string.three_fingers};
 
     public final static int LEVEL_LOCKED = 0;
     public final static int LEVEL_UNLOCKED = 1;
@@ -413,6 +413,45 @@ public class LevelStore {
 
                     paths.add(path);
                 }
+
+            } else if (level-- == 0) {
+                if (subLevel == 0) {
+                    title = "dna_symbol";
+                    int halfWidth = (width - largePadding) / 2;
+                    int h = height - 2 * largePadding;
+                    int containingSquare = Math.min(halfWidth, h);
+                    GamePath path = new GamePath(parent, initializeAnimator(6000));
+                    path.moveTo(cX - containingSquare, largePadding);
+                    path.lineTo(cX, largePadding + containingSquare);
+                    path.lineTo(cX + containingSquare, largePadding);
+
+                    paths.add(path);
+
+                    GamePath secondPath = new GamePath(parent, initializeAnimator(6000));
+                    secondPath.moveTo(cX + containingSquare, largePadding + containingSquare);
+                    secondPath.lineTo(cX, largePadding);
+                    secondPath.lineTo(cX - containingSquare, largePadding + containingSquare);
+                    paths.add(secondPath);
+
+                } else if (subLevel == 1) {
+                    title = "rune_stone";
+                    int offset = largePadding * 2;
+                    GamePath path = new GamePath(parent, initializeAnimator(5000));
+                    path.moveTo(largePadding + offset, cY);
+                    path.lineTo(largePadding, largePadding);
+                    path.lineTo(width - largePadding, largePadding);
+                    path.lineTo(width - largePadding - offset, cY);
+
+                    paths.add(path);
+
+                    GamePath secondPath = new GamePath(parent, initializeAnimator(5000));
+                    secondPath.moveTo(width - largePadding - offset, cY);
+                    secondPath.lineTo(width - largePadding, height - largePadding);
+                    secondPath.lineTo(largePadding, height - largePadding);
+                    secondPath.lineTo(largePadding + offset, cY);
+
+                    paths.add(secondPath);
+                }
             } else if (level-- == 0) {
                 if (subLevel == 0) {
                     title = "pentagram";
@@ -785,13 +824,11 @@ public class LevelStore {
     }
 
     public static int getLevelCount(int universe) {
-        if(universe == 0) {
+        if (universe == 0) {
             return 4;
-        }
-        else if(universe == 1) {
+        } else if (universe == 1) {
             return 17;
-        }
-        else if(universe == 2) {
+        } else if (universe == 2) {
             return 1;
         }
 
@@ -881,7 +918,7 @@ public class LevelStore {
 
     public static int getFinishedLevelCount(SharedPreferences prefs) {
         int total = 0;
-        for(int i = 0; i < UNIVERSES_TITLE.length; i++) {
+        for (int i = 0; i < UNIVERSES_TITLE.length; i++) {
             total += getFinishedLevelCount(prefs, i);
         }
         return total;
