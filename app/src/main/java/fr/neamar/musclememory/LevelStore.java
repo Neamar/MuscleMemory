@@ -413,7 +413,6 @@ public class LevelStore {
 
                     paths.add(path);
                 }
-
             } else if (level-- == 0) {
                 if (subLevel == 0) {
                     title = "dna_symbol";
@@ -450,6 +449,32 @@ public class LevelStore {
                     secondPath.lineTo(largePadding, height - largePadding);
                     secondPath.lineTo(largePadding + offset, cY);
 
+                    paths.add(secondPath);
+                }
+            } else if (level-- == 0) {
+                if (subLevel == 0) {
+                    title = "fish_symbol";
+                    int halfWidth = cX - largePadding;
+                    int h = height - 2 * largePadding;
+                    int containingSquare = Math.min(halfWidth, h);
+                    GamePath path = new GamePath(parent, initializeAnimator(6000));
+                    path.moveTo(cX - containingSquare / 2, cY - containingSquare / 2);
+                    path.lineTo(cX + containingSquare / 2, cY + containingSquare / 2);
+                    path.lineTo(cX + containingSquare, cY);
+                    path.lineTo(cX + containingSquare / 2, cY - containingSquare / 2);
+                    path.lineTo(cX - containingSquare / 2, cY + containingSquare / 2);
+
+                    paths.add(path);
+                } else if (subLevel == 1) {
+                    title = "2_lines_different_speed";
+                    GamePath path = new GamePath(parent, initializeAnimator(2500));
+                    path.moveTo(largePadding, height / 4);
+                    path.lineTo(width - largePadding, height / 4);
+                    paths.add(path);
+
+                    GamePath secondPath = new GamePath(parent, initializeAnimator(4500));
+                    secondPath.moveTo(largePadding, 3 * height / 4);
+                    secondPath.lineTo(width - largePadding, 3 * height / 4);
                     paths.add(secondPath);
                 }
             } else if (level-- == 0) {
