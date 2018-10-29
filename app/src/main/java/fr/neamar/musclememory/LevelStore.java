@@ -335,6 +335,36 @@ public class LevelStore {
                 }
             } else if (level-- == 0) {
                 if (subLevel == 0) {
+                    title = "two_separated_half_circles";
+                    int radius = D - largePadding;
+                    GamePath path = new GamePath(parent, initializeAnimator(4500));
+                    path.moveTo(cX + radius / 2, cY);
+                    drawCircleQuadrantReverse(path, 3, cX - radius / 2, cY, radius);
+                    drawCircleQuadrantReverse(path, 2, cX - radius / 2, cY, radius);
+                    paths.add(path);
+
+                    GamePath secondPath = new GamePath(parent, initializeAnimator(4500));
+                    secondPath.moveTo(cX - radius / 2, cY);
+                    drawCircleQuadrantReverse(secondPath, 1, cX + radius / 2, cY, radius);
+                    drawCircleQuadrantReverse(secondPath, 0, cX + radius / 2, cY, radius);
+                    paths.add(secondPath);
+                } else if (subLevel == 1) {
+                    title = "two_different_radius_half_circles";
+                    int radius = D - padding;
+                    GamePath path = new GamePath(parent, initializeAnimator(4500));
+                    path.moveTo(cX - radius, cY);
+                    drawCircleQuadrantReverse(path, 1, cX, cY, radius);
+                    drawCircleQuadrantReverse(path, 0, cX, cY, radius);
+                    paths.add(path);
+
+                    GamePath secondPath = new GamePath(parent, initializeAnimator(4500));
+                    secondPath.moveTo(cX - radius / 2, cY);
+                    drawCircleQuadrant(secondPath, 2, cX, cY, radius / 2);
+                    drawCircleQuadrant(secondPath, 3, cX, cY, radius / 2);
+                    paths.add(secondPath);
+                }
+            } else if (level-- == 0) {
+                if (subLevel == 0) {
                     title = "falcon_millenium";
                     int radius = D - largePadding;
                     int chunk = radius / 4;
@@ -415,44 +445,6 @@ public class LevelStore {
                 }
             } else if (level-- == 0) {
                 if (subLevel == 0) {
-                    title = "dna_symbol";
-                    int halfWidth = (width - largePadding) / 2;
-                    int h = height - 2 * largePadding;
-                    int containingSquare = Math.min(halfWidth, h);
-                    GamePath path = new GamePath(parent, initializeAnimator(6000));
-                    path.moveTo(cX - containingSquare, largePadding);
-                    path.lineTo(cX, largePadding + containingSquare);
-                    path.lineTo(cX + containingSquare, largePadding);
-
-                    paths.add(path);
-
-                    GamePath secondPath = new GamePath(parent, initializeAnimator(6000));
-                    secondPath.moveTo(cX + containingSquare, largePadding + containingSquare);
-                    secondPath.lineTo(cX, largePadding);
-                    secondPath.lineTo(cX - containingSquare, largePadding + containingSquare);
-                    paths.add(secondPath);
-
-                } else if (subLevel == 1) {
-                    title = "rune_stone";
-                    int offset = largePadding * 2;
-                    GamePath path = new GamePath(parent, initializeAnimator(5000));
-                    path.moveTo(largePadding + offset, cY);
-                    path.lineTo(largePadding, largePadding);
-                    path.lineTo(width - largePadding, largePadding);
-                    path.lineTo(width - largePadding - offset, cY);
-
-                    paths.add(path);
-
-                    GamePath secondPath = new GamePath(parent, initializeAnimator(5000));
-                    secondPath.moveTo(width - largePadding - offset, cY);
-                    secondPath.lineTo(width - largePadding, height - largePadding);
-                    secondPath.lineTo(largePadding, height - largePadding);
-                    secondPath.lineTo(largePadding + offset, cY);
-
-                    paths.add(secondPath);
-                }
-            } else if (level-- == 0) {
-                if (subLevel == 0) {
                     title = "fish_symbol";
                     int halfWidth = cX - largePadding;
                     int h = height - 2 * largePadding;
@@ -475,6 +467,45 @@ public class LevelStore {
                     GamePath secondPath = new GamePath(parent, initializeAnimator(4500));
                     secondPath.moveTo(largePadding, 3 * height / 4);
                     secondPath.lineTo(width - largePadding, 3 * height / 4);
+                    paths.add(secondPath);
+                }
+            } else if (level-- == 0) {
+                if (subLevel == 0) {
+                    title = "dna_symbol";
+                    int halfWidth = (width - largePadding) / 2;
+                    int h = height - 2 * largePadding;
+                    int containingSquare = Math.min(halfWidth, h);
+                    GamePath path = new GamePath(parent, initializeAnimator(6000));
+                    path.moveTo(cX - containingSquare, largePadding);
+                    path.lineTo(cX, largePadding + containingSquare);
+                    path.lineTo(cX + containingSquare, largePadding);
+
+                    paths.add(path);
+
+                    GamePath secondPath = new GamePath(parent, initializeAnimator(6000));
+                    secondPath.moveTo(cX + containingSquare, largePadding + containingSquare);
+                    secondPath.lineTo(cX, largePadding);
+
+                    secondPath.lineTo(cX - containingSquare, largePadding + containingSquare);
+                    paths.add(secondPath);
+
+                } else if (subLevel == 1) {
+                    title = "rune_stone";
+                    int offset = largePadding * 2;
+                    GamePath path = new GamePath(parent, initializeAnimator(5000));
+                    path.moveTo(largePadding + offset, cY);
+                    path.lineTo(largePadding, largePadding);
+                    path.lineTo(width - largePadding, largePadding);
+                    path.lineTo(width - largePadding - offset, cY);
+
+                    paths.add(path);
+
+                    GamePath secondPath = new GamePath(parent, initializeAnimator(5000));
+                    secondPath.moveTo(width - largePadding - offset, cY);
+                    secondPath.lineTo(width - largePadding, height - largePadding);
+                    secondPath.lineTo(largePadding, height - largePadding);
+                    secondPath.lineTo(largePadding + offset, cY);
+
                     paths.add(secondPath);
                 }
             } else if (level-- == 0) {
@@ -622,6 +653,48 @@ public class LevelStore {
                     path.lineTo(baseRadius, 90);
 
                     paths.add(path);
+                }
+            } else if (level-- == 0) {
+                if (subLevel == 0) {
+                    title = "drunk_circles";
+                    int radius = D - largePadding;
+                    int centerX = cX - largePadding;
+                    GamePath path = new GamePath(parent, initializeAnimator(4500));
+                    path.moveTo(centerX - radius, cY);
+                    drawCircleQuadrant(path, 2, centerX, cY, radius);
+                    drawCircleQuadrant(path, 3, centerX, cY, radius);
+                    drawCircleQuadrant(path, 0, centerX, cY, radius);
+                    drawCircleQuadrant(path, 1, centerX, cY, radius);
+                    paths.add(path);
+
+                    centerX = cX + largePadding;
+                    GamePath secondPath = new GamePath(parent, initializeAnimator(4500));
+                    secondPath.moveTo(centerX - radius, cY);
+                    drawCircleQuadrant(secondPath, 2, centerX, cY, radius);
+                    drawCircleQuadrant(secondPath, 3, centerX, cY, radius);
+                    drawCircleQuadrant(secondPath, 0, centerX, cY, radius);
+                    drawCircleQuadrant(secondPath, 1, centerX, cY, radius);
+                    paths.add(secondPath);
+                } else if (subLevel == 1) {
+                    title = "drunk_circles_opposite";
+                    int radius = D - largePadding;
+                    int centerX = cX - largePadding / 2;
+                    GamePath path = new GamePath(parent, initializeAnimator(4500));
+                    path.moveTo(centerX - radius, cY);
+                    drawCircleQuadrant(path, 2, centerX, cY, radius);
+                    drawCircleQuadrant(path, 3, centerX, cY, radius);
+                    drawCircleQuadrant(path, 0, centerX, cY, radius);
+                    drawCircleQuadrant(path, 1, centerX, cY, radius);
+                    paths.add(path);
+
+                    centerX = cX + largePadding / 2;
+                    GamePath secondPath = new GamePath(parent, initializeAnimator(4500));
+                    secondPath.moveTo(centerX + radius, cY);
+                    drawCircleQuadrant(secondPath, 0, centerX, cY, radius);
+                    drawCircleQuadrant(secondPath, 1, centerX, cY, radius);
+                    drawCircleQuadrant(secondPath, 2, centerX, cY, radius);
+                    drawCircleQuadrant(secondPath, 3, centerX, cY, radius);
+                    paths.add(secondPath);
                 }
             } else if (level-- == 0) {
                 if (subLevel == 0) {
@@ -852,7 +925,7 @@ public class LevelStore {
         if (universe == 0) {
             return 4;
         } else if (universe == 1) {
-            return 17;
+            return 20;
         } else if (universe == 2) {
             return 1;
         }

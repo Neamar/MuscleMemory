@@ -47,7 +47,7 @@ public class LevelActivity extends AppCompatActivity {
 
         levelView.setOnLevelFinished(new OnLevelFinished() {
             @Override
-            public void levelFinished(boolean levelWon, long time) {
+            public void levelFinished(boolean levelWon, long time, float progress) {
                 attemptsCountDuringSession += 1;
 
                 int attemptsCountGlobal = prefs.getInt("attempts_" + levelView.title, 0);
@@ -68,7 +68,7 @@ public class LevelActivity extends AppCompatActivity {
                     props.put("subLevel_duration", levelView.getLevelDuration());
                     props.put("subLevel_paths_count", levelView.getPathsCount());
                     props.put("time_played_ms", time);
-                    props.put("progress_percent", Math.min(100, Math.round(100 * levelView.getProgress())));
+                    props.put("progress_percent", Math.min(100, Math.round(100 * progress)));
                     props.put("number_of_attempts_session", attemptsCountDuringSession);
                     props.put("number_of_attempts_ever", attemptsCountGlobal);
                     props.put("alltime_number_of_games_played", attemptsCountAllLevel);

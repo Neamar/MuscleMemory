@@ -120,13 +120,15 @@ public class LevelView extends TouchEventView implements Invalidatable {
 
 
     public void reset() {
+        // Get progress now, it'll be reset as soon as we set state to LOST
+        float progress = getProgress();
         currentText = "You've lost! Retry.";
         setState(LOST);
         setState(WAITING_FOR_ALL_CIRCLES);
         antiCheatAnimator.end();
 
         if (onLevelFinished != null) {
-            onLevelFinished.levelFinished(false, System.currentTimeMillis() - startDate);
+            onLevelFinished.levelFinished(false, System.currentTimeMillis() - startDate, progress);
         }
     }
 
@@ -143,7 +145,7 @@ public class LevelView extends TouchEventView implements Invalidatable {
             currentText = "GG WP";
             setState(WON);
             if (onLevelFinished != null) {
-                onLevelFinished.levelFinished(true, System.currentTimeMillis() - startDate);
+                onLevelFinished.levelFinished(true, System.currentTimeMillis() - startDate, 1);
             }
         }
     }
