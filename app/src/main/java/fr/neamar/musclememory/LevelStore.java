@@ -358,9 +358,9 @@ public class LevelStore {
                     paths.add(path);
 
                     GamePath secondPath = new GamePath(parent, initializeAnimator(4500));
-                    secondPath.moveTo(cX - radius / 2, cY);
-                    drawCircleQuadrant(secondPath, 2, cX, cY, radius / 2);
-                    drawCircleQuadrant(secondPath, 3, cX, cY, radius / 2);
+                    secondPath.moveTo(cX + radius / 2, cY);
+                    drawCircleQuadrantReverse(secondPath, 3, cX, cY, radius / 2);
+                    drawCircleQuadrantReverse(secondPath, 2, cX, cY, radius / 2);
                     paths.add(secondPath);
                 }
             } else if (level-- == 0) {
@@ -925,7 +925,7 @@ public class LevelStore {
         if (universe == 0) {
             return 4;
         } else if (universe == 1) {
-            return 20;
+            return 21;
         } else if (universe == 2) {
             return 1;
         }
