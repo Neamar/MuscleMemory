@@ -1,5 +1,8 @@
 package fr.neamar.musclememory.level;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -15,7 +18,12 @@ import android.view.View;
 public class TouchEventView extends View {
     public String currentText = "";
 
-    private int[] colors = { Color.parseColor("#5C6BC0"), Color.parseColor("#3949AB"), Color.parseColor("#283593"), Color.parseColor("#1A237E") };
+    public int currentFps = 0;
+    public int minFps = 500;
+    public String fpsText = "? fps";
+    public ValueAnimator fpsAnimator;
+
+    private int[] colors = {Color.parseColor("#5C6BC0"), Color.parseColor("#3949AB"), Color.parseColor("#283593"), Color.parseColor("#1A237E")};
 
     protected SparseArray<PointF> activePointers;
 
@@ -24,6 +32,27 @@ public class TouchEventView extends View {
 
     public TouchEventView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        fpsAnimator = ValueAnimator.ofInt(0, 10);
+        fpsAnimator.setDuration(1000);
+        fpsAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+                minFps = Math.min(minFps, currentFps);
+                fpsText = currentFps + " fps, min " + minFps;
+                currentFps = 0;
+                super.onAnimationRepeat(animation);
+            }
+        });
+        fpsAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        fpsAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                currentFps += 1;
+            }
+        });
+        fpsAnimator.start();
+
         initView();
     }
 
@@ -37,7 +66,7 @@ public class TouchEventView extends View {
 
         textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         textPaint.setTextSize(20);
-        textPaint.setColor(Color.WHITE);
+        textPaint.setColor(Color.BLACK);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -97,5 +126,12 @@ public class TouchEventView extends View {
             }
         }
         canvas.drawText(currentText, 10, 40, textPaint);
+        canvas.drawText(fpsText, 10, getHeight() - 50, textPaint);
+    }
+
+    protected void onDestroy() {
+        fpsAnimator.removeAllUpdateListeners();
+        fpsAnimator.removeAllListeners();
+        fpsAnimator.cancel();
     }
 }
