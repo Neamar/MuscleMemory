@@ -115,7 +115,7 @@ public class GamePath extends Path {
             }
         });
 
-        // Pulse the circle radius until level is started
+        // Pulse the circle radius
         pulseAnimator = ValueAnimator.ofFloat(0, 30, 0);
         pulseAnimator.setDuration(500);
         pulseAnimator.setInterpolator(new AccelerateDecelerateInterpolator());

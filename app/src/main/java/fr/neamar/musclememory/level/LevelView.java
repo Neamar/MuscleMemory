@@ -105,7 +105,7 @@ public class LevelView extends TouchEventView implements Invalidatable {
         }
 
         if (!allCirclesCovered) {
-            if (false && state == RUNNING) {
+            if (state == RUNNING) {
                 reset();
             }
         }
