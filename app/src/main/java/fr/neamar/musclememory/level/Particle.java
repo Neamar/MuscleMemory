@@ -8,7 +8,8 @@ class Particle {
 
     private float x;
     private float y;
-    private double theta;
+    private double cosTheta;
+    private double sinTheta;
     private double ttl;
     private double speed;
     private float createdAt;
@@ -19,7 +20,9 @@ class Particle {
         this.y = y;
         this.createdAt = currentProgress;
 
-        theta = -Math.PI / 4 + Math.atan2(-tanY, -tanX) + Math.random() * Math.PI / 2;
+        double theta = -Math.PI / 4 + Math.atan2(-tanY, -tanX) + Math.random() * Math.PI / 2;
+        cosTheta = Math.cos(theta);
+        sinTheta = Math.sin(theta);
         ttl = Math.random() * (maxProgress - currentProgress);
         halfLife = ttl / 2;
         speed = 5;// + 10 * Math.random();
@@ -35,13 +38,12 @@ class Particle {
             alpha = 255 - (int) (((currentProgress - createdAt - halfLife) / halfLife) * 255);
         }
 
-        float newX = (float) (x + speed * Math.cos(theta));
-        float newY = (float) (y + speed * Math.sin(theta));
+        float newX = (float) (x + speed * cosTheta);
+        float newY = (float) (y + speed * sinTheta);
 
-        int oldAlpha = paint.getAlpha();
         paint.setAlpha(alpha);
         canvas.drawLine(x, y, newX, newY, paint);
-        paint.setAlpha(oldAlpha);
+        paint.setAlpha(1);
         x = newX;
         y = newY;
 
