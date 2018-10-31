@@ -77,6 +77,8 @@ public class LevelActivity extends AppCompatActivity {
                     props.put("finished_before", LevelStore.getSubLevelStatus(prefs, universe, level, subLevel) == LevelStore.SUBLEVEL_FINISHED);
                     props.put("screen_width", levelView.getWidth());
                     props.put("screen_height", levelView.getHeight());
+                    props.put("minimum_fps", levelView.minFps);
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

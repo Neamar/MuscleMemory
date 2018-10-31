@@ -22,6 +22,7 @@ public class MuscleMemoryApplication extends Application {
                 .set("screen_width", screenWidth)
                 .set("screen_height", screenHeight)
                 .set("debug", BuildConfig.DEBUG)
+                .set("density", getResources().getDisplayMetrics().density)
                 .set("multitouch_jazzhand", pm.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH_JAZZHAND));
         Amplitude.getInstance().identify(identify);
 
