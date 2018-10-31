@@ -69,9 +69,6 @@ public class GamePath extends Path {
         this.progressAnimator = progressAnimator;
         this.circleRadius = circleRadius;
         this.baseCircleRadius = circleRadius;
-
-        initializePaints();
-        initializeAnimators();
     }
 
     private void initializePaints() {
@@ -147,9 +144,11 @@ public class GamePath extends Path {
         // Display the tracer
         // started by default
         tracerProgressAnimator = progressAnimator.clone();
+        // tracer is a clone of progress to have the same duration, but it should repeat
         tracerProgressAnimator.setRepeatCount(ValueAnimator.INFINITE);
-        tracerProgressAnimator.start();
+        // and clean all its listeners from progressAnimator
         tracerProgressAnimator.removeAllUpdateListeners();
+        tracerProgressAnimator.removeAllListeners();
         tracerMaxProgress = (float) TRACER_DURATION / progressAnimator.getDuration();
         tracerProgressAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -158,6 +157,7 @@ public class GamePath extends Path {
                 tracerCurrentPlayTime = tracerProgressAnimator.getCurrentPlayTime();
                 // Restart animation after a certain delay
                 if (tracerCurrentPlayTime > TRACER_DURATION + TRACER_COOLDOWN) {
+                    tracerProgressAnimator.cancel();
                     tracerProgressAnimator.start();
                     if(!currentlyCovered) {
                         pulseAnimator.start();
@@ -168,6 +168,7 @@ public class GamePath extends Path {
                 }
             }
         });
+        tracerProgressAnimator.start();
     }
 
     // Called once all draw operations have been added to this item
@@ -360,5 +361,11 @@ public class GamePath extends Path {
             lostColorAnimator.cancel();
         }
         particles.clear();
+    }
+
+    // This method is caleld when the path will be interactively displayed to the user
+    void prepareForInteraction() {
+        initializePaints();
+        initializeAnimators();
     }
 }

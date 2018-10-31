@@ -105,7 +105,7 @@ public class LevelView extends TouchEventView implements Invalidatable {
         }
 
         if (!allCirclesCovered) {
-            if (state == RUNNING) {
+            if (false && state == RUNNING) {
                 reset();
             }
         }
@@ -155,6 +155,11 @@ public class LevelView extends TouchEventView implements Invalidatable {
         title = data.first;
         paths = data.second;
         setState(WAITING_FOR_ALL_CIRCLES);
+
+        for(GamePath path:paths) {
+            path.prepareForInteraction();
+        }
+
         invalidate();
     }
 
