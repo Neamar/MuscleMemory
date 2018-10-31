@@ -295,12 +295,17 @@ public class GamePath extends Path {
      * @param canvas canvas to draw into
      */
     void onDrawPath(Canvas canvas) {
-        // Build a partial path containing the remaining path
-        // and draw it on screen
-        partialPath.reset();
-        pathMeasure.getSegment(progress * pathLength, pathLength, partialPath, true);
-        partialPath.rLineTo(0.0f, 0.0f); // workaround to display on hardware accelerated canvas as described in docs
-        canvas.drawPath(partialPath, linePaint);
+        if(progress > 0) {
+            // Build a partial path containing the remaining path
+            // and draw it on screen
+            partialPath.reset();
+            pathMeasure.getSegment(progress * pathLength, pathLength, partialPath, true);
+            partialPath.rLineTo(0.0f, 0.0f); // workaround to display on hardware accelerated canvas as described in docs
+            canvas.drawPath(partialPath, linePaint);
+        }
+        else {
+            canvas.drawPath(this, linePaint);
+        }
 
         // If unstarted, also display tracer
         if (progress == 0 && tracerCurrentPlayTime < TRACER_DURATION) {
@@ -319,6 +324,7 @@ public class GamePath extends Path {
         }
 
         if(maxProgress > tracerMaxProgress && progress < maxProgress) {
+            // Mark the farthest position reached
             canvas.drawCircle(maxProgressCirclePosition.x, maxProgressCirclePosition.y, 5, linePaint);
             canvas.drawCircle(maxProgressCirclePosition.x, maxProgressCirclePosition.y, 5, fillCirclePaint);
         }
