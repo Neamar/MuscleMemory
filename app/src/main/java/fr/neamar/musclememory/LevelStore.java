@@ -399,6 +399,48 @@ public class LevelStore {
                 }
             } else if (level-- == 0) {
                 if (subLevel == 0) {
+                    title = "s_and_mirror";
+                    int radius = (height - 2 * largePadding) / 4;
+                    GamePath path = new GamePath(parent, initializeAnimator(4500));
+                    path.moveTo(largePadding + radius, cY - 2 * radius);
+                    drawCircleQuadrant(path, 1, largePadding + radius, cY - radius, radius);
+                    drawCircleQuadrant(path, 2, largePadding + radius, cY - radius, radius);
+                    drawCircleQuadrantReverse(path, 0, largePadding + radius, cY + radius, radius);
+                    drawCircleQuadrantReverse(path, 3, largePadding + radius, cY + radius, radius);
+
+                    paths.add(path);
+
+                    GamePath secondPath = new GamePath(parent, initializeAnimator(4500));
+                    secondPath.moveTo(width - largePadding - radius, cY - 2 * radius);
+                    drawCircleQuadrantReverse(secondPath, 0, width - largePadding - radius, cY - radius, radius);
+                    drawCircleQuadrantReverse(secondPath, 3, width - largePadding - radius, cY - radius, radius);
+                    drawCircleQuadrant(secondPath, 1, width - largePadding - radius, cY + radius, radius);
+                    drawCircleQuadrant(secondPath, 2, width - largePadding - radius, cY + radius, radius);
+
+                    paths.add(secondPath);
+                } else if (subLevel == 1) {
+                    title = "s_and_fake_mirror";
+                    int radius = (height - 2 * largePadding) / 4;
+                    GamePath path = new GamePath(parent, initializeAnimator(4500));
+                    path.moveTo(largePadding + radius, cY - 2 * radius);
+                    drawCircleQuadrant(path, 1, largePadding + radius, cY - radius, radius);
+                    drawCircleQuadrant(path, 2, largePadding + radius, cY - radius, radius);
+                    drawCircleQuadrantReverse(path, 0, largePadding + radius, cY + radius, radius);
+                    drawCircleQuadrantReverse(path, 3, largePadding + radius, cY + radius, radius);
+
+                    paths.add(path);
+
+                    GamePath secondPath = new GamePath(parent, initializeAnimator(4500));
+                    secondPath.moveTo(width - largePadding - radius, cY - 2 * radius);
+                    drawCircleQuadrantReverse(secondPath, 0, width - largePadding - radius, cY - radius, radius);
+                    drawCircleQuadrantReverse(secondPath, 3, width - largePadding - radius, cY - radius, radius);
+                    drawCircleQuadrantReverse(secondPath, 0, width - largePadding - radius, cY + radius, radius);
+                    drawCircleQuadrantReverse(secondPath, 3, width - largePadding - radius, cY + radius, radius);
+
+                    paths.add(secondPath);
+                }
+            } else if (level-- == 0) {
+                if (subLevel == 0) {
                     title = "circle_made_of_squares";
                     int s = D / 3;
                     GamePath path = new GamePath(parent, initializeAnimator(6000));
