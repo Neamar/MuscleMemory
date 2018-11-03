@@ -552,6 +552,40 @@ public class LevelStore {
                 }
             } else if (level-- == 0) {
                 if (subLevel == 0) {
+                    title = "two_270_degrees";
+                    int radius = D - largePadding;
+                    int smallRadius = radius - largePadding;
+                    GamePath path = new GamePath(parent, initializeAnimator(4500));
+                    path.moveTo(cX + radius, cY);
+                    drawCircleQuadrant(path, 0, cX, cY, radius);
+                    drawCircleQuadrant(path, 1, cX, cY, radius);
+                    drawCircleQuadrant(path, 2, cX, cY, radius);
+                    paths.add(path);
+
+                    GamePath secondPath = new GamePath(parent, initializeAnimator(4500));
+                    secondPath.moveTo(cX - smallRadius, cY);
+                    drawCircleQuadrant(secondPath, 2, cX, cY, smallRadius);
+                    drawCircleQuadrant(secondPath, 3, cX, cY, smallRadius);
+                    drawCircleQuadrant(secondPath, 0, cX, cY, smallRadius);
+                    paths.add(secondPath);
+
+                } else if (subLevel == 1) {
+                    title = "curvy_x";
+                    int curveUntil = 2 * cX / 3;
+                    GamePath path = new GamePath(parent, initializeAnimator(5000));
+                    path.moveTo(largePadding, height - largePadding);
+                    path.cubicTo(curveUntil, height - largePadding, 2 * largePadding, largePadding, curveUntil, largePadding);
+                    path.lineTo(width - largePadding, largePadding);
+                    paths.add(path);
+
+                    GamePath secondPath = new GamePath(parent, initializeAnimator(5000));
+                    secondPath.moveTo(width - largePadding, height - largePadding);
+                    secondPath.lineTo(curveUntil, height - largePadding);
+                    secondPath.cubicTo(2 * largePadding, height - largePadding,curveUntil, largePadding, largePadding, largePadding );
+                    paths.add(secondPath);
+                }
+            } else if (level-- == 0) {
+                if (subLevel == 0) {
                     title = "pentagram";
                     GamePath path = new GamePath(parent, initializeAnimator(7000));
                     float twoPi = 2 * (float) Math.PI;
@@ -698,48 +732,6 @@ public class LevelStore {
                 }
             } else if (level-- == 0) {
                 if (subLevel == 0) {
-                    title = "drunk_circles";
-                    int radius = D - largePadding;
-                    int centerX = cX - largePadding;
-                    GamePath path = new GamePath(parent, initializeAnimator(4500));
-                    path.moveTo(centerX - radius, cY);
-                    drawCircleQuadrant(path, 2, centerX, cY, radius);
-                    drawCircleQuadrant(path, 3, centerX, cY, radius);
-                    drawCircleQuadrant(path, 0, centerX, cY, radius);
-                    drawCircleQuadrant(path, 1, centerX, cY, radius);
-                    paths.add(path);
-
-                    centerX = cX + largePadding;
-                    GamePath secondPath = new GamePath(parent, initializeAnimator(4500));
-                    secondPath.moveTo(centerX - radius, cY);
-                    drawCircleQuadrant(secondPath, 2, centerX, cY, radius);
-                    drawCircleQuadrant(secondPath, 3, centerX, cY, radius);
-                    drawCircleQuadrant(secondPath, 0, centerX, cY, radius);
-                    drawCircleQuadrant(secondPath, 1, centerX, cY, radius);
-                    paths.add(secondPath);
-                } else if (subLevel == 1) {
-                    title = "drunk_circles_opposite";
-                    int radius = D - largePadding;
-                    int centerX = cX - largePadding / 2;
-                    GamePath path = new GamePath(parent, initializeAnimator(4500));
-                    path.moveTo(centerX - radius, cY);
-                    drawCircleQuadrant(path, 2, centerX, cY, radius);
-                    drawCircleQuadrant(path, 3, centerX, cY, radius);
-                    drawCircleQuadrant(path, 0, centerX, cY, radius);
-                    drawCircleQuadrant(path, 1, centerX, cY, radius);
-                    paths.add(path);
-
-                    centerX = cX + largePadding / 2;
-                    GamePath secondPath = new GamePath(parent, initializeAnimator(4500));
-                    secondPath.moveTo(centerX + radius, cY);
-                    drawCircleQuadrant(secondPath, 0, centerX, cY, radius);
-                    drawCircleQuadrant(secondPath, 1, centerX, cY, radius);
-                    drawCircleQuadrant(secondPath, 2, centerX, cY, radius);
-                    drawCircleQuadrant(secondPath, 3, centerX, cY, radius);
-                    paths.add(secondPath);
-                }
-            } else if (level-- == 0) {
-                if (subLevel == 0) {
                     title = "candy_same_side";
                     int w = width / 10;
                     int h = height / 6;
@@ -875,6 +867,48 @@ public class LevelStore {
                 }
             } else if (level-- == 0) {
                 if (subLevel == 0) {
+                    title = "drunk_circles";
+                    int radius = D - largePadding;
+                    int centerX = cX - largePadding;
+                    GamePath path = new GamePath(parent, initializeAnimator(4500));
+                    path.moveTo(centerX - radius, cY);
+                    drawCircleQuadrant(path, 2, centerX, cY, radius);
+                    drawCircleQuadrant(path, 3, centerX, cY, radius);
+                    drawCircleQuadrant(path, 0, centerX, cY, radius);
+                    drawCircleQuadrant(path, 1, centerX, cY, radius);
+                    paths.add(path);
+
+                    centerX = cX + largePadding;
+                    GamePath secondPath = new GamePath(parent, initializeAnimator(4500));
+                    secondPath.moveTo(centerX - radius, cY);
+                    drawCircleQuadrant(secondPath, 2, centerX, cY, radius);
+                    drawCircleQuadrant(secondPath, 3, centerX, cY, radius);
+                    drawCircleQuadrant(secondPath, 0, centerX, cY, radius);
+                    drawCircleQuadrant(secondPath, 1, centerX, cY, radius);
+                    paths.add(secondPath);
+                } else if (subLevel == 1) {
+                    title = "drunk_circles_opposite";
+                    int radius = D - largePadding;
+                    int centerX = cX - largePadding / 2;
+                    GamePath path = new GamePath(parent, initializeAnimator(4500));
+                    path.moveTo(centerX - radius, cY);
+                    drawCircleQuadrant(path, 2, centerX, cY, radius);
+                    drawCircleQuadrant(path, 3, centerX, cY, radius);
+                    drawCircleQuadrant(path, 0, centerX, cY, radius);
+                    drawCircleQuadrant(path, 1, centerX, cY, radius);
+                    paths.add(path);
+
+                    centerX = cX + largePadding / 2;
+                    GamePath secondPath = new GamePath(parent, initializeAnimator(4500));
+                    secondPath.moveTo(centerX + radius, cY);
+                    drawCircleQuadrant(secondPath, 0, centerX, cY, radius);
+                    drawCircleQuadrant(secondPath, 1, centerX, cY, radius);
+                    drawCircleQuadrant(secondPath, 2, centerX, cY, radius);
+                    drawCircleQuadrant(secondPath, 3, centerX, cY, radius);
+                    paths.add(secondPath);
+                }
+            } else if (level-- == 0) {
+                if (subLevel == 0) {
                     title = "two_fingers_rectangle";
                     int margin = 150;
                     GamePath path = new GamePath(parent, initializeAnimator(6000));
@@ -967,7 +1001,7 @@ public class LevelStore {
         if (universe == 0) {
             return 4;
         } else if (universe == 1) {
-            return 21;
+            return 23;
         } else if (universe == 2) {
             return 1;
         }
