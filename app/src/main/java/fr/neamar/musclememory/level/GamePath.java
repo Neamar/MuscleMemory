@@ -316,18 +316,18 @@ public class GamePath extends Path {
             canvas.drawCircle(tracerCirclePosition.x, tracerCirclePosition.y, fakeProgressRadius, fillCirclePaint);
         }
 
+        if(maxProgress > tracerMaxProgress && progress < maxProgress) {
+            // Mark the farthest position reached
+            canvas.drawCircle(maxProgressCirclePosition.x, maxProgressCirclePosition.y, 5, linePaint);
+            canvas.drawCircle(maxProgressCirclePosition.x, maxProgressCirclePosition.y, 5, fillCirclePaint);
+        }
+
         for (Iterator<Particle> iterator = particles.iterator(); iterator.hasNext();) {
             Particle p = iterator.next();
             boolean state = p.onDraw(canvas, linePaint, progress);
             if(state == Particle.SHOULD_DISAPPEAR) {
                 iterator.remove();
             }
-        }
-
-        if(maxProgress > tracerMaxProgress && progress < maxProgress) {
-            // Mark the farthest position reached
-            canvas.drawCircle(maxProgressCirclePosition.x, maxProgressCirclePosition.y, 5, linePaint);
-            canvas.drawCircle(maxProgressCirclePosition.x, maxProgressCirclePosition.y, 5, fillCirclePaint);
         }
     }
 
