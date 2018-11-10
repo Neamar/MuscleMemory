@@ -1052,12 +1052,17 @@ public class LevelStore {
         }
     }
 
+
+    public static String levelIdentifier(int universe, int level) {
+        return String.format("universe_%s_level_%s", universe, level);
+    }
+
     private static String universeStateKey(int universe) {
         return String.format("finished_levels_universe_%s", universe);
     }
 
     private static String levelStateKey(int universe, int level) {
-        return String.format("finished_levels_universe_%s_level_%s", universe, level);
+        return String.format("finished_sublevels_universe_%s_level_%s", universe, level);
     }
 
     public static void unlockLevel(SharedPreferences prefs, int universe, int level) {

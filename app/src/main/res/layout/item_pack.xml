@@ -43,6 +43,8 @@
             android:id="@+id/lockImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:minWidth="32dp"
+            android:minHeight="32dp"
             android:layout_gravity="center_horizontal"
             android:contentDescription="@string/level_state"
             app:srcCompat="@drawable/outline_lock_black_36" />

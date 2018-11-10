@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.graphics.drawable.AnimatedVectorDrawable;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -24,6 +25,8 @@ import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import fr.neamar.musclememory.LevelStore;
 import fr.neamar.musclememory.R;
@@ -41,6 +44,8 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
     private final int universe;
 
     private final WeakReference<LevelPickerActivity> activity;
+
+    private final Set<String> emptySet = new HashSet<String>();
 
     static class DummyInvalidatable implements Invalidatable {
         @Override
@@ -157,14 +162,54 @@ public class PackAdapter extends RecyclerView.Adapter<PackAdapter.PackViewHolder
         if (status == LevelStore.LEVEL_LOCKED) {
             holder.lockImageView.setImageResource(R.drawable.outline_lock_black_36);
             holder.lockImageView.setColorFilter(holder.lockImageView.getContext().getResources().getColor(R.color.redLocked));
+            holder.lockImageView.clearAnimation();
         } else if (status == LevelStore.LEVEL_UNLOCKED) {
-            holder.lockImageView.setImageResource(R.drawable.outline_lock_open_black_36);
+            String levelIdentifier = LevelStore.levelIdentifier(universe, position);
             holder.lockImageView.setColorFilter(null);
+            if(prefs.getStringSet("unlock-animation-displayed", emptySet).contains(levelIdentifier)) {
+                // If animation was seen before, just a simple lock
+                holder.lockImageView.setImageResource(R.drawable.outline_lock_open_black_36);
+
+                holder.lockImageView.clearAnimation();
+            }
+            else {
+                // Otherwise animate the unlocking
+                Set<String> s = new HashSet<>();
+                s = prefs.getStringSet("unlock-animation-displayed", s);
+                s.add(levelIdentifier);
+                prefs.edit().putStringSet("unlock-animation-displayed", s).apply();
+
+                AnimatedVectorDrawable avd = (AnimatedVectorDrawable) holder.lockImageView.getContext().getDrawable(R.drawable.lock_animation);
+                holder.lockImageView.setImageDrawable(avd);
+                avd.start();
+                ScaleAnimation anim = new ScaleAnimation(1, 1.7f, 1, 1.7f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                anim.setDuration(2200);
+                anim.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        ScaleAnimation anim = new ScaleAnimation(1.7f, 1f, 1.7f, 1f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                        anim.setDuration(500);
+                        holder.lockImageView.startAnimation(anim);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+
+                holder.lockImageView.startAnimation(anim);
+
+            }
         } else {
             holder.lockImageView.setImageResource(R.drawable.outline_check_circle_black_36);
             holder.lockImageView.setColorFilter(holder.lockImageView.getContext().getResources().getColor(R.color.greenUnlocked));
         }
-
 
         holder.levelName.setText(String.format(holder.levelName.getContext().getString(R.string.level_number), LevelStore.UNIVERSES_NAME[universe], position + 1));
 
