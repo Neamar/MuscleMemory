@@ -368,4 +368,8 @@ public class GamePath extends Path {
         initializePaints();
         initializeAnimators();
     }
+
+    public void moveTo(double v, double v1) {
+        super.moveTo((float) v, (float) v1);
+    }
 }

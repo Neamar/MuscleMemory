@@ -1052,12 +1052,12 @@ public class LevelStore {
                     drawCircleQuadrant(secondPath, 2, cX + cX / 2, cY, radius);
                     paths.add(secondPath);
 
-                    GamePath thirdPath = new GamePath(parent, initializeAnimator(1000));
+                    GamePath thirdPath = new GamePath(parent, initializeAnimator(100));
                     thirdPath.moveTo(cX / 2, cY);
                     thirdPath.lineTo(cX / 2, cY + .1f);
                     paths.add(thirdPath);
 
-                    GamePath fourthPath = new GamePath(parent, initializeAnimator(1000));
+                    GamePath fourthPath = new GamePath(parent, initializeAnimator(100));
                     fourthPath.moveTo(cX + cX / 2, cY);
                     fourthPath.lineTo(cX + cX / 2, cY + .1f);
                     paths.add(fourthPath);
@@ -1083,6 +1083,39 @@ public class LevelStore {
                     drawCircleQuadrantReverse(thirdPath, 2, cX + radius, cY, smallRadius);
                     paths.add(thirdPath);
                 }
+            } else if (level-- == 0) {
+                if (subLevel == 0) {
+                    title = "full_circle_with_handholds";
+                    int radius = (D - largePadding);
+
+                    GamePath path = new GamePath(parent, initializeAnimator(4500));
+                    path.moveTo(radius + largePadding + radius, cY);
+                    drawCircleQuadrant(path, 0, radius + largePadding, cY, radius);
+                    drawCircleQuadrant(path, 1, radius + largePadding, cY, radius);
+                    drawCircleQuadrant(path, 2, radius + largePadding, cY, radius);
+                    drawCircleQuadrant(path, 3, radius + largePadding, cY, radius);
+                    paths.add(path);
+
+                    GamePath secondPath = new GamePath(parent, initializeAnimator(4500));
+                    secondPath.moveTo(radius + largePadding, cY);
+                    secondPath.lineTo(radius + largePadding, cY + .1f);
+                    paths.add(secondPath);
+
+                    GamePath thirdPath = new GamePath(parent, initializeAnimator(1000));
+                    thirdPath.moveTo(width - largePadding - radius, cY);
+                    thirdPath.lineTo(width - largePadding - radius, cY + .1f);
+                    paths.add(thirdPath);
+                } else if (subLevel == 1) {
+                    title = "4_finger_1_circle";
+                    int radius = (D - largePadding);
+                    for(int i = 0; i < 4;i++) {
+                        float theta = (float) -(2 * Math.PI * i / 4);
+                        GamePath path = new GamePath(parent, initializeAnimator(1500));
+                        path.moveTo(cX + radius * Math.cos(theta) , cY + radius * Math.sin(theta));
+                        drawCircleQuadrant(path, i, cX, cY, radius);
+                        paths.add(path);
+                    }
+                }
             }
         }
 
@@ -1103,7 +1136,7 @@ public class LevelStore {
         } else if (universe == 1) {
             return 23;
         } else if (universe == 2) {
-            return 3;
+            return 4;
         }
 
         throw new RuntimeException("Unknown universe");
