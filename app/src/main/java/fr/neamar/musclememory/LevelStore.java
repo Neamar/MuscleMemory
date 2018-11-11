@@ -581,7 +581,7 @@ public class LevelStore {
                     GamePath secondPath = new GamePath(parent, initializeAnimator(5000));
                     secondPath.moveTo(width - largePadding, height - largePadding);
                     secondPath.lineTo(curveUntil, height - largePadding);
-                    secondPath.cubicTo(2 * largePadding, height - largePadding,curveUntil, largePadding, largePadding, largePadding );
+                    secondPath.cubicTo(2 * largePadding, height - largePadding, curveUntil, largePadding, largePadding, largePadding);
                     paths.add(secondPath);
                 }
             } else if (level-- == 0) {
@@ -983,6 +983,56 @@ public class LevelStore {
                     thirdPath.lineTo(250, cY);
                     paths.add(thirdPath);
                 }
+            } else if (level-- == 0) {
+                if (subLevel == 0) {
+                    title = "4_fingers_opposite_diagonal";
+                    int w = (width - padding * 2) / 5;
+                    int h = (height - padding * 2) / 5;
+
+                    GamePath path = new GamePath(parent, initializeAnimator(1000));
+                    path.moveTo(padding + w, padding + h);
+                    path.lineTo(padding, padding);
+                    paths.add(path);
+
+                    GamePath secondPath = new GamePath(parent, initializeAnimator(1000));
+                    secondPath.moveTo(padding + 2 * w, padding + 2 * h);
+                    secondPath.lineTo(padding + w, padding + h);
+                    paths.add(secondPath);
+
+                    GamePath thirdPath = new GamePath(parent, initializeAnimator(1000));
+                    thirdPath.moveTo(padding + 3 * w, padding + 3 * h);
+                    thirdPath.lineTo(padding + 4 * w, padding + 4 * h);
+                    paths.add(thirdPath);
+
+                    GamePath fourthPath = new GamePath(parent, initializeAnimator(1000));
+                    fourthPath.moveTo(padding + 4 * w, padding + 4 * h);
+                    fourthPath.lineTo(padding + 5 * w, padding + 5 * h);
+                    paths.add(fourthPath);
+                } else if (subLevel == 1) {
+                    title = "4_fingers_diagonal";
+                    int w = (width - padding * 2) / 4;
+                    int h = (height - padding * 2) / 4;
+
+                    GamePath path = new GamePath(parent, initializeAnimator(1000));
+                    path.moveTo(padding, padding);
+                    path.lineTo(padding + w, padding + h);
+                    paths.add(path);
+
+                    GamePath secondPath = new GamePath(parent, initializeAnimator(1000));
+                    secondPath.moveTo(padding + w, padding + h);
+                    secondPath.lineTo(padding + 2 * w, padding + 2 * h);
+                    paths.add(secondPath);
+
+                    GamePath thirdPath = new GamePath(parent, initializeAnimator(1000));
+                    thirdPath.moveTo(padding + 2 * w, padding + 2 * h);
+                    thirdPath.lineTo(padding + 3 * w, padding + 3 * h);
+                    paths.add(thirdPath);
+
+                    GamePath fourhtPath = new GamePath(parent, initializeAnimator(1000));
+                    fourhtPath.moveTo(padding + 3 * w, padding + 3 * h);
+                    fourhtPath.lineTo(padding + 4 * w, padding + 4 * h);
+                    paths.add(fourhtPath);
+                }
             }
         }
 
@@ -1003,7 +1053,7 @@ public class LevelStore {
         } else if (universe == 1) {
             return 23;
         } else if (universe == 2) {
-            return 1;
+            return 2;
         }
 
         throw new RuntimeException("Unknown universe");
@@ -1022,7 +1072,8 @@ public class LevelStore {
         return progressAnimator;
     }
 
-    private static void drawCircleQuadrant(GamePath path, int quadrant, int cX, int cY, float radius) {
+    private static void drawCircleQuadrant(GamePath path, int quadrant, int cX, int cY,
+                                           float radius) {
         float cRadius = BEZIER_CIRCLE_CONSTANT * radius;
         if (quadrant == 0) {
             path.cubicTo(cX + radius, cY - cRadius, cX + cRadius, cY - radius, cX, cY - radius);
@@ -1037,7 +1088,8 @@ public class LevelStore {
         }
     }
 
-    private static void drawCircleQuadrantReverse(GamePath path, int quadrant, int cX, int cY, float radius) {
+    private static void drawCircleQuadrantReverse(GamePath path, int quadrant, int cX, int cY,
+                                                  float radius) {
         float cRadius = BEZIER_CIRCLE_CONSTANT * radius;
         if (quadrant == 0) {
             path.cubicTo(cX + cRadius, cY - radius, cX + radius, cY - cRadius, cX + radius, cY);
@@ -1107,14 +1159,16 @@ public class LevelStore {
         return prefs.getStringSet(universeStateKey(universe), new HashSet<String>()).size();
     }
 
-    public static void unlockSubLevel(SharedPreferences prefs, int universe, int level, int sublevel) {
+    public static void unlockSubLevel(SharedPreferences prefs, int universe, int level,
+                                      int sublevel) {
         String key = levelStateKey(universe, level);
         Set<String> finishedSubLevels = prefs.getStringSet(key, new HashSet<String>());
         finishedSubLevels.add(Integer.toString(sublevel));
         prefs.edit().putStringSet(key, finishedSubLevels).apply();
     }
 
-    public static int getSubLevelStatus(SharedPreferences prefs, int universe, int level, int sublevel) {
+    public static int getSubLevelStatus(SharedPreferences prefs, int universe, int level,
+                                        int sublevel) {
         String key = levelStateKey(universe, level);
         Set<String> finishedSubLevels = prefs.getStringSet(key, new HashSet<String>());
         return finishedSubLevels.contains(Integer.toString(sublevel)) ? SUBLEVEL_FINISHED : SUBLEVEL_NOT_FINISHED;
