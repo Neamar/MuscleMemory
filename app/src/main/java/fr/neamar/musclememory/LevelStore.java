@@ -1033,6 +1033,56 @@ public class LevelStore {
                     fourhtPath.lineTo(padding + 4 * w, padding + 4 * h);
                     paths.add(fourhtPath);
                 }
+            } else if (level-- == 0) {
+                if (subLevel == 0) {
+                    title = "definitely_not_boobs";
+                    int radius = (D - largePadding);
+
+                    GamePath path = new GamePath(parent, initializeAnimator(4500));
+                    path.moveTo(cX / 2 + radius, cY);
+                    drawCircleQuadrant(path, 0, cX / 2, cY, radius);
+                    drawCircleQuadrant(path, 1, cX / 2, cY, radius);
+                    drawCircleQuadrant(path, 2, cX / 2, cY, radius);
+                    paths.add(path);
+
+                    GamePath secondPath = new GamePath(parent, initializeAnimator(4500));
+                    secondPath.moveTo(cX + cX / 2 + radius, cY);
+                    drawCircleQuadrant(secondPath, 0, cX + cX / 2, cY, radius);
+                    drawCircleQuadrant(secondPath, 1, cX + cX / 2, cY, radius);
+                    drawCircleQuadrant(secondPath, 2, cX + cX / 2, cY, radius);
+                    paths.add(secondPath);
+
+                    GamePath thirdPath = new GamePath(parent, initializeAnimator(1000));
+                    thirdPath.moveTo(cX / 2, cY);
+                    thirdPath.lineTo(cX / 2, cY + .1f);
+                    paths.add(thirdPath);
+
+                    GamePath fourthPath = new GamePath(parent, initializeAnimator(1000));
+                    fourthPath.moveTo(cX + cX / 2, cY);
+                    fourthPath.lineTo(cX + cX / 2, cY + .1f);
+                    paths.add(fourthPath);
+                } else if (subLevel == 1) {
+                    title = "rope_jump";
+                    int radius = (D - largePadding);
+                    int smallRadius = 2 * radius / 3;
+                    GamePath path = new GamePath(parent, initializeAnimator(4500));
+                    path.moveTo(cX - radius, cY);
+                    drawCircleQuadrantReverse(path, 1, cX, cY, radius);
+                    drawCircleQuadrantReverse(path, 0, cX, cY, radius);
+                    paths.add(path);
+
+                    GamePath secondPath = new GamePath(parent, initializeAnimator(4500));
+                    secondPath.moveTo(cX - radius + smallRadius, cY);
+                    drawCircleQuadrantReverse(secondPath, 3, cX - radius, cY, smallRadius);
+                    drawCircleQuadrantReverse(secondPath, 2, cX - radius, cY, smallRadius);
+                    paths.add(secondPath);
+
+                    GamePath thirdPath = new GamePath(parent, initializeAnimator(4500));
+                    thirdPath.moveTo(cX + radius + smallRadius, cY);
+                    drawCircleQuadrantReverse(thirdPath, 3, cX + radius, cY, smallRadius);
+                    drawCircleQuadrantReverse(thirdPath, 2, cX + radius, cY, smallRadius);
+                    paths.add(thirdPath);
+                }
             }
         }
 
@@ -1053,7 +1103,7 @@ public class LevelStore {
         } else if (universe == 1) {
             return 23;
         } else if (universe == 2) {
-            return 2;
+            return 3;
         }
 
         throw new RuntimeException("Unknown universe");
