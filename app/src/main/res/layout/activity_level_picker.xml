@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:background="@color/whiteBackground"
         android:elevation="8dp"
-        android:fontFamily="@font/modern_sans_serif_7"
+        android:fontFamily="@font/inkfree"
         android:gravity="center_horizontal"
         android:padding="8dp"
         android:text="Tutorial"
