@@ -206,37 +206,36 @@ public class LevelStore {
                 }
             } else if (level-- == 0) {
                 if (subLevel == 0) {
-                    title = "two_half_circles_and_a_line";
-                    int radius = (D / 2) - padding;
+                    title = "IV";
                     GamePath path = new GamePath(parent, initializeAnimator(4000));
-                    path.moveTo(largePadding, cY + radius);
-                    drawCircleQuadrant(path, 3, largePadding, cY, radius);
-                    drawCircleQuadrant(path, 0, largePadding, cY, radius);
-                    path.lineTo(cX, cY - radius);
+                    path.moveTo(cX / 4, largePadding);
+                    path.lineTo(cX / 4, height - largePadding);
                     paths.add(path);
 
                     GamePath secondPath = new GamePath(parent, initializeAnimator(4000));
-                    secondPath.moveTo(width - largePadding, cY - radius);
-                    drawCircleQuadrant(secondPath, 1, width - largePadding, cY, radius);
-                    drawCircleQuadrant(secondPath, 2, width - largePadding, cY, radius);
-                    secondPath.lineTo(cX, cY + radius);
+                    secondPath.moveTo(cX / 2 + cX / 4, largePadding);
+                    secondPath.lineTo(cX + cX / 4, height - largePadding);
+                    secondPath.lineTo(3 * cX / 2 + cX / 4, largePadding);
                     paths.add(secondPath);
-                } else if (subLevel == 1) {
-                    title = "two_right_angle_triangles";
-                    GamePath path = new GamePath(parent, initializeAnimator(6000));
-                    path.moveTo(largePadding, largePadding);
-                    path.lineTo(largePadding, height - largePadding);
-                    path.lineTo(cX, height - largePadding);
-                    path.lineTo(largePadding, largePadding);
 
+                } else if (subLevel == 1) {
+                    title = "circle_next_to_square";
+                    int radius = (D / 2) - padding;
+                    GamePath path = new GamePath(parent, initializeAnimator(4000));
+                    path.moveTo(cX / 2 + radius, cY);
+                    drawCircleQuadrant(path, 0, cX / 2, cY, radius);
+                    drawCircleQuadrant(path, 1, cX / 2, cY, radius);
+                    drawCircleQuadrant(path, 2, cX / 2, cY, radius);
+                    drawCircleQuadrant(path, 3, cX / 2, cY, radius);
                     paths.add(path);
 
-                    GamePath secondPath = new GamePath(parent, initializeAnimator(6000));
-                    secondPath.moveTo(width - largePadding, height - largePadding);
-                    secondPath.lineTo(width - largePadding, largePadding);
-                    secondPath.lineTo(cX, largePadding);
-                    secondPath.lineTo(width - largePadding, height - largePadding);
-
+                    GamePath secondPath = new GamePath(parent, initializeAnimator(4000));
+                    secondPath.moveTo(3 * cX / 2 + radius, cY);
+                    secondPath.lineTo(3 * cX / 2 + radius, cY - radius);
+                    secondPath.lineTo(3 * cX / 2 - radius, cY - radius);
+                    secondPath.lineTo(3 * cX / 2 - radius, cY + radius);
+                    secondPath.lineTo(3 * cX / 2 + radius, cY + radius);
+                    secondPath.lineTo(3 * cX / 2 + radius, cY);
                     paths.add(secondPath);
                 }
             } else if (level-- == 0) {
@@ -273,36 +272,37 @@ public class LevelStore {
                 }
             } else if (level-- == 0) {
                 if (subLevel == 0) {
-                    title = "IV";
-                    GamePath path = new GamePath(parent, initializeAnimator(4000));
-                    path.moveTo(cX / 4, largePadding);
-                    path.lineTo(cX / 4, height - largePadding);
-                    paths.add(path);
-
-                    GamePath secondPath = new GamePath(parent, initializeAnimator(4000));
-                    secondPath.moveTo(cX / 2 + cX / 4, largePadding);
-                    secondPath.lineTo(cX + cX / 4, height - largePadding);
-                    secondPath.lineTo(3 * cX / 2 + cX / 4, largePadding);
-                    paths.add(secondPath);
-
-                } else if (subLevel == 1) {
-                    title = "circle_next_to_square";
+                    title = "two_half_circles_and_a_line";
                     int radius = (D / 2) - padding;
                     GamePath path = new GamePath(parent, initializeAnimator(4000));
-                    path.moveTo(cX / 2 + radius, cY);
-                    drawCircleQuadrant(path, 0, cX / 2, cY, radius);
-                    drawCircleQuadrant(path, 1, cX / 2, cY, radius);
-                    drawCircleQuadrant(path, 2, cX / 2, cY, radius);
-                    drawCircleQuadrant(path, 3, cX / 2, cY, radius);
+                    path.moveTo(largePadding, cY + radius);
+                    drawCircleQuadrant(path, 3, largePadding, cY, radius);
+                    drawCircleQuadrant(path, 0, largePadding, cY, radius);
+                    path.lineTo(cX, cY - radius);
                     paths.add(path);
 
                     GamePath secondPath = new GamePath(parent, initializeAnimator(4000));
-                    secondPath.moveTo(3 * cX / 2 + radius, cY);
-                    secondPath.lineTo(3 * cX / 2 + radius, cY - radius);
-                    secondPath.lineTo(3 * cX / 2 - radius, cY - radius);
-                    secondPath.lineTo(3 * cX / 2 - radius, cY + radius);
-                    secondPath.lineTo(3 * cX / 2 + radius, cY + radius);
-                    secondPath.lineTo(3 * cX / 2 + radius, cY);
+                    secondPath.moveTo(width - largePadding, cY - radius);
+                    drawCircleQuadrant(secondPath, 1, width - largePadding, cY, radius);
+                    drawCircleQuadrant(secondPath, 2, width - largePadding, cY, radius);
+                    secondPath.lineTo(cX, cY + radius);
+                    paths.add(secondPath);
+                } else if (subLevel == 1) {
+                    title = "two_right_angle_triangles";
+                    GamePath path = new GamePath(parent, initializeAnimator(6000));
+                    path.moveTo(largePadding, largePadding);
+                    path.lineTo(largePadding, height - largePadding);
+                    path.lineTo(cX, height - largePadding);
+                    path.lineTo(largePadding, largePadding);
+
+                    paths.add(path);
+
+                    GamePath secondPath = new GamePath(parent, initializeAnimator(6000));
+                    secondPath.moveTo(width - largePadding, height - largePadding);
+                    secondPath.lineTo(width - largePadding, largePadding);
+                    secondPath.lineTo(cX, largePadding);
+                    secondPath.lineTo(width - largePadding, height - largePadding);
+
                     paths.add(secondPath);
                 }
             } else if (level-- == 0) {
@@ -1108,10 +1108,10 @@ public class LevelStore {
                 } else if (subLevel == 1) {
                     title = "4_finger_1_circle";
                     int radius = (D - largePadding);
-                    for(int i = 0; i < 4;i++) {
+                    for (int i = 0; i < 4; i++) {
                         float theta = (float) -(2 * Math.PI * i / 4);
                         GamePath path = new GamePath(parent, initializeAnimator(1500));
-                        path.moveTo(cX + radius * Math.cos(theta) , cY + radius * Math.sin(theta));
+                        path.moveTo(cX + radius * Math.cos(theta), cY + radius * Math.sin(theta));
                         drawCircleQuadrant(path, i, cX, cY, radius);
                         paths.add(path);
                     }
