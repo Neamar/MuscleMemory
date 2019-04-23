@@ -18,6 +18,8 @@ public class LevelView extends TouchEventView implements Invalidatable {
     public final static int RUNNING = 2;
     public final static int WON = 3;
     public final static int LOST = 4;
+    // Invulnerability period at the start during which you can't lose
+    private static final int GRACE_PERIOD = 150;
 
     public int state = WAITING_FOR_ALL_CIRCLES;
 
@@ -105,7 +107,7 @@ public class LevelView extends TouchEventView implements Invalidatable {
         }
 
         if (!allCirclesCovered) {
-            if (state == RUNNING) {
+            if (state == RUNNING && (System.currentTimeMillis() - startDate) > GRACE_PERIOD) {
                 reset();
             }
         }
